@@ -1,3 +1,7 @@
+## Maple files
+maple*.sty
+maple*.def
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
