@@ -1,0 +1,119 @@
+FindImplicitNotation := proc(Xp, Yp, Variable, MaxDegree)
+	local List, Pos, Count, ExpOrder, ExpOrders, MaxOrd, Explicit, StartTime,
+		CurrentMaxDegree, PrintTime, Solution, i, j, k, f, g, p, x, y, a, b, c;
+
+	StartTime := time();
+	PrintTime := nargs < 5 or args[5];
+	CurrentMaxDegree := MaxDegree;
+	Solution := 0;
+	f := Xp;
+	g := Yp;
+
+	if ldegree(f, Variable) = ldegree(g, Variable) then
+		a := tcoeff(f, Variable);
+		b := tcoeff(g, Variable);
+		g := (g * a - f * b) / gcd(a,b)
+	end if;
+
+	List[0] := f;
+	List[1] := g;
+	Explicit[0] := x;
+	Explicit[1] := y;
+	MaxOrd := ldegree(f, Variable);
+	ExpOrder[0] := MaxOrd;
+
+	for i from 0 to MaxOrd - 1 do 
+		ExpOrders[i] := -1 
+	end do;
+
+	ExpOrders[MaxOrd] := 0;
+	j := ldegree(g, Variable);
+
+	if MaxOrd < j then
+		if MaxOrd + 1 < j then
+			for i from MaxOrd + 1 to j - 1 do 
+				ExpOrders[i] := -1 
+			end do
+		end if;
+
+		MaxOrd := j
+	end if;
+
+	ExpOrders[j] := 1;
+	ExpOrder[1] := j;
+	Pos := 0;
+	Count := 2;
+	while Pos < Count do
+		for i from 0 to Pos do
+			if ExpOrder[Pos] + ExpOrder[i] <= CurrentMaxDegree then
+				f := expand(List[Pos] * List[i]);
+				p := expand(Explicit[Pos] * Explicit[i]);
+				j := ldegree(f, Variable);
+				k := 0;
+				while j <= MaxOrd and f <> 0 do
+					k := ExpOrders[j];
+					if 0 <= k then
+						g := List[k];
+						a := tcoeff(g, Variable);
+						b := tcoeff(f, Variable);
+						c := gcd(a,b);
+						f := (f * a - g * b) / c;
+						p := p * a/c - Explicit[k] * b/c;
+						if f <> 0 then 
+							j := ldegree(f, Variable) 
+						end if
+					else
+						List[Count] := f;
+						Explicit[Count] := p;
+						ExpOrder[Count] := j;
+						ExpOrders[j] := Count;
+						Count := Count + 1;
+						f := 0
+					end if
+				end do;
+
+				if f <> 0 and MaxOrd < j then
+					while MaxOrd < j - 1 do 
+						MaxOrd := MaxOrd + 1; 
+						ExpOrders[MaxOrd] := -1
+					end do;
+
+					List[Count] := f;
+					Explicit[Count] := p;
+					ExpOrder[Count] := j;
+					ExpOrders[j] := Count;
+					MaxOrd := j;
+					Count := Count + 1
+				elif 0 <= k and p <> 0 then
+					j := degree(p);
+					if j < CurrentMaxDegree then 
+						CurrentMaxDegree := j; 
+						Solution := p 
+					end if
+				end if
+			end if
+		end do;
+
+		Pos := Pos + 1
+	end do;
+
+	if Solution = 0 then
+		ERROR("Implicit function not found. Please try a higher Maximum Degree.", MaxDegree)
+	end if;
+
+	if PrintTime then 
+		printf("Elapsed Time: %0.3f s.\n", time() - StartTime) 
+	end if;
+
+	a := [coeffs(Solution)];
+	b := nops(a);
+	j := op(1, a);
+
+	for i from 2 to b do 
+		j := gcd(j, op(i, a)) 
+	end do;
+
+	Solution := Solution/j;
+
+	RETURN(sort(Solution) = 0)
+end proc

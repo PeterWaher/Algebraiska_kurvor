@@ -1,0 +1,107 @@
+FindSemiGroup := proc(Generators)
+	local Conductor, l, GCD, Generators2, MinValue, NrGenerators, g, ZMin, GCD2,a, b, c, d, e, SemiGroup, StartTime;
+
+	StartTime := time();
+
+	if not type(Generators, list) then
+		ERROR("Generators must be a list of integers!", Generators)
+	end if;
+
+	l := FindGCDList(Generators);
+	GCD := l[1];
+	if GCD = 1 then
+		Generators2 := Generators
+	else
+		Generators2 := Generators/GCD
+	end if;
+
+	NrGenerators := nops(Generators2 );
+	MinValue := min(op(Generators2 ));
+	ZMin := array(0..MinValue - 1);
+	ZMin[0] := MinValue;
+
+	for l from 1 to MinValue - 1 do
+		ZMin[l] := 0
+	end do;
+
+	for l to NrGenerators do
+		g := Generators2[l];
+		if g <> MinValue then
+			GCD2 := gcd(g, MinValue);
+			b := MinValue/GCD2;
+
+			for e from 0 to MinValue do
+				if e = MinValue then
+					c := 0
+				elif ZMin[e] <> 0 then
+					c := ZMin[e]
+				else
+					c := -1
+				end if;
+
+				if 0 <= c then
+					for a to b do
+						c := c + g;
+						d := c mod MinValue;
+
+						if ZMin[d] = 0 or c < ZMin[d] then
+							ZMin[d] := c
+						end if
+					end do
+				end if
+			end do
+		end if
+	end do;
+
+	Conductor := ZMin[0];
+	for a to MinValue - 1 do
+		if Conductor < ZMin[a] then
+			Conductor := ZMin[a]
+		end if
+	end do;
+
+	Conductor := Conductor - MinValue + 1;
+	ZMin := array(1..Conductor);
+	for l to Conductor do
+		ZMin[l] := 0
+	end do;
+
+	for l to NrGenerators do
+		g := Generators2[l];
+
+		for a to Conductor + 1 do
+			if Conductor < a then
+				b := g
+			elif ZMin[a] <> 0 then
+				b := ZMin[a] + g
+			else
+				b := 0
+			end if;
+
+			if 0 < b then
+				while b <= Conductor do
+					ZMin[b] := b;
+					b := b + g
+				end do
+			end if
+		end do
+	end do;
+
+	SemiGroup := {};
+
+	for a to Conductor do
+		if 0 < ZMin[a] then
+			SemiGroup := SemiGroup union {ZMin[a]}
+		end if
+	end do;
+
+	if GCD <> 1 then
+		SemiGroup := GCD * SemiGroup
+	end if;
+
+	if nargs = 1 or args2 then
+		printf("Elapsed Time: %0.3f s.\n", time() - StartTime)
+	end if;
+
+	RETURN([Conductor * GCD, SemiGroup])
+end proc

@@ -1,0 +1,173 @@
+FindFunctionXYFromMultiplicitySequence := proc(Sequence, CalcFamily)
+	local Max, SumS, i, j, k, l, m, n, p, q, f, g, h, a, NrA, Conditions,
+		PrintProgress, NonZero, Zero;
+
+	PrintProgress := 3 <= nargs and args[3];
+
+	if not type(Sequence, list) then
+		ERROR("Sequence must be a list of integers.", Sequence)
+	end if;
+
+	n := nops(Sequence);
+	if n = 0 then
+		ERROR("Empty list!", Sequence)
+	end if;
+
+	i := Sequence[1];
+	for j to n do
+		if not type(Sequence[j], integer) then
+			ERROR("The list must only contain integer numbers.", Sequence[j])
+		end if;
+
+		if i < Sequence[j] then
+			ERROR("The list must be a (not strictly) descending sequence of integers.", Sequence)
+		end if;
+
+		i := Sequence[j]
+	end do;
+
+	Max := Sequence[1];
+	SumS := sum(Sequence[v], v = 1..n);
+	NrA := 0;
+	f := -x^SumS;
+
+	for i to Max do
+		for j from 0 to SumS - i do
+			NrA := NrA + 1;
+			f := a[NrA] * y^i * x^j + f;
+			Zero[NrA] := false;
+			NonZero[NrA] := false
+		end do
+	end do;
+
+	if PrintProgress then
+		print(f)
+	end if;
+
+	g := f;
+	for i to n do
+		g := subs(y = x * y, g);
+
+		if PrintProgress then
+			print(g)
+		end if;
+
+		k := Sequence[i];
+		for j to k - 1 do
+			l := coeff(g, x, j);
+			if l <> 0 then
+				if PrintProgress then
+					print(l = 0)
+				end if;
+
+				l := FindIndices(l);
+				m := nops(l);
+
+				if 0 < m then
+					for p to m do
+						q := l[p];
+						f := f - coeff(f, a[q], 1) * a[q];
+						g := g - coeff(g, a[q], 1) * a[q];
+						Zero[q] := true
+					end do
+				else
+					ERROR("Invalid function.", f)
+				end if
+			end if
+		end do;
+
+		if coeff(g, x, k) = 0 or coeff(g, x, 0) <> 0 then
+			ERROR("Internal error: Unable to find function. Starting function too small.", f)
+		end if;
+
+		g := expand(g/x^k)
+	end do;
+
+	Conditions := [];
+
+	if PrintProgress then
+		print(f)
+	end if;
+
+	g := f;
+	h := f;
+
+	for i to n do
+		g := subs(y = x * y, g);
+
+		if PrintProgress then
+			print(g)
+		end if;
+
+		k := Sequence[i];
+		p := coeff(g, x, k);
+		if p=0 then
+			ERROR("Function family could not be computed.")
+		end if;
+
+		l := FindIndices(p);
+		m := nops(l);
+
+		if 0 < m then
+			for j to m do
+				q := l[j];
+				if NonZero[q] then
+					p := 0
+				end if
+			end do
+		end if;
+
+		if p <> 0 then
+			q := degree(p, y);
+			j := ldegree(p, y);
+
+			if PrintProgress then
+				print([p <> 0, q])
+			end if;
+
+			if 0 < q and 0 < j then
+				p := coeff(p, y, q);
+				for j to nops(Conditions) do
+					if Conditions[j] = p then
+						p := 0
+					end if
+				end do;
+
+				if p <> 0 then
+					q := coeff(h, p, 1);
+					h := q + h - q * p;
+					Conditions := [op(Conditions), p];
+					l := FindIndices(p);
+					m := nops(l);
+
+					if 0 < m then
+						NonZero[l[1]] := true;
+						if (Zero[l[1]]) then
+							ERROR("Contradiction.", p<>0, p=0)
+						end if
+					end if
+				end if
+			end if
+		end if;
+
+		g := expand(g/x^k)
+	end do;
+
+	l := FindIndices(h);
+	m := nops(l);
+
+	for p to m do
+		q := l[p];
+		h := h - coeff(h, a[q], 1) * a[q]
+	end do;
+
+	if CalcFamily then
+		for i to nops(Conditions) do
+			Conditions[i] := Conditions[i] <> 0
+		end do;
+
+		RETURN([h, f, op(Conditions)])
+	else
+		RETURN(h)
+	end if
+end proc

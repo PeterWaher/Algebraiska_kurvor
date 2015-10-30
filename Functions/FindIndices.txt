@@ -1,0 +1,19 @@
+FindIndices := proc(Expression)
+	local a, b, c, n;
+
+	a := {op(Expression)};
+	b := {};
+	n := nops(a);
+
+	if n = 1 and type(a[1], integer) then
+		b := {a[1]}
+	elif 1 < n then
+		for c to n do
+			if not type(a[c], integer) then
+				b := b union FindIndices(a[c])
+			end if
+		end do
+	end if;
+
+	RETURN(b)
+end proc

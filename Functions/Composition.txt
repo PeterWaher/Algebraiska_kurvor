@@ -1,0 +1,42 @@
+﻿Composition := proc(f, g, Variable, MaxDegree)
+	local gc, gcn, gcnt, i, j, k, r, c, floop;
+
+	gc := array(0..MaxDegree);
+	gcn := array(0..MaxDegree);
+	gcnt := array(0..MaxDegree);
+	r := array(0..MaxDegree);
+
+	for i from 0 to MaxDegree do
+		gc[i] := coeff(g, Variable, i); 
+		gcn[i] := gc[i]; 
+		r[i] := 0
+	od;
+
+	floop := degree(f);
+	if MaxDegree < floop then 
+		floop := MaxDegree 
+	fi;
+
+	r[0] := coeff(f, Variable, 0);
+	for i to floop do
+		c := coeff(f, Variable, i);
+		for j from 0 to MaxDegree do 
+			r[j] := r[j] + c * gcn[j] 
+		od;
+
+		if i < MaxDegree then
+			for j from 0 to MaxDegree do
+				gcnt[j] := 0; 
+				for k from 0 to j do
+					gcnt[j] := gcnt[j] + gc[k] * gcn[j-k]
+				od
+			od;
+
+			for j from 0 to MaxDegree do 
+				gcn[j] := gcnt[j] 
+			od
+		fi
+	od;
+
+	RETURN(eval(r))
+end

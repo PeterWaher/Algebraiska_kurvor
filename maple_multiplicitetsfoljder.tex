@@ -1,0 +1,905 @@
+\chapter[Källtexter --- Multiplicitetsföljder]{Källtexter till Maple --- Multiplicitetsföljder}
+
+\section{BlowUpXY}
+\label{BlowUpXY}
+
+\emph{BlowUpXY}-funktionen tar en funktion $F(x, y)$ med en singularitet i origo och blåser upp den i ytterligare en dimension ($z=y/x$). Därefter returneras multipliciteten $m$ av $F(x,y) = F(x, x \cdot z)$ samt den motsvarande uppblåsningen $F(x, x \cdot y)/{x^m}$. (Eftersom vi kommer använda \emph{BlowUpXY}-funktionen flera gånger i rad väljer vi dock att kalla variabeln för den nya dimensionen för $y$ istället för $z$, för att slippa hitta på nya variabelnamn i varje steg.)
+
+\begin{table}[h]
+\caption{Parametrar för \emph{BlowUpXY}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$F$ & Funktion i två variabler med singularitet i origo. \\
+$XVariable$ & Namnet på variabeln som motsvarar $x$.\\
+$YVariable$ & Namnet på variabeln som motsvarar $y$.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+BlowUpXY := proc(F, XVariable, YVariable)
+   local G, m;
+
+   G := subs(YVariable = XVariable * YVariable, F);
+   m := ldegree(G, XVariable);
+
+   RETURN([m, expand(G/XVariable^m)])
+end proc
+\end{verbatim}
+
+\subsection{Exempel}
+
+Följande är ett enkelt exempel på en uppblåsnin av $F(x,y)=y^2-x^5$:
+
+\begin{verbatim}
+> BlowUpXY(y^2-x^5,x,y)
+\end{verbatim}
+\[[2, -x^3+y^2]\]
+
+\section{MultiplicitySequenceXY}
+\label{MultiplicitySequenceXY}
+
+\emph{MultiplicitySequenceXY}-funktionen beräknar multiplicitetsföljden av en algebraisk kurva givet på formen $F(x, y) = 0$, där $F \in \mathbb{C}\left[x, y\right]$ genom att upprepade gånger anropa \emph{BlowUpXY} tills den resulterande uppblåsningen blir reguljär.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{MultiplicitySequenceXY}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$F$ & Funktion i två variabler med singularitet i origo. \\
+$XVariable$ & Namnet på variabeln som motsvarar $x$.\\
+$YVariable$ & Namnet på variabeln som motsvarar $y$.\\
+$PrintSteps$ & Frivillig parameter. Om \emph{true} skriver rutinen ut alla steg i beräkningen.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+MultiplicitySequenceXY := proc(F, XVariable, YVariable)
+   local M, m, G, resp;
+
+   if coeff(F, YVariable, 0) = 0 then
+      ERROR("Function not irreducible.", F )
+   end if;
+
+   m := infinity;
+   M := [];
+   G := F;
+
+   while 1 <= m and degree(G)>0 do
+      resp := BlowUpXY(G, XVariable, YVariable);
+      m := resp[1];
+
+      if G = resp[2] then 
+         ERROR("Infinite loop.", G)
+      end if;
+
+      G := resp[2];
+
+      if 0 < m then
+         M := [op(M), m]
+      end if;
+
+      if 4 <= nargs then
+         print([m, G])
+      end if
+   end do;
+
+   RETURN(M)
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Trivialt första exempel}
+\label{MultiplicitySequenceXYEx1}
+
+I detta exempel beräknas multiplicitetsföljden för $y^2 - x^5 = 0$:
+
+\begin{verbatim}
+> MultiplicitySequenceXY(y^2-x^5,x,y)
+\end{verbatim}
+\[\left[2, 2, 1\right]\]
+
+Vill vi se de successiva uppblåsningarna gör vi som följer:
+
+\begin{verbatim}
+> MultiplicitySequenceXY(y^2-x^5,x,y,true)
+\end{verbatim}
+\[[2,-x^3+y^2]\]
+\[[2,y^2-x]\]
+\[[1,xy^2-1]\]
+\[[0,x^3y^2-1]\]
+\[\left[2, 2, 1\right]\]
+
+Här ser vi att de successiva uppblåsningarna är $y^2-x^3$, $y^2-x$ och $xy^2-1$. Det sista steget är i sammanhangen irrelevant, då det bara används för att avsluta sekvensen. Sekvensen avslutas då en multiplicitet $m=0$ detekteras.
+
+\subsection{Exempel --- Flera steg}
+\label{MultiplicitySequenceXYEx2}
+
+I detta exempel beräknas multiplicitetsföljden för $y^3 + x^2y - x^{11} = 0$:
+
+\begin{verbatim}
+> MultiplicitySequenceXY(y^3+x^2*y-x^11,x,y)
+\end{verbatim}
+\[[3, 1, 1, 1, 1, 1, 1, 1, 1]\]
+
+\subsection{Exempel --- Högre multipliciteter}
+\label{MultiplicitySequenceXYEx3}
+
+I detta exempel beräknas multiplicitetsföljden för $y^5x+y^7+y^3x^3-x^{11} = 0$:
+
+\begin{verbatim}
+> MultiplicitySequenceXY(y^5*x+y^7+y^3*x^3-x^11,x,y)
+\end{verbatim}
+\[[6, 3, 2]\]
+
+\section{FindIndices}
+
+\emph{FindIndices} är en hjälpfunktion som används av \emph{FindFunctionXYFromMultiplicitySequenece}. Funktionen går rekursivt igenom ett algebraiskt uttryck och tar fram indexen till eventuella konstanter i uttrycket. Exempelvis innehåller uttrycket $a_1y$ indexet 1, och uttrycket $a_2y^4 + a_3y$ indexen 2 och 3.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{FindIndices}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$Expression$ & Uttrycket som skall undersökas. \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+FindIndices := proc(Expression)
+   local a, b, c, n;
+
+   a := {op(Expression)};
+   b := {};
+   n := nops(a);
+
+   if n = 1 and type(a[1], integer) then
+      b := {a[1]}
+   elif 1 < n then
+      for c to n do
+         if not type(a[c], integer) then
+            b := b union FindIndices(a[c])
+         end if
+      end do
+   end if;
+
+   RETURN(b)
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Trivialt fall}
+
+Följande exempel visar hur indexet 1 tas ut ur $a_1y$:
+
+\begin{verbatim}
+> FindIndexes(a[1]*y)
+\end{verbatim}
+\[\left\{1\right\}\]
+
+\subsection{Exempel --- Mer komplext uttryck}
+
+Följande exempel visar hur indexen 2 och 3 tas ut ur $a_3y^4+ya_2$:
+
+\begin{verbatim}
+> FindIndexes(y^4*a[3]+y*a[2])
+\end{verbatim}
+\[\left\{2,3\right\}\]
+
+\section{FindFunctionXYFromMultiplicitySequence}
+\label{FindFunctionXYFromMultiplicitySequence}
+
+Denna funktion tar en multiplicitetsföljd och beräknar fram en funktion $F(x,y)$, $F(x, y) \in \mathbb{C}\left[x, y\right]$ vars multiplicitetsföljd är given i anropet. Funktionen kan också, om man vill, beräkna en hel familj med sådana funktioner kurvor, alla med samma multiplicitetsföljd. Notera dock att inte alla möjliga sådana funktioner beräknas.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{FindFunctionXYFromMultiplicitySequence}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$Sequence$ & Multiplicitetsföljden.\\
+$CalcFamily$ & \emph{true} eller \emph{false}. Om \emph{true} beräknas en hel familj med lösningar.\\
+$PrintProgress$ & Frivillig parameter. Om \emph{true} skrivs alla steg ut i beräkningen.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+FindFunctionXYFromMultiplicitySequence := proc(Sequence, 
+   CalcFamily)
+   local Max, SumS, i, j, k, l, m, n, p, q, f, g, h, a, NrA, 
+      Conditions, PrintProgress, NonZero, Zero;
+
+   PrintProgress := 3 <= nargs and args[3];
+
+   if not type(Sequence, list) then
+      ERROR("Sequence must be a list of integers.", Sequence)
+   end if;
+
+   n := nops(Sequence);
+   if n = 0 then
+      ERROR("Empty list!", Sequence)
+   end if;
+
+   i := Sequence[1];
+   for j to n do
+      if not type(Sequence[j], integer) then
+         ERROR("The list must only contain integer numbers.", 
+            Sequence[j])
+      end if;
+
+      if i < Sequence[j] then
+         ERROR(cat("The list must be a (not strictly) ",
+            "descending sequence of integers."), Sequence)
+      end if;
+
+      i := Sequence[j]
+   end do;
+
+   Max := Sequence[1];
+   SumS := sum(Sequence[v], v = 1..n);
+   NrA := 0;
+   f := -x^SumS;
+
+   for i to Max do
+      for j from 0 to SumS - i do
+         NrA := NrA + 1;
+         f := a[NrA] * y^i * x^j + f;
+         Zero[NrA] := false;
+         NonZero[NrA] := false
+      end do
+   end do;
+
+   if PrintProgress then
+      print(f)
+   end if;
+
+   g := f;
+   for i to n do
+      g := subs(y = x * y, g);
+
+      if PrintProgress then
+         print(g)
+      end if;
+
+      k := Sequence[i];
+      for j to k - 1 do
+         l := coeff(g, x, j);
+         if l <> 0 then
+            if PrintProgress then
+               print(l = 0)
+            end if;
+
+            l := FindIndices(l);
+            m := nops(l);
+
+            if 0 < m then
+               for p to m do
+                  q := l[p];
+                  f := f - coeff(f, a[q], 1) * a[q];
+                  g := g - coeff(g, a[q], 1) * a[q];
+                  Zero[q] := true
+               end do
+            else
+               ERROR("Invalid function.", f)
+            end if
+         end if
+      end do;
+
+      if coeff(g, x, k) = 0 or coeff(g, x, 0) <> 0 then
+         ERROR(cat("Internal error: Unable to find function. ",
+            "Starting function too small."), f)
+      end if;
+
+      g := expand(g/x^k)
+   end do;
+
+   Conditions := [];
+
+   if PrintProgress then
+      print(f)
+   end if;
+
+   g := f;
+   h := f;
+
+   for i to n do
+      g := subs(y = x * y, g);
+
+      if PrintProgress then
+         print(g)
+      end if;
+
+      k := Sequence[i];
+      p := coeff(g, x, k);
+      if p=0 then
+         ERROR("Function family could not be computed.")
+      end if;
+		
+      l := FindIndices(p);
+      m := nops(l);
+
+      if 0 < m then
+         for j to m do
+            q := l[j];
+            if NonZero[q] then
+               p := 0
+            end if
+         end do
+      end if;
+
+      if p <> 0 then
+         q := degree(p, y);
+         j := ldegree(p, y);
+
+         if PrintProgress then
+            print([p <> 0, q])
+         end if;
+
+         if 0 < q and 0 < j then
+            p := coeff(p, y, q);
+            for j to nops(Conditions) do
+               if Conditions[j] = p then
+                  p := 0
+               end if
+            end do;
+
+            if p <> 0 then
+               q := coeff(h, p, 1);
+               h := q + h - q * p;
+               Conditions := [op(Conditions), p];
+               l := FindIndices(p);
+               m := nops(l);
+
+               if 0 < m then
+                  NonZero[l[1]] := true;
+                  if (Zero[l[1]]) then
+                     ERROR("Contradiction.", p<>0, p=0)
+                  end if
+               end if
+            end if
+         end if
+      end if;
+
+      g := expand(g/x^k)
+   end do;
+
+   l := FindIndices(h);
+   m := nops(l);
+
+   for p to m do
+      q := l[p];
+      h := h - coeff(h, a[q], 1) * a[q]
+   end do;
+
+   if CalcFamily then
+      for i to nops(Conditions) do
+         Conditions[i] := Conditions[i] <> 0
+      end do;
+
+      RETURN([h, f, op(Conditions)])
+   else
+      RETURN(h)
+   end if
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Beräkning av familj av kurvor}
+
+I följande exempel beräknas en familj av polynom $F(x, y) \in \mathbb{C}[x, y]$ sådana att kurvorna $F(x, y) = 0$ har multiplicitetsföljden 2, 2, 1.
+
+\begin{verbatim}
+> FindFunctionXYFromMultiplicitySequence([2,2,1], true)
+\end{verbatim}
+\[
+\begin{array}{l}
+\left[-x^5+y^2,\right.\\
+x^4ya_5+x^3y^2a_9-x^5+x^3ya_4+x^2y^2a_8+x^2ya_3+xy^2a_7+y^2a_6,\\
+\left.a_6 \neq 0\right]\\
+\end{array}
+\]
+
+Funktionen visar först en enkel lösning: $y^2 - x^5 = 0$. Notera att detta är samma funktion som i exempel \ref{MultiplicitySequenceXYEx1} för funktionen \emph{MultiplicitySequenceXY}. En familj av polynom med motsvarande multiplicitetsföljd ges också:
+\[
+\left\{
+\begin{array}{l}
+x^4ya_5+x^3y^2a_9-x^5+x^3ya_4+x^2y^2a_8+x^2ya_3+xy^2a_7+y^2a_6=0\\
+a_6 \neq 0\\ 
+\end{array}
+\right.
+\]
+
+\subsection{Exempel --- Flera steg}
+
+Följande exempel beräknar en funktion $F(x, y) \in \mathbb{C}[x, y]$ som har multiplicitetsföljden 3, 1, 1, 1, 1, 1, 1, 1, 1. Denna följd är tagen från exempel \ref{MultiplicitySequenceXYEx2} för funktionen \emph{MultiplicitySequenceXY}.
+
+\begin{verbatim}
+> FindFunctionXYFromMultiplicitySequence([3,1,1,1,1,1,1,1,1],
+     false)
+\end{verbatim}
+\[-x^{11}+x^2y+y^3\]
+
+Som svar fick vi kurvan $y^3 + x^2y - x^{11} = 0$, vilket är samma lösning som den given i exempel \ref{MultiplicitySequenceXYEx2} för funktionen \emph{MultiplicitySequenceXY}.
+
+\subsection{Exempel --- Högre multipliciteter}
+
+Följande exempel beräknar en funktion $F(x, y) \in \mathbb{C}[x, y]$ som har multiplicitetsföljden 6, 3, 2. Denna följd är tagen från exempel \ref{MultiplicitySequenceXYEx3} för funktionen \emph{MultiplicitySequenceXY}.
+
+\begin{verbatim}
+> FindFunctionXYFromMultiplicitySequence([6,3,2],false)
+\end{verbatim}
+\[-x^{11}+x^3y^3+y^6\]
+
+Som svar fick vi kurvan $y^6+x^3y^3-x^{11} = 0$, vilket inte motsvarar kurvan vi testade i \ref{MultiplicitySequenceXYEx3} ($y^5x+y^7+y^3x^3-x^{11} = 0$). Vi kan testa att multiplicitetsföljden stämmer:
+
+\begin{verbatim}
+> MultiplicitySequenceXY(-x^11+x^3*y^3+y^6,x,y);
+\end{verbatim}
+\[[6, 3, 2]\]
+
+\subsection{Exempel ---- Flera höga multipliciteter}
+
+I detta exempel beräknas en kurva för multiplicitetsföljden 13, 6, 6, 6, 6, 4:
+
+\begin{verbatim}
+> FindFunctionXYFromMultiplicitySequence([13,6,6,6,6,4], 
+     false)
+\end{verbatim}
+\[\left[-x^{41}+x^7y^6+y^{13}\right]\]
+
+Kurvan blir således $-x^{41}+x^7y^6+y^{13} = 0$. Vi testar detta:
+
+\begin{verbatim}
+> MultiplicitySequenceXY(-x^41+x^7*y^6+y^13, x, y)
+\end{verbatim}
+\[\left[13, 6, 6, 6, 6, 4\right]\]
+
+\subsection{Exempel --- Enkel följd}
+
+Låt oss betrakta multiplicitetsföljden $4,3,2,1$:
+
+\begin{verbatim}
+> FindFunctionXYFromMultiplicitySequence([4,3,2,1], true)
+\end{verbatim}
+\[
+\begin{array}{l}
+\left[-x^{10}+x^3y^2+xy^3+y^4,\right.\\ -x^{10}+a_{30}y^4x^2+a_{31}y^4x^3+a_{29}y^4x+a_{8}yx^7+a_{32}y^4x^4+a_{33}y^4x^5+\\
++a_{34}y^4x^6+a_{16}y^2x^5+a_{14}y^2x^3+a_{7}yx^6+a_{15}y^2x^4+a_{17}y^2x^6+a_{19}y^2x^8+\\
++a_{18}y^2x^7+a_{22}y^3x^2+a_{21}y^3x+a_{23}y^3x^3+a_{27}y^3x^7+a_{24}y^3x^4+a_{26}y^3x^6+\\
++a_{25}y^3x^5+a_{28}y^4+a_{10}yx^9+a_{9}yx^8,a_{28} \neq 0,a_{21} \neq 0,\left.a_{14} \neq 0\right]\\
+\end{array}\]
+
+Den enkla lösningen blir således $-x^{10}+x^3y^2+xy^3+y^4 = 0$. Vi kontrollerar
+detta:
+
+\begin{verbatim}
+> MultiplicitySequenceXY(-x^10+x^3*y^2+x*y^3+y^4, x, y)
+\end{verbatim}
+\[\left[4,3,2,1\right]\]
+
+\subsection{Exempel --- Längre följd}
+
+Låt oss höja svårighetsgraden lite. Vi betraktar multiplicitetsföljden 15, 13, 12, 9, 7, 5, 4, 3, 1:
+
+\begin{verbatim}
+> FindFunctionXYFromMultiplicitySequence([15,13,12,9,7,5,4,3,1], 
+     false)
+\end{verbatim}
+\[-x^{69}+x^{44}y^3+x^{37}y^4+x^{31}y^5+x^{21}y^7+x^{13}y^9+x^4y^{12}+x^2y^{13}+y^{15}\]
+
+En lösning är således $-x^{69}+x^{44}y^3+x^{37}y^4+x^{31}y^5+x^{21}y^7+x^{13}y^9+x^4y^{12}+x^2y^{13}+y^{15} = 0$. Vi kontrollerar:
+
+\begin{verbatim}
+> MultiplicitySequenceXY(-x^69+x^44*y^3+x^37*y^4+x^31*y^5+
+     x^21*y^7+x^13*y^9+x^4*y^12+x^2*y^13+y^15, x, y)
+\end{verbatim}
+\[\left[15, 13, 12, 9, 7, 5, 4, 3, 1\right]\]
+
+\subsection{Exempel --- Ännu längre}
+
+Vi betraktar multiplicitetsföljden 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1:
+
+\begin{verbatim}
+> FindFunctionXYFromMultiplicitySequence([15,14,13,12,11,10,9,8,
+     7,6,5,4,3,2,1],false)
+\end{verbatim}
+\[
+\begin{array}{l}
+-x^{120}+x^{91}y^2+x^{78}y^3+x^{66}y^4+x^{55}y^5+x^{45}y^6+x^{36}y^7+x^{28}y^8+x^{21}y^9+\\
++x^{15}y^{10}+x^{10}y^{11}+x^6y^12+x^3y^{13}+xy^{14}+y^{15}\\
+\end{array}
+\]
+
+Vi kontrollerar om detta svar ger den förväntade multiplicitetsföljden:
+
+\begin{verbatim}
+> MultiplicitySequenceXY(-x^120+x^91*y^2+x^78*y^3+x^66*y^4+
+     x^55*y^5+x^45*y^6+x^36*y^7+x^28*y^8+x^21*y^9+x^15*y^10+
+     x^10*y^11+x^6*y^12+x^3*y^13+x*y^14+y^15, x, y)
+\end{verbatim}
+\[\left[15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1\right]\]
+
+\section{FindMultiplicitySequences}
+
+\emph{FindMultiplicitySequences}-funktionen beräknar genom rekursion mängden av alla multiplicitetsföljder vars multipliciteter summerar till ett givet tal. Funktionen används senare för att testa om \ref{FindFunctionXYFromMultiplicitySequence}-funktionen kan hitta funktionsfamiljer för alla multiplicitetsföljder upp till en given komplexitet.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{FindMultiplicitySequences}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$SumM$ & Summan av multipliciteterna som multiplicitetsföljderna ska ha.\\
+$MaxMultiplicity$ & Valfri parameter. Används i rekursionen för att begränsa storleken på multipliciteter som går genereras.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+FindMultiplicitySequences := proc(SumM)
+   local Sequences, SubSequences, MaxMultiplicity, i, j, c;
+
+   if nargs >= 2 then
+      MaxMultiplicity:=args[2];
+      if (MaxMultiplicity>SumM) then
+         MaxMultiplicity:=SumM
+      end if
+   else
+      MaxMultiplicity:=SumM
+   end if;
+
+   Sequences:={};
+
+   if (MaxMultiplicity>0) then
+      for i to MaxMultiplicity do
+         if (i<SumM) then
+            SubSequences:=FindMultiplicitySequences(SumM-i, i);
+            c:=nops(SubSequences);
+            for j to c do
+               Sequences:=Sequences union {[i, 
+                  op(SubSequences[j])]};
+            end do
+         else
+            Sequences:=Sequences union {[i]};
+         end if
+      end do
+   end if;
+
+   RETURN(Sequences)
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Multiplicitetssumma 3}
+
+Följande exempel beräknar alla multiplicitetsföljder där summan av multipliciteterna blir 3:
+
+\begin{verbatim}
+> FindMultiplicitySequences(3)
+\end{verbatim}
+\[\left\{[3], [2,1], [1,1,1]\right\}\]
+
+\subsection{Exempel --- Multiplicitetssumma 4}
+
+Följande exempel beräknar alla multiplicitetsföljder där summan av multipliciteterna blir 4:
+
+\begin{verbatim}
+> FindMultiplicitySequences(4)
+\end{verbatim}
+\[\left\{[4], [2,2], [3,1], [2,1,1], [1,1,1,1]\right\}\]
+
+\subsection{Exempel --- Multiplicitetssumma 5}
+
+Följande exempel beräknar alla multiplicitetsföljder där summan av multipliciteterna blir 5:
+
+\begin{verbatim}
+> FindMultiplicitySequences(5)
+\end{verbatim}
+\[\left\{[5], [3,2], [4,1], [2,2,1], [3,1,1], [2,1,1,1], [1,1,1,1,1]\right\}\]
+
+\subsection{Exempel --- Multiplicitetssumma 10}
+
+Följande exempel beräknar alla multiplicitetsföljder där summan av multipliciteterna blir 10:
+
+\begin{verbatim}
+> FindMultiplicitySequences(10)
+\end{verbatim}
+\[
+\begin{array}{l}
+\left\{[10], [5,5], [6,4], [7,3], [8,2], [9,1], [4,3,3], [4,4,2], [5,3,2], [5,4,1], [6,2,2],\right.\\
+\left[6,3,2\right], [7,2,1], [8,1,1], [3,3,2,2], [3,3,3,1], [4,2,2,2], [4,3,2,1], [4,4,1,1], \\
+\left[5,2,2,1\right], [5,3,1,1], [6,2,1,1], [7,1,1,1], [2,2,2,2,2], [3,2,2,2,1], [3,3,2,1,1], \\
+\left[4,2,2,1,1\right], [4,3,1,1,1], [5,2,1,1,1], [6,1,1,1,1], [2,2,2,2,1,1], [3,2,2,1,1,1], \\
+\left[3,3,1,1,1,1\right], [4,2,1,1,1,1], [5,1,1,1,1,1], [2,2,2,1,1,1,1], [3,2,1,1,1,1,1], \\
+\left[4,1,1,1,1,1,1\right], [2,2,1,1,1,1,1,1], [3,1,1,1,1,1,1,1], [2,1,1,1,1,1,1,1,1], \\
+\left.[1,1,1,1,1,1,1,1,1,1]\right\}\\
+\end{array}
+\]
+
+\section{TestFunctionsXYForMultiplicitySequence-\\
+	Sum}
+
+Funktionen \emph{TestFunctionsXYForMultiplicitySequenceSum} går systematiskt genom alla multiplcitetsföljder vars multipliciteter summerar till ett givet tal för att sedan testa om funktionen \emph{FindFunctionXYFromMultiplicitySequence} fungerar som den ska, genom att beräkna en familj av funktioner för varje sådan multiplicitetsföljd. Om \emph{FindFunctionXYFromMultiplicitySequence} genererar fel, eller om den enkla lösningen inte genererar den multiplicitetsföljd som förväntats (genom anrop till \emph{MultiplicitySequenceXY}), orsakas ett körfel. Om alla funktioner genereras korrekt för samtliga multiplicitetsföljder, returneras istället en vektor vars första element är antalet multiplicitetsföljder som gåtts igenom, och det andra elementet är den tid (i sekunder) som använts för att gå igenom alla multiplicitetsföljder.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{TestFunctionsXYForMultiplicitySequenceSum}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$SumM$ & Summan av multipliciteterna som multiplicitetsföljderna ska ha.\\
+$PrintFunctions$ & Om de generella lösningarna ska listas för varje multiplicitetsföljd som gås igenom.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+TestFunctionsXYForMultiplicitySequenceSum := proc(SumM,
+   PrintFunctions)
+   
+   local Sequences, Sequence, i, c, F, StartTime;
+
+   StartTime := time();
+
+   Sequences:=FindMultiplicitySequences(SumM);
+   c:=nops(Sequences);
+
+   for i to c do
+      Sequence:=Sequences[i];
+      F:=FindFunctionXYFromMultiplicitySequence(Sequence,true);
+      
+      if MultiplicitySequenceXY(F[1],x,y)<>Sequence then
+         ERROR("Unable to find correct function.", F[1], Sequence)
+      end if;
+
+      if PrintFunctions then
+         print (Sequence, op(F[2..nops(F)]))
+      end if
+   end do;
+
+   RETURN([nops(Sequences), time() - StartTime])
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Multiplicitetssumma 5}
+
+Följande exempel listar alla multiplicitetsföljder med multiplicitetssumma 5 med tillhörande familj av funktioner, inklusive villkor, som genererar motsvarande multiplicitetsföljd:
+
+\begin{verbatim}
+> TestFunctionsXYForMultiplicitySequenceSum(5, true)
+\end{verbatim}
+\[[5], x^4ya_5+x^3y^2a_9+x^2y^3a_{12}+xy^4a_{14}+y^5a_{15}-x^5\]
+\[
+\begin{array}{c}
+[3,2], a_{12}y^3x^2+a_{11}y^3x+a_{10}y^3+a_9y^2x^3+a_8y^2x^2+a_5yx^4-x^5+
+\\+a_4yx^3+a_7y^2x, a_{10}\neq 0
+\end{array}
+\]
+\[
+\begin{array}{c}
+[4,1], a_{14}y^4x+a_{13}y^4+a_{12}y^3x^2+a_{11}y^3x+a_9y^2x^3+a_8y^2x^2+a_5yx^4-\\
+-x^5+a_4yx^3, a_{13}\neq 0
+\end{array}
+\]
+\[[2,2,1], x^4ya_5+x^3y^2a_9-x^5+x^3ya_4+x^2y^2a_8+x^2ya_3+xy^2a_7+y^2a_6,a_6\neq 0\]
+\[
+\begin{array}{c}
+[3,1,1], a_{12}y^3x^2+a_{11}y^3x+a_{10}y^3+a_9y^2x^3+a_8y^2x^2+a_5yx^4-x^5+a_4yx^3+\\
++a_3yx^2+a_7y^2x, a_{10}\neq 0, a_3\neq 0
+\end{array}
+\]
+\[
+\begin{array}{c}
+[2,1,1,1], a_9y^2x^3+a_8y^2x^2+a_5yx^4-x^5+a_4yx^3+a_3yx^2+a_7y^2x+a_2yx+\\
++a_6y^2, a_6\neq 0, a_2\neq 0 
+\end{array}
+\]
+\[[1,1,1,1,1], x^4ya_5-x^5+x^3ya_4+x^2ya_3+xya_2+ya_1, a_1\neq 0\]
+
+\section{TestFunctionsXYForMultiplicitySequences}
+
+Funktionen \emph{TestFunctionsXYForMultiplicitySequences} går systematiskt genom alla multiplicitetsföljder vars multipliciteter summerar till ett tal som inte för överskrida en maximal gräns. Sedan anropas funktionen \emph{TestFunctionsXYForMultiplicitySequenceSum} för att testa \emph{FindFunctionXYFromMultiplicitySequence} för varje multiplicitetssumma upp till och med den givna gränsen.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{TestFunctionsXYForMultiplicitySequences}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$MaxSumM$ & Den maximala summan av multipliciteterna som multiplicitetsföljderna ska ha.\\
+$PrintFunctions$ & Om de generella lösningarna ska listas för varje multiplicitetsföljd som gås igenom.\\
+$PrintTimes$ & Om tidsåtgången (och antalet multiplicitetsföljder) ska skrivas ut för varje multiplicitetssumma. Denna information kan användas för komplexitetsberäkningar.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+TestFunctionsXYForMultiplicitySequences := proc(MaxSumM,
+   PrintFunctions, PrintTimes)
+
+   local Sequences, StartTime, i, N;
+
+   StartTime := time();
+
+   for i to MaxSumM do
+      N:=TestFunctionsXYForMultiplicitySequenceSum(i, 
+         PrintFunctions);
+         
+      if PrintTimes then
+         print([i, op(N)])
+      end if
+   end do;
+
+   printf("Elapsed Time: %0.3f s.\n", time() - StartTime);
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Multiplicitetssumma $\leq 5$}
+
+Följande exempel listar alla multiplicitetsföljder med multiplicitetssumma upp till och med 5, med tillhörande familj av funktioner, inklusive villkor, som genererar motsvarande multiplicitetsföljd:
+
+\begin{verbatim}
+> TestFunctionsXYForMultiplicitySequences(5, true, false)
+\end{verbatim}
+\[[1], ya_1-x\]
+\[[2], xya_2+y^2a_3-x^2\]
+\[[1,1], xya_2-x^2+ya_1,a_1\neq 0\]
+\[[3],x^2ya_3+xy^2a_5+y^3a_6-x^3\]
+\[[2,1],x^2ya_3+xy^2a_5-x^3+xya_2+y^2a_4,a_4\neq 0\]
+\[[1,1,1],x^2ya_3-x^3+xya_2+ya_1,a_1\neq 0\]
+\[[4], x^3ya_4+x^2y^2a_7+xy^3a_9+y^4a_{10}-x^4\]
+\[[2,2], x^3ya_4+x^2y^2a_7-x^4+x^2ya_3+xy^2a_6+y^2a_5, a_5\neq 0\]
+\[[3,1],x^3ya_4+x^2y^2a_7+xy^3a_9-x^4+x^2ya_3+xy^2a_6+y^3a_8,a_8\neq 0\]
+\[[2,1,1], x^3ya_4+x^2y^2a_7-x^4+x^2ya_3+xy^2a_6+xya_2+y^2a_5, a_5\neq 0, a_2\neq 0\]
+\[[1,1,1,1], x^3ya_4-x^4+x^2ya_3+xya_2+ya_1,a_1\neq 0\]
+\[[5], x^4ya_5+x^3y^2a_9+x^2y^3a_{12}+xy^4a_{14}+y^5a_{15}-x^5\]
+\[
+\begin{array}{c}
+[3,2], a_{12}y^3x^2+a_{11}y^3x+a_{10}y^3+a_9y^2x^3+a_8y^2x^2+a_5yx^4-x^5+
+\\+a_4yx^3+a_7y^2x, a_{10}\neq 0
+\end{array}
+\]
+\[
+\begin{array}{c}
+[4,1], a_{14}y^4x+a_{13}y^4+a_{12}y^3x^2+a_{11}y^3x+a_9y^2x^3+a_8y^2x^2+a_5yx^4-\\
+-x^5+a_4yx^3, a_{13}\neq 0
+\end{array}
+\]
+\[[2,2,1], x^4ya_5+x^3y^2a_9-x^5+x^3ya_4+x^2y^2a_8+x^2ya_3+xy^2a_7+y^2a_6,a_6\neq 0\]
+\[
+\begin{array}{c}
+[3,1,1], a_{12}y^3x^2+a_{11}y^3x+a_{10}y^3+a_9y^2x^3+a_8y^2x^2+a_5yx^4-x^5+a_4yx^3+\\
++a_3yx^2+a_7y^2x, a_{10}\neq 0, a_3\neq 0
+\end{array}
+\]
+\[
+\begin{array}{c}
+[2,1,1,1], a_9y^2x^3+a_8y^2x^2+a_5yx^4-x^5+a_4yx^3+a_3yx^2+a_7y^2x+a_2yx+\\
++a_6y^2, a_6\neq 0, a_2\neq 0 
+\end{array}
+\]
+\[[1,1,1,1,1], x^4ya_5-x^5+x^3ya_4+x^2ya_3+xya_2+ya_1, a_1\neq 0\]
+\begin{verbatim}
+Elapsed Time: 0.016 s.
+\end{verbatim}
+
+\subsection{Exempel --- Multiplicitetssumma $\leq 30$}
+\label{TestFindFunctionXYFromMultiplicitySequence}
+
+Följande exempel utför test av funktionen \emph{FindFunctionXYFromMultiplicitySequence} för alla multiplicitetsföljder vars multiplicitetssumma inte överstiger 30, samt listar antal multiplicitetsföljder och tidsåtgång (i sekunder) för varje multiplicitetssumma.
+
+\begin{verbatim}
+> TestFunctionsXYForMultiplicitySequences(30, false, true)
+\end{verbatim}
+\[[1, 1, 0.]\]
+\[[2, 2, 0.]\]
+\[[3, 3, 0.]\]
+\[[4, 5, 0.]\]
+\[[5, 7, 0.]\]
+\[[6, 11, 0.016]\]
+\[[7, 15, 0.016]\]
+\[[8, 22, 0.031]\]
+\[[9, 30, 0.062]\]
+\[[10, 42, 0.078]\]
+\[[11, 56, 0.157]\]
+\[[12, 77, 0.234]\]
+\[[13, 101, 0.453]\]
+\[[14, 135, 0.531]\]
+\[[15, 176, 0.875]\]
+\[[16, 231, 1.297]\]
+\[[17, 297, 1.953]\]
+\[[18, 385, 3.063]\]
+\[[19, 490, 4.000]\]
+\[[20, 627, 6.031]\]
+\[[21, 792, 8.485]\]
+\[[22, 1002, 11.781]\]
+\[[23, 1255, 16.734]\]
+\[[24, 1575, 22.828]\]
+\[[25, 1958, 31.735]\]
+\[[26, 2436, 44.109]\]
+\[[27, 3010, 60.219]\]
+\[[28, 3718, 81.015]\]
+\[[29, 4565, 108.360]\]
+\[[30, 5604, 144.656]\]
+\begin{verbatim}
+Elapsed Time: 548.719 s.
+\end{verbatim}
+
+\section{FindNrMultiplicitySequences}
+\label{FindNrMultiplicitySequences}
+
+För att enklare kunna studera hur antalet multiplicitetsföljder ökar med multiplicitetssumman, tar vi fram en enklare funktion som bara gör detta, utan att anropa \emph{FindFunctionXYFromMultiplicitySequence}. Då mängden multiplicitetsföljder väntas växa kraftigt, kommer denna senare ta en enorm mängd processorkraft i anspråk. Vill vi bara studera hur följden av antalet multiplicitetsföljder ökar, är det således bättre att använda \emph{FindNrMultiplicitySequences}-funktionen istället.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{FindNrMultiplicitySequences}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$SumM$ & Summan av multipliciteterna som multiplicitetsföljderna ska ha.\\
+$MaxMultiplicity$ & Valfri parameter. Begränsar storleken på första multipliciteten. Används i rekursionen för att säkerställa att alla följder är (icke strikt) avtagande.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+FindNrMultiplicitySequences := proc(SumM)
+   local NrSequences, MaxMultiplicity, i;
+
+   if nargs >= 2 then
+      MaxMultiplicity:=args[2];
+      if (MaxMultiplicity>SumM) then
+         MaxMultiplicity:=SumM
+      end if
+   else
+      MaxMultiplicity:=SumM
+   end if;
+
+   NrSequences:=0;
+
+   if (MaxMultiplicity>0) then
+      for i to MaxMultiplicity do
+         if (i<SumM) then
+            NrSequences:=NrSequences+FindNrMultiplicitySequences(
+               SumM-i, i);
+         else
+            NrSequences:=NrSequences+1;
+         end if
+      end do
+   end if;
+
+   RETURN(NrSequences)
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Given multiplicitetssumma}
+
+I följande exempel beräknas antalet multiplicitetsföljder med den givna multiplicitetssumman 35:
+
+\begin{verbatim}
+> FindNrMultiplicitySequences(35)
+\end{verbatim}
+\[14883\]
+
+\subsection{Exempel --- Följd av antal}
+
+Vill vi se hur mängden multiplicitetsföljder ökar med multiplicitetssumman, kan vi anropa funktionen i en slinga, så här:
+
+\begin{verbatim}
+> for i to 100 do print([i, FindNrMultiplicitySequences(i)]) end do
+\end{verbatim}
+\[
+\begin{array}{c}
+\left[1, 1\right]\\
+\left[2, 2\right]\\
+\left[3, 3\right]\\
+\left[4, 5\right]\\
+\left[5, 7\right]\\
+\ldots\\
+\left[99, 169229875\right]\\
+\left[100, 190569292\right]\\
+\end{array}
+\]

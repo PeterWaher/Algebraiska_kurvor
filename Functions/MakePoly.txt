@@ -1,0 +1,12 @@
+﻿MakePoly := proc(a, Variable)
+	local i, r;
+
+	r := 0;
+	for i to nops(a) do 
+		if op(i, a) <> 0 then
+			r := r + op(i, a) * Variable^(i-1)
+		fi
+	od;
+
+	RETURN(sort(r))
+end

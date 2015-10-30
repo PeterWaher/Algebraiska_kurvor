@@ -1,0 +1,536 @@
+M:=[[1, 1, 0.],
+[2, 2, 0.],
+[3, 3, 0.],
+[4, 5, 0.],
+[5, 7, 0.],
+[6, 11, 0.016],
+[7, 15, 0.016],
+[8, 22, 0.031],
+[9, 30, 0.062],
+[10, 42, 0.078],
+[11, 56, 0.157],
+[12, 77, 0.234],
+[13, 101, 0.453],
+[14, 135, 0.531],
+[15, 176, 0.875],
+[16, 231, 1.297],
+[17, 297, 1.953],
+[18, 385, 3.063],
+[19, 490, 4.000],
+[20, 627, 6.031],
+[21, 792, 8.485],
+[22, 1002, 11.781],
+[23, 1255, 16.734],
+[24, 1575, 22.828],
+[25, 1958, 31.735],
+[26, 2436, 44.109],
+[27, 3010, 60.219],
+[28, 3718, 81.015],
+[29, 4565, 108.360],
+[30, 5604, 144.656]];
+
+S:=M[0,];
+N:=M[1,];
+plot2d(S,N,"Red","i","N(i)");
+
+G:=Canvas(750,350)+(line2d(S,ln(N),"Blue","i")+line2d(S,(Temp:=ln(N)^2);if Temp>30 then null else Temp,"Green","i")+line2d(S,ln(N)^1.5,"Red","i"));
+L:=Canvas(250,100)+Legend(["Blue","Green","Red"],["ln(N(i))","ln(N(i))^2","ln(N(i))^1.5"]);
+G+(L+750+200*i);
+
+SE([exponent]):=
+(
+	A:=[ones(30),S];
+	C:=(A*(A T))\(A*(ln(N).^exponent));
+	R1:=exp((C[0]+C[1].*S[5..29])^(1/exponent));
+	sqrt(sum((N[5..29]-R1).^2));
+);
+
+E:=1..2|0.001;
+plot2d(E,SE(E),"Red","E","SE(E)");
+
+SEPrim([E]):=(SE(E+1e-10)-SE(E-1e-10))/2e-10;
+plot2d(E,SEPrim(E),"Red","E","SE'(E)");
+
+FindZero(f,[x0],[x1],[eps]):=
+(
+	y0:=f(x0);
+	y1:=f(x1);
+
+	if (y0>0) then
+	(
+		if (y1>0) then
+			error("f(x0) and f(x1) must lie on opposite sides of zero.");
+		else if (y1=0) then
+			return(x1);
+		else
+		(
+			t:=x0; x0:=x1; x1:=t;
+			t:=y0; y0:=y1; y1:=t;
+		)
+	)
+	else if (y0=0) then
+		return(x0);
+	else
+	(
+		if (y1<0) then
+			error("f(x0) and f(x1) must lie on opposite sides of zero.");
+		else if (y1=0) then
+			return(x1);
+	);
+
+	while (abs(x1-x0)>eps) do
+	(
+		xm:=(x0+x1)/2;
+		ym:=f(xm);
+
+		if (ym<0) then
+		(
+			x0:=xm;
+			y0:=ym;
+		)
+		else
+		(
+			x1:=xm;
+			y1:=ym;
+		);
+	);
+
+	xm
+);
+
+E:=FindZero(SEPrim,1,2,1e-14);
+
+A:=[ones(30),S];
+C1:=(A*(A T))\(A*ln(N).^E);
+plot2d(S,C1[0]+C1[1].*S)+scatter2d(S,ln(N).^E,2,"Blue","i","ln(N(i))^"+E);
+
+plot2d(S[1..29],exp((C1[0]+C1[1].*S[1..29]).^(1/E)),"Red","i","N(i)")+scatter2d(S,N,2,"Blue","i","N(i)");
+
+C1;
+
+
+scatter2d(S,ln(N).^E-(C1[0]+C1[1].*S),4,"Blue","i","ln(N(i))^E-(a+bi)");
+
+scatter2d(S[1..29],N[1..29]-exp((C1[0]+C1[1].*S[1..29])^(1/E)),4,"Blue","i","N(i)-e^((a+bi)^(1/E))");
+
+
+plot2d(S[1..29],(N[1..29]-exp((C1[0]+C1[1].*S[1..29]).^(1/E)))./N[1..29],"Red","i","Fel(N(i)-Est(N(i)))");
+
+
+
+Q:=N[1..29]./N[0..28];
+plot2d(S[1..29],Q);
+
+M2:=[[1,1,0.238345222717835],
+[2,2,0.0212876115984031],
+[3,3,0.0212876115984031],
+[4,5,0.0482772620178071],
+[5,7,0.145592057896221],
+[6,11,19.7549035633181],
+[7,15,20.2072653097842],
+[8,22,0.00114040776420017],
+[9,30,0.00190067960700028],
+[10,42,0.00190067960700028],
+[11,56,0.00380135921400056],
+[12,77,0.0034212232926005],
+[13,101,0.00418149513540061],
+[14,135,0.00646231066380095],
+[15,176,0.00760271842800112],
+[16,231,0.00912326211360134],
+[17,297,0.0129246213276019],
+[18,385,0.0159657086988023],
+[19,490,0.020527339755603],
+[20,627,0.0288903300264042],
+[21,792,0.0357327766116052],
+[22,1002,0.0440957668824065],
+[23,1255,0.0589210678170086],
+[24,1575,0.0737463687516108],
+[25,1958,0.0927531648216136],
+[26,2436,0.122023630769418],
+[27,3010,0.145211921974821],
+[28,3718,0.182465242272027],
+[29,4565,0.291944387635243],
+[30,5604,0.34098192149585],
+[31,6842,0.361509261251453],
+[32,8349,0.506721183226274],
+[33,10143,0.609357882004289],
+[34,12310,0.809689512582119],
+[35,14883,21.5168335590074],
+[36,17977,1.17119877383357],
+[37,21637,1.3912974723242],
+[38,26015,1.87901185948048],
+[39,31185,2.49863341136257],
+[40,37338,2.94073148795083],
+[41,44583,3.63333913674173],
+[42,53174,4.01803668919859],
+[43,63261,4.92732181318752],
+[44,75175,6.42657788718934],
+[45,89134,8.00110087362837],
+[46,105558,8.26871656229401],
+[47,124754,11.5956661463873],
+[48,147273,13.0124327254453],
+[49,173525,16.3367213580888],
+[50,204226,19.4956508649233],
+[51,239943,22.0889381207144],
+[52,281589,26.1176186157122],
+[53,329931,34.5600572940861],
+[54,386155,39.7854056696512],
+[55,451276,49.0827700352538],
+[56,526823,56.3114347165973],
+[57,614154,65.9102468678701],
+[58,715220,79.2400930876844],
+[59,831820,98.9307536802859],
+[60,966467,106.763834476655],
+[61,1121505,123.996156065563],
+[62,1300156,147.528470279833],
+[63,1505499,174.593767747596],
+[64,1741630,197.782439088921],
+[65,2012558,256.868866031738],
+[66,2323520,342.349270405126],
+[67,2679689,431.834406710463],
+[68,3087735,483.759833165947],
+[69,3554345,474.592855421384],
+[70,4087968,531.279484292404],
+[71,4697205,699.561475201073],
+[72,5392783,876.173384555382],
+[73,6185689,849.206922427183],
+[74,7089500,1183.06775770745],
+[75,8118264,1356.36830305044],
+[76,9289091,1596.87992038433],
+[77,10619863,1541.61347931566],
+[78,12132164,2095.99496395931],
+[79,13848650,2023.06664771056],
+[80,15796476,2343.95154331383],
+[81,18004327,3110.8803263695],
+[82,20506255,3188.26573629667],
+[83,23338469,4043.4651213888],
+[84,26543660,4695.05648439656],
+[85,30167357,5414.22727110306],
+[86,34262962,5452.40242100966],
+[87,38887673,6258.11723239762],
+[88,44108109,8050.20151005193],
+[89,49995925,8179.6172639489],
+[90,56634173,10457.4251569391],
+[91,64112359,10405.5597919592],
+[92,72533807,13560.4743031918],
+[93,82010177,15445.1494276293],
+[94,92669720,17553.1236148797],
+[95,104651419,17559.2301183211],
+[96,118114304,19783.5684727431],
+[97,133230930,25567.2327397384],
+[98,150198136,25574.8909580109],
+[99,169229875,32634.2297952056],
+[100,190569292,32653.8877641089]];
+
+S2:=M2[0,];
+N2:=M2[1,];
+Q2:=N2[1..99]/N2[0..98];
+plot2d(S2[1..99],Q2,"Red","i","Q(i)=N(i)/N(i-1)");
+plot2d(S2[1..99],1./Q2.^20,"Red","i","Q(i)^20");
+plot2d(S2[1..99],1./(Q2[0..98]-1),"Red","i","1/(Q(i)-1)");
+plot2d(S2[1..99],1./(Q2[0..98]-1).^2,"Red","i","1/(Q(i)-1)^2");
+plot2d(S2[1..99],1./(Q2[0..98]-1).^3,"Red","i","1/(Q(i)-1)^3");
+
+Q2[Q2.Length-1];
+
+
+
+SE2([exponent]):=
+(
+	A:=[ones(111),S2];
+	C:=(A*(A T))\(A*(ln(N2).^exponent));
+	R1:=exp((C[0]+C[1].*S2[15..110])^(1/exponent));
+	sqrt(sum((N2[15..110]-R1).^2))/1000;
+);
+
+e:=1..2|0.001;
+plot2d(e,SE2(e),"Red","Exponent","SE2(Exponent)");
+
+SE2Prim([e]):=(SE2(e+1e-10)-SE2(e-1e-10))/2e-10;
+plot2d(e,SE2Prim(e),"Red","Exponent","SE2'(Exponent)");
+
+E2:=FindZero(SE2Prim,1,2,1e-14);
+
+A:=[ones(100),S2];
+C1:=(A*(A T))\(A*ln(N2).^E2);
+plot2d(S2,C1[0]+C1[1].*S2)+scatter2d(S2,ln(N2).^E2,2,"Blue","i","ln(N(i))^"+E2);
+
+scatter2d(S2,ln(N2).^E2-(C1[0]+C1[1].*S2),4,"Blue");
+
+C1;
+
+
+
+M3:=...
+
+S3:=M3[0,];
+N3:=M3[1,];
+Q3:=M3[2,];
+plot2d(S3,Q3,"Red","i","Q(i)");
+plot2d(S3[1000..9999],Q3[1000..9999],"Red","i","Q(i)");
+
+Q3[Q3.Length-1];
+
+plot2d(S3[1..9999],1./(Q3[1..9999]-1),"Red","i","1/(Q(i)-1)");
+plot2d(S3[1..9999],1./(Q3[1..9999]-1).^2,"Red","i","1/(Q(i)-1)^2");
+plot2d(S3[1..9999],1./(Q3[1..9999]-1).^3,"Red","i","1/(Q(i)-1)^3");
+
+G1:=Canvas(350,350)+plot2d(S3[1..9999]/1000,1./(Q3[1..9999]-1),"Red","i*1000, 1/(Q(i)-1)");
+G2:=Canvas(350,350)+plot2d(S3[1..9999]/1000,1./(Q3[1..9999]-1).^2,"Red","i*1000, 1/(Q(i)-1)^2");
+G3:=Canvas(350,350)+plot2d(S3[1..9999]/1000,1./(Q3[1..9999]-1).^3,"Red","i*1000, 1/(Q(i)-1)^3");
+G1+(G2+350)+(G3+700);
+
+
+SEQ([exponent],[min],[max]):=
+(
+	InvQ:=1./(Q3[min..max]-1).^exponent;
+	A:=[ones(max-min+1),min..max];
+	C:=(A*(A T))\(A*InvQ);
+	R1:=C[0]+C[1].*(min..max);
+	sqrt(sum((InvQ-R1).^2));
+);
+
+e:=1..3|0.001;
+plot2d(e,Temp:=SEQ(e,1,9999);if Temp>10000 then null else Temp,"Red","E","SEQ(E)");
+
+SEQPrim([E],[min],[max]):=(SEQ(E+1e-10,min,max)-SEQ(E-1e-10,min,max))/2e-10;
+line2d(e,Temp:=SEQPrim(e,1,9999);if Temp>100000 then null else Temp,"Red","E","SEQ'(EQ)");
+
+EQ:=FindZero(x->SEQPrim(x,1,9999),1.8,2.2,1e-14);
+
+min:=1;
+max:=999..9999|100;
+EQMax:=series(foreach m in max do FindZero(x->SEQPrim(x,1,m),1.8,2.2,1e-14));
+GEQMax:=plot2d(max,EQMax,"Red","","EQ");
+
+min:=100..9000|100;
+max:=9999;
+EQMin:=series(foreach m in min do FindZero(x->SEQPrim(x,m,max),1.8,2.2,1e-14));
+GEQMin:=plot2d(min,EQMin,"Blue","","EQ");
+
+GEQMin+GEQMax;
+
+G:=Canvas(750,350)+(GEQMin+GEQMax);
+L:=Canvas(250,75)+Legend(["Red","Blue"],["1..max","min..10000"]);
+G+(L+750+200*i);
+
+EQ:=FindZero(x->SEQPrim(x,9000,9999),1.8,2.2,1e-14);
+
+EQCoeff([min],[max]):=
+(
+	EQ:=FindZero(x->SEQPrim(x,min,max),1.8,2.2,1e-14);
+	InvQ:=1./(Q3[min..max]-1).^EQ;
+	A:=[ones(max-min+1),min..max];
+	C:=(A*(A T))\(A*InvQ);
+	[EQ,C[0],C[1]];
+);
+
+min:=100..9000|100;
+max:=9999;
+C:=Matrix(EQCoeff(min,max));
+EQ:=C[0,];
+QA:=C[1,];
+QB:=C[2,];
+plot2d(min,EQ);
+
+plot2d(min,QA);
+
+plot2d(min,exp(QA));
+
+plot2d(min,QB);
+
+
+NelderMead(f,v,delta,eps):=
+(
+	alpha:=1;
+	gamma:=2;
+	rho:=-1/2;
+	sigma:=1/2;
+	N:=v.Length;
+	S:=join([{"v":v,"f":f(v)}],series(foreach dv in Rows(Identity(N)) do (v2:=v+delta*dv;{"v":v2,"f":f(v2)})));
+	diff:=1;
+	nr:=0;
+	while(diff>eps and nr<100) do
+	(
+		S:=sort(S,(r1,r2)->r1.f-r2.f);
+		x0:=sum(series(foreach x in S[0..(N-1)].v do x))/N;
+		xn1:=S[N].v;
+		xr:=x0+alpha*(x0-xn1);
+		try
+		(
+			fxr:=f(xr);
+			f0:=S[0].f;
+			fn:=S[N-1].f;
+			if fxr>=f0 and fxr<fn then
+				S:=join(S[0..(N-1)],[{"v":xr,"f":fxr}]);
+			else if fxr<f0 then
+			(
+				xe:=x0+gamma*(x0-xn1);
+				fxe:=f(xe);
+				if fxe<fxr then
+					S:=join(S[0..(N-1)],[{"v":xe,"f":fxe}])
+				else
+					S:=join(S[0..(N-1)],[{"v":xr,"f":fxr}]);
+			)
+			else
+			(
+				xc:=x0+rho*(x0-xn1);
+				fxc:=f(xc);
+				if fxc<S[N].f then
+					S:=join(S[0..(N-1)],[{"v":xc,"f":fxc}]);
+				else
+					S:=join([S[0]],series(foreach x in S[1..N] do (v1:=S[0].v;v2:=v1+sigma*(x.v-v1);{"v":v2,"f":f(v2)})));
+			);
+		)
+		catch
+		(
+			S:=join([S[0]],series(foreach x in S[1..N] do (v1:=S[0].v;v2:=v1+sigma*(x.v-v1);{"v":v2,"f":f(v2)})));
+		);
+
+		M:=Matrix(S.v);
+		x0:=series(foreach i in 0..(N-1) do sum(M[i,]))/(N+1);
+		diff:=sum(sqrt(sum(series(foreach x in rows(series(foreach x in S.v do x-x0).^2) do x))));
+		nr:=nr+1;
+	);
+	v:=S[0].v;
+	series(foreach x in 1..2 do if x=1 then v else f(v))
+);
+
+SEInv(x,y,v):=
+(
+	Est:=v[0]+1./(v[1].*x+v[2]).^v[3];
+	sqrt(sum(((y-Est)./y).^2));
+);
+
+f(v):=SEInv(min,EQ,v);
+g(v):=SEInv(min,QA,v);
+h(v):=SEInv(min,QB,v);
+
+[C,fv]:=NelderMead(f,[2,2,2,1],1,1e-10);
+plot2d(min,C[0]+1./(C[1].*min+C[2]).^C[3],"Red")+scatter2d(min,EQ,2,"Blue");
+
+
+
+Gradient(f,v,[eps]):=
+(
+	series(foreach dv in Rows(Identity(v.Length).*eps) do (f(v+dv)-f(v-dv))/(2*eps));
+);
+
+GradientDescent(f,v,gamma,eps):=
+(
+	N:=v.Length;
+	f0:=f(v);
+	diff:=1;
+	eps2:=eps/100;
+	dv:=-gamma*Gradient(f,v,eps2);
+	nr:=0;
+	while (diff>eps and nr<100000) do
+	(
+		f1:=f(v+dv);
+		if (f1<f0) then
+		(
+			diff:=sqrt(sum(dv.^2));
+			v:=v+dv;
+			f0:=f1;
+			dv:=-gamma*Gradient(f,v,eps2);
+			nr:=nr+1;
+		)
+		else
+		(
+			gamma:=gamma/2;
+			dv:=dv/2;
+			nr:=nr+1;
+		);
+	);
+
+	if (diff>=eps) then
+		error("Minimum not found.");
+
+	print(nr+" iterations performed.");
+	series(foreach x in 1..2 do if x=1 then v else f(v))
+);
+
+[C2,fv2]:=GradientDescent(f,[2,2,2,1],1,1e-6);
+[C2,fv2]:=GradientDescent(f,[2.00077661304571; 0.589412766619149; 0.500772476684148],10,2e-6);
+
+plot2d(min,C2[0]+1./(min*C2[1]+C2[2]).^C2[3],"Red")+scatter2d(min,EQ,2,"Blue");
+
+Hessian(f,v,[eps]):=
+(
+	series(foreach dv in Rows(Identity(v.Length).*eps) do (Gradient(f,v+dv,eps)-Gradient(f,v-dv,eps))/(2*eps));
+)
+
+NewtonMultiDimensional(f,v,gamma,eps):=
+(
+	N:=v.Length;
+	eps2:=eps/100;
+	diff:=1;
+	nr:=0;
+	grad0:=Gradient(f,v,eps2);
+	dv:=-gamma*(Hessian(f,v,eps2)\grad0);
+	while (diff>eps and nr<10000) do
+	(
+		v:=v+dv;
+		diff:=sqrt(sum(dv.^2));
+		nr:=nr+1;
+
+		grad0:=Gradient(f,v,eps2);
+		dv:=-gamma*(Hessian(f,v,eps2)\grad0);
+		print(ToString(v)+", "+f(v));
+	);
+
+	if (diff>=eps) then
+		error("Minimum not found.");
+
+	print(nr+" iterations performed.");
+	series(foreach x in 1..2 do if x=1 then v else f(v))
+);
+
+[C2,fv2]:=NewtonMultiDimensional(f2,[2,2,5],0.2,1e-5);
+
+[C2,fv2]:=[2,00177922932351; -12,0220115443435; 8,59240515811073];
+plot2d(min,C2[0]+1./(min*C2[1]+C2[2]),"Red")+scatter2d(min,EQ,2,"Blue");
+
+[C2,fv2]:=[2,00190409039125; 19,8840682705957; -23,3136372299319];
+plot2d(min,C2[0]+1./(min*C2[1]+C2[2]),"Red")+scatter2d(min,EQ,2,"Blue");
+
+f(v):=
+(
+	x:=S3[1..9999];
+	y:=Q3[1..9999];
+	P:=v[0]+v[1]./(sqrt(v[2]+v[3].*x+v[4].*x.^2+v[5].*x.^3+v[6].*x.^4+v[7].*x.^5+v[8].*x.^6+v[9].*x.^7));
+	Diff:=y-P;
+	Error:=Diff./y;
+	sqrt(sum(|Error.^2|));
+);
+
+g(v):=
+(
+	x:=S3[1..9999];
+	y:=Q3[1..9999];
+	P:=v[0]+v[1]./(sqrt(v[2]+v[3].*x+v[4].*x.^2+v[5].*x.^3+v[6].*x.^4+v[7].*x.^5+v[8].*x.^6+v[9].*x.^7));
+	Diff:=y-P;
+	sqrt(sum(Diff.^2));
+);
+
+[v,fv]:=NelderMead(f,[1,1,1,1,0,0,0,0,0,0],1,1e-10);
+
+[v,gv]:=NelderMead(g,[1,1,1,1,0,0,0,0,0,0],1,1e-10);
+
+x:=S3[1..9999];
+y:=Q3[1..9999];
+G:=Canvas(750,350)+(scatter2d(x,y,2,"Blue","i")+plot2d(x,v[0]+v[1]./(sqrt(v[2]+v[3].*x+v[4].*x.^2+v[5].*x.^3+v[6].*x.^4+v[7].*x.^5+v[8].*x.^6+v[9].*x.^7)),"Red","i"));
+L:=Canvas(250,75)+Legend(["Blue","Red"],["Q(i)","Uppskattning"]);
+G+(L+750+200*i);
+
+plot2d(x,Error:=v[0]+v[1]./(sqrt(v[2]+v[3].*x+v[4].*x.^2+v[5].*x.^3+v[6].*x.^4+v[7].*x.^5+v[8].*x.^6+v[9].*x.^7))-y;if abs(Error)>0.001 then null else Error,"Red","i","ErrQ(i)");
+
+N:=1;
+NEst:=series(i:=1,i<=10000,N,i:=i+1;N:=N*(1+1.27124055101012/sqrt(1+i)));
+plot2d(1..10000,NEst./N3,"i","N^-(i)/N(i)");
+
+N:=N3[855];
+NEst2:=series(i:=856,i<=10000,N,i:=i+1;N:=N*(1+1.27124055101012/sqrt(1+i)-Error[855]));
+G:=Canvas(750,350)+(polygon2d(join(856..10000,10000..856|-1),join(NEst2./N3[855..9999],reverse(NEst[855..9999]./N3[855..9999])),Color(64,128,255,128),"i","Förhållande")+line2d([0,9999],[1,1],"Green","i","Förhållande")+plot2d(856..10000,NEst2./N3[855..9999],"Red","i","Förhållande")+plot2d(1..10000,NEst./N3,"Blue","i","Förhållande"));
+L:=Canvas(250,100)+Legend(["Red","Blue","Green"],["N^+(i)/N(i)","N^-(i)/N(i)","Uppskattning"]);
+G+(L+750+200*i);

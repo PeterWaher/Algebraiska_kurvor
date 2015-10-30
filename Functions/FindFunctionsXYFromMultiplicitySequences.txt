@@ -1,0 +1,39 @@
+FindFunctionsXYFromMultiplicitySequences := proc(MaxSumM)
+	local Sequences, Pos, Len, Sequence, Seq, Seq2, MIndex, F, Sum, Tested;
+
+	Tested:={};
+	Sequences:=[[[1],1,1]];
+	Pos:=1;
+	Len:=1;
+
+	while Pos<=Len do
+		Sequence:=Sequences[Pos][1];
+		MIndex:=Sequences[Pos][2];
+		Sum:=Sequences[Pos][3];
+		Pos:=Pos+1;
+
+		if (not Sequence in Tested) then
+			Tested:=Tested union {Sequence};
+
+			F:=FindFunctionXYFromMultiplicitySequence(Sequence,false);
+			print (Sequence, F);
+
+			if Sum<MaxSumM then
+				Seq:=Sequence;
+				Seq[MIndex]:=Seq[MIndex]+1;
+
+				Seq2:=[op(Sequence), 1];
+				Sequences:=[op(Sequences), [Seq,MIndex,Sum+1], [Seq2,MIndex,Sum+1]];
+
+				Len:=Len+2; 
+
+				if MIndex<nops(Sequence) and Sequence[MIndex]>Sequence[MIndex+1] then
+					Seq:=Sequence;
+					Seq[MIndex+1]:=Seq[MIndex+1]+1;
+					Sequences:=[op(Sequences), [Seq,MIndex+1,Sum+1]];
+					Len:=Len+1; 
+				end if
+			end if
+		end if
+	end do
+end proc

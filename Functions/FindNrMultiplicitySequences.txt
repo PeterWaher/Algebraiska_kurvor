@@ -1,0 +1,26 @@
+FindNrMultiplicitySequences := proc(SumM)
+	local NrSequences, MaxMultiplicity, i;
+
+	if nargs >= 2 then
+		MaxMultiplicity:=args[2];
+		if (MaxMultiplicity>SumM) then
+			MaxMultiplicity:=SumM
+		end if
+	else
+		MaxMultiplicity:=SumM
+	end if;
+
+	NrSequences:=0;
+
+	if (MaxMultiplicity>0) then
+		for i to MaxMultiplicity do
+			if (i<SumM) then
+				NrSequences:=NrSequences+FindNrMultiplicitySequences(SumM-i, i);
+			else
+				NrSequences:=NrSequences+1;
+			end if
+		end do
+	end if;
+
+	RETURN(NrSequences)
+end proc

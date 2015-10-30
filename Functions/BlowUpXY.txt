@@ -1,0 +1,8 @@
+BlowUpXY := proc(F, XVariable, YVariable)
+	local G, m;
+
+	G := subs(YVariable = XVariable * YVariable, F);
+	m := ldegree(G, XVariable);
+
+	RETURN([m, expand(G/XVariable^m)])
+end proc

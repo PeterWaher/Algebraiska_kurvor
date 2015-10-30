@@ -1,0 +1,331 @@
+\chapter{Semigrupper}
+
+Vid studier av singulariteter hos algebraiska kurvor använder man ofta motsvarande semigrupp som invariant för klassificering. Innan vi fördjupar oss i just detta måste vi först lite i hast nämna några talteoretiska definitioner och satser, för att därefter fördjupa oss lite i semigrupper.
+
+\section{Heltal modulo $p$}
+
+\begin{Definition}
+Heltalen $m \in \mathbb{Z}^+$ och $n \in \mathbb{Z}^+$ sägs vara \textbf{relativt prima} om $m \geq 2$, $n \geq 2$ samt $p \mid m \wedge p \mid n \Longrightarrow p = 1$.
+\end{Definition}
+
+Att $m$ och $n$ är relativt prima är identiskt med att säga att $\gcd(m, n) = 1$
+(största gemensamma delaren).
+
+\begin{Lemma}
+\label{L1}
+Om $m$ och $n$ är relativt prima och $0 < a < m$ gäller att $[a \cdot n]_m \neq 0$.
+\end{Lemma}
+
+\begin{proof}
+Antag att $[a \cdot n]_m = 0$ och att $a > 0$:
+\[\begin{array}{rcl}
+[a \cdot n]_m = 0 & \Longrightarrow & \exists b \in \mathbb{Z}^+ : a \cdot n = b \cdot m \\
+ & \Longrightarrow & m \mid a \qquad\text{(eftersom }\gcd(m, n) = 1\text{)} \\
+ & \Longrightarrow & a \geq m
+\end{array}\]
+\end{proof}
+
+\begin{Lemma}
+\label{L2}
+Om $m$ och $n$ är relativt prima och $0 < a, b < m$ gäller:
+\[[a \cdot n]_m = [b \cdot n]_m \Longleftrightarrow a = b\]
+\end{Lemma}
+
+\begin{proof}
+Vi kan utan att begränsa oss antaga att $a \geq b$:
+\[\begin{array}{rcl}
+[a \cdot n]_m = [b \cdot n]_m & \Longleftrightarrow & [(a - b) \cdot n]_m = 0 \\
+ & \Longleftrightarrow & a - b = 0 \quad\text{(eftersom } 0 \leq a - b < m \text{ samt lemma \ref{L1})}
+\end{array}\]
+\end{proof}
+
+\section{Semigrupper}
+
+\begin{Definition}
+För en \textbf{semigrupp} $G$, med den implicit definierade operatorn $+$ gäller:
+\[0 \in G\]
+\[a \in G \wedge b \in G \Longrightarrow (a + b) \in G\]
+\end{Definition}
+
+Notera skillnaden mellan en semigrupp och en grupp: Alla element i en grupp har även en additiv invers, dvs. i gruppen tillåts subtraktion. I en semigrupp är det tillräckligt med bara addition av element, samt att det finns ett noll-element.
+
+\begin{Definition}
+En serie tal $n_1, \ldots, n_k$ \textbf{genererar} semigruppen $G$ om
+\[G = \left\{\sum_{i=1}^{k} a_i \cdot n_i : a_i \in \mathbb{N}\right\}\]
+Detta skrivs även $G = \left<n_1, \ldots, n_k \right>$.
+\end{Definition}
+
+Notera att det är viktigt att särskilja mellan generation av semigrupper och grupper. Vid generering av grupper gäller det att $a_i \in \mathbb{Z}$. Det finns ingen annan skillnad i notationen. Notera också att med multiplikation med ett positivt heltal inom en semigrupp avses repetitiv användning av additionsoperatorn.
+
+\begin{Theorem}
+\label{S1}
+Om $m$ och $n$ är relativt prima innehåller semigruppen $G = \left<m, n\right>$ alla tal större än eller lika med $c = (m - 1)(n - 1)$, men inte talet $c - 1$.
+\end{Theorem}
+
+\begin{proof}
+Först betraktar vi hur $[n]_m$ genererar hela $\mathbb{Z}_m$. Från lemma \ref{L1} vet vi att:
+
+\begin{equation*}
+\begin{array}{rcc}
+[n]_m & \neq & 0 \\
+\left[2n\right]_m & \neq & 0 \\
+\vdots \quad & \vdots & \vdots \\
+\left[(m - 1) \cdot \, n\right]_m & \neq & 0 \\
+\end{array}
+\end{equation*}
+
+Lemma \ref{L2} säger dessutom att dessa $m - 1$ värdena är unika. Vi har alltså
+$m-1$ stycken unika nollskilda element i $\mathbb{Z}_m$, i vilket det bara finns $m-1$ nollskilda element. Tillsammans med $[0 \cdot n]_m=[0]_m=0$ genererar således serien hela $\mathbb{Z}_m$. Detta skrivs $\mathbb{Z}_m = \left< [n]_m \right>$.
+
+I följande resonemang kan vi utan att begränsa oss anta att $m < n$. För att beräkna det högsta värdet som inte är med i $\left<m, n\right>$ använder vi oss av uteslutningsmetoden:
+
+Först delar vi upp $\mathbb{N}$ i segment om $m$ element vardera:
+\[\{0, \ldots, m - 1\}, \quad \{m, \ldots, 2m - 1\}, \quad \ldots\]
+
+Därefter stryker vi helt enkelt tal efter tal ur $\left<m,n\right>$ tills det inte finns fler tal att stryka bort. Vi börjar med att stryka bort talet $0$, och alla dess motsvarigheter i $\mathbb{Z}_m$ ($m$, $2m$, \ldots). Därefter stryker vi $n$, och alla dess motsvarigheter i $\mathbb{Z}_m$ ($n + m$, $n + 2m$, \ldots), följt av $2n$ och dess motsvarigheter i $\mathbb{Z}_m$ ($2n + m$, $2n + 2m$, \ldots), ända tills vi strukit $(m-1)n$ och dess motsvarigheter i $\mathbb{Z}_m$: $(m - 1)n + m$, $(m - 1)n + 2m$, \ldots. Efter det är alla tal i $\left<m,n\right>$ strukna.
+
+Värt att notera här är att inga av de tal som strukits under ovanstående process, stryks mer än en gång. För att se detta, antar vi att vi har två tal $a_1$ och $a_2$, sådana att $0 < a_1, a_2, < m$, och att $a_1 n + i_1 m = a_2 n + i_2 m$ för några $i_1, i_2 \in \mathbb{N}$. Detta ger oss i så fall att $(a_1-a_2)n = (i_2-i_1)m$. Eftersom $m$ och $n$ är relativt prima, måste $m \vert (a_1-a_2)$. Men detta är bara möjligt om $a_1-a_2=0$, dvs. $a_1=a_2$.
+
+Vi vet också, att vi strukit alla tal större än eller lika med $(m-1)n$ ur $\mathbb{N}$. Skulle det finnas något tal $i$ större än  $(m-1)n$ i $\mathbb{N}$ som inte strukits, skulle alla tal som är på formen $i+j\cdot m$ inte heller vara strukna, enligt hur vi skapade tillvägagångssättet att stryka tal. Således skulle alla element i ekvivalensklassen $[i]_m$ inte heller vara strukna, och således skulle $[i]_m$ inte finnas med i $\left<[n]_m\right>$, då vi strukit alla tal i dess ekvivalensklasser. Men eftersom $\left<[n]_m\right>$ genererar hela $\mathbb{Z}_m$, leder detta till en motsägelse.
+
+Vi vet nu att vi strukit alla tal från och med $(m-1)n$ ur $\mathbb{Z}$. Men det segment av $\mathbb{Z}$ som innehåller $(m-1)n$ innehåller inte några andra ostrukna tal, eftersom $m < n$. Det högsta ostrukna talet, och därför också det högsta tal som inte är element i $\left<m, n\right>$ är således $(m - 1)n - m$, dvs. motsvarigheten till $(m - 1)n$ i det segment som föregår segmentet där $(m - 1)n$ finns. Vi kan nu beräkna c:
+\[c = (m - 1)n - m + 1 = mn - n - m + 1 = (m - 1)(n - 1)\]
+\end{proof}
+
+\section{Numeriska semigrupper}
+
+\begin{Definition}
+En \textbf{numerisk semigrupp} $G$ är en speciell form av semigrupp, där även följande villkor gäller:
+\[
+\begin{array}{rcl}
+G & \subseteq & \mathbb{N} \\
+\left\| \mathbb{N} \setminus G \right\| & < & \infty \\
+\end{array}\]
+\end{Definition}
+
+\begin{Lemma}
+$G = \left<m, n\right>$ i sats \ref{S1} är en numerisk semigrupp.
+\end{Lemma}
+
+\begin{proof}
+\[\begin{array}{rcl}
+0 & = & 0 \cdot m + 0 \cdot n \in G \\
+a \in G \wedge b \in G & \Longleftrightarrow & \exists c, d, e, f \in \mathbb{N} : a = cm + dn \wedge b = em + fn \\
+ & \Longrightarrow & a + b = (c + e)m + (d + f)n \in G \\
+G & \subset & \mathbb{N} \quad\text{(per definition av } \left<m, n\right> \text{)} \\
+\left\|\mathbb{N}\setminus G\right\| & \leq & c - 1 < \infty \\
+\end{array}\]
+\end{proof}
+
+\begin{Definition}
+I varje numerisk semigrupp $G$ finns det ett tal $c_G$ sådant att följande villkor uppfylls:
+\[\begin{array}{rcl}
+c_G & \in & G \\
+n > c_G & \Longrightarrow & n \in G \\
+c_G - 1 & \notin & G \\
+\end{array}\]
+$c_G$ kallas för \textbf{konduktören} för $G$. $c$ i sats \ref{S1} är konduktör för den numeriska semigruppen $G = \left<m, n\right>$.
+\end{Definition}
+
+\begin{Theorem}
+\label{S2}
+Om semigruppen $G = \left<n_1, \ldots, n_k\right>$ är numerisk så är den största gemensamma delaren av talen $\gcd(n_1, \ldots, n_k) = 1$.
+\end{Theorem}
+
+\begin{proof}
+För varje $n \in G$ så $\exists a_i \in \mathbb{N} : n = \sum_{i=1}^{k} a_i n_i$. Eftersom $d \mid n_i, \forall i$ får vi att $d \mid n$ och att $\gcd(G) \geq d$. Men $d^* = gcd(G)$ kan inte vara större än $d$, eftersom detta skulle innebära att $d^* \mid n_i, \forall n$, vilket leder till en motsägelse. Således är $d^*=d$.
+\[\therefore \gcd(G)=\gcd(n_1,\ldots,n_k)=d\] 
+
+För att visa att $d=1$ om $G$ är numerisk, antar vi först motsatsen, dvs. att $d = \gcd(n_1, \ldots, n_k) \geq 2$:
+
+\[\begin{array}{rcl}
+d \geq 2 & \Longrightarrow & d \nmid a \cdot d + 1, a \in \mathbb{N} \\
+ & \Longrightarrow & \left\{a \cdot d + 1 : a \in \mathbb{N}\right\} \cap G = \varnothing \\
+ & \Longrightarrow & \left\{a \cdot d + 1 : a \in \mathbb{N}\right\} \subseteq \mathbb{N} \setminus G \\
+ & \Longrightarrow & \left\|\mathbb{N} \setminus G \right\| = \infty \\
+\end{array}\]
+Således kan inte $G$ vara numerisk, vilket är en motsägelse.
+\[\therefore \gcd(n_1, \ldots, n_k) = 1\]
+\end{proof}
+
+\begin{Theorem}
+\label{S3}
+Varje numerisk semigrupp $G$ har ett minimalt generatorsystem $n_1, \ldots, n_k$, dvs. $G = \left<n_1, \ldots, n_k\right>$. Detta system är unikt för $G$.
+\end{Theorem}
+
+\begin{proof}
+Först skall vi bevisa att det finns en ändlig mängd tal i $G$ som genererar $G$. Eftersom $G$ är numerisk betyder detta att det finns ett största tal $N \in \mathbb{N} : (n > N \Longrightarrow n \in G)$. Välj $a$ och $b$ så att $2^a > N \wedge 3^b > N$. Detta ger att $2^a \in G \wedge 3^b \in G$. Men $\gcd(2^a, 3^b) = 1$ vilket enligt sats \ref{S1} ger oss att $\left<2^a, 3^b\right>$ innehåller alla tal större än eller lika med $c = (2^a - 1)(3^b - 1)$.
+\[\therefore \left\{1, \ldots, c, 2^a, 3^b\right\} \cap G \text{ genererar } G\text{.}\]
+
+Då vi vet att $G$ har ändliga generatorer kan vi skapa mängden $\widehat{M}$ som mängden av alla ändliga generatorer, och $\widehat{M}' = \{ \left\|M\right\| : M \in \widehat{M}\}$. Låt $k = \inf \widehat{M}'$. Eftersom $\widehat{M}'$ bara innehåller positiva heltal existerar $k$ samt $\exists M_- \in \widehat{M} : \left\|M_-\right\|=k$.
+
+Antag nu att vi har ett annat generatorsystem $N_-$ sådant att $\left\|N_-\right\| = k$. Låt $0 < n_1 < \ldots< n_k$ och $0 < m_1 < \ldots< m_k$ vara tal sådana att $N_-= \left\{n_1, \ldots, n_k\right\}$ och $M_- = \left\{m_1, \ldots, m_k\right\}$.
+
+Uppenbarligen är $n_1$ och $m_1$ lika med det minsta nollskilda talet i $G$. Därför är $n_1 = m_1$.
+
+Antag nu att $n_1 = m_1, \ldots, n_i = m_i, 1 < i < k$. Eftersom $N_-$ är ett minimalt generatorsystem så är $n_{i+1} \notin \left<n_1, \ldots, n_i\right>$. På samma sätt gäller att $m_{i+1} \notin \left<m_1, \ldots, m_i\right> = \left<n_1, \ldots, n_i\right>$. Låt $m \in G$ vara det minsta talet i $G \setminus \left<n_1, \ldots, n_i\right>$. Eftersom $m$ är det minsta sådana talet gäller att $n_{i+1} \geq m$. Men $n_{i+1}$ kan inte vara större än $m$ heller: För att se det, antar vi motsatsen, att $n_{i+1}>m$. Eftersom alla tal $n_{i+2}, \ldots, n_k$ också är större än $n_{i+1} > m$, skulle då $m$ tvingas vara summan av ett större tal och ett element ur $\left<n_1, \ldots, n_i\right>$, vilket inte är möjligt.
+\[\therefore n_{i+1} = m\]
+
+På samma sätt härleds att $m_{i+1} = m = n_{i+1}$. Med induktion följer att $n_i = m_i, \forall i$.
+\end{proof}
+
+Sats \ref{S3} säger inte bara att det finns ett unikt minimalt generatorsystem $\left<n_1, \ldots, n_k\right>$ för den numeriska semigruppen $G$, utan den ger också en metod för att beräkna den (även om denna metod kan vara väldigt krävande):
+
+\begin{enumerate}
+\item Låt $n_1$ vara det minsta nollskilda elementet i $G$.
+
+\item Om $n_1, \ldots, n_i$ är beräknade, låt $n_{i+1}$ vara det minsta talet i $G \setminus \left<n_1, \ldots, n_i\right>$.
+
+\item Fortsätt med punkt 2 tills hela $G$ är genererad.
+\end{enumerate}
+
+Sats \ref{S2} säger dessutom att för $n_1, \ldots, n_k$ skapade på detta sätt gäller att $\gcd(n_1, \ldots, n_k) = 1$.
+
+\section{Generell beräkning av konduktören}
+
+\begin{Theorem}
+\label{S4}
+Om $n_1, \ldots, n_k$ är heltal sådana att $\gcd(n_1, \ldots, n_k) = 1$ så gäller att $G = \left<n_1, \ldots, n_k\right>$ är en numerisk semigrupp.
+\end{Theorem}
+
+\begin{proof}
+I det triviala fallet då $k=1$ ser vi först att $n_1=1$ och $G=\mathbb{N}$, vilket är en numerisk semigrupp. I följande resonemang antar vi således att $k \geq 2$:
+
+Vi vet redan att $G$ är en semigrupp. För att visa att denna är numerisk, behöver vi visa att endast ett ändligt antal element i $\mathbb{N}$ inte ingår i $G$. Vi kan i detta bevis anta, utan att begränsa oss att $n_1 < \ldots < n_k$. Vi börjar dock med följande observation:
+\[\begin{array}{rcl}
+\gcd(n_1, \ldots, n_k) = 1 & \Longrightarrow & \exists A_i \in \mathbb{Z} : \displaystyle\sum_{i=1}^{k} A_i n_i = 1 \\
+& \Longrightarrow & \displaystyle\sum_{i=2}^{k} A_i \left[n_i\right]_{n_1} = [1]_{n_1} \\[15pt]
+& \Longrightarrow & \displaystyle\left< \left[n_2\right]_{n_1}, \ldots, \left[n_k\right]_{n_1} \right> = \mathbb{Z}_{n_1} \\
+\end{array}\]
+
+Liknande i hur vi gjorde i sats \ref{S1} delar vi sedan upp $\mathbb{N}$ i segment om $n_1$ element vardera:
+\[\{0, \ldots, n_1 - 1\}, \quad \{n_1, \ldots, 2n_1 - 1\}, \ldots\]
+
+Vi fortsätter sedan att med uteslutningsmetoden stryka de tal i $\mathbb{N}$ som genereras av $\{n_i\}$. Först stryker vi alla multiplar av $n_1$ (motsvarande $[0]_{n_1}$). Därefter alla linjära kombinationer av $n_1$ och $n_2$, osv. tills vi strukit alla linjära kombinationer av alla $\{n_i\}$.
+
+Eftersom $\left\{[n_i]_{n_1}\right\}, 2 \leq i \leq k$ genererar hela $\mathbb{Z}_{n_1}$ vet vi att för varje $[a_j]_{n_1} \in \mathbb{Z}_{n_1}$ finns det en serie $\left\{b_{i,j}\right\}, 0 \leq b_{i,j} < n_1$ sådan att: 
+
+\[\sum_{i=2}^{k} b_{i,j} \cdot [n_i]_{n_1} = [a_j]_{n_1}\]
+
+Låt oss betrakta talen $b_j = \sum_{i=2}^{k} b_{i,j} \cdot n_i \in G$. De uppfyller uppenbarligen $[b_j]_{n_1} = [a_j]_{n_1}$. De uppfyller också begränsningen
+\[0 \leq b_j < n_1 \sum_{i=2}^{k} n_i \leq (k-1) n_1 n_k = B\] 
+
+Tittar vi på segmentet $S_B = \{m\cdot n_1, \ldots, (m+1)\cdot n_1 - 1\}$ som följer efter $B$ ($m \cdot n_1 \geq B$), ser vi att alla tal $a_j$ i detta segment är strukna. För varje sådant $a_j$ vet vi att $[a_j]_{n_1} \in \mathbb{Z}_{n_1}$ och att det finns ett $b_j \in G, b_j < B$ sådant att $[a_j]_{n_1} = [b_j]_{n_1}$. Om ett tal $n \in G$ är struket i ett tidigare segment, är det också struket i alla följande segment ($n+a \cdot n_1 \in G$), inklusive $S_G$. Vi ser således att alla tal $n \geq m\cdot n_1$ är element i $G$.
+\[\therefore \text{Endast ett ändligt antal tal ingår inte i }G.\]
+\end{proof}
+
+Vi har antagit i detta bevis att det är känt att $\exists A_i : \sum A_i n_i = \gcd(\{n_i\})$. I bilaga \ref{Semigrupper} finns några algoritmer som visar hur man kan beräkna dessa $\{A_i\}$ givet $\{n_i\}$.
+
+Genom att göra ett litet tillägg till sats \ref{S4} ovan kan vi skapa oss en algoritm för att beräkna konduktören till $G$. Vi behöver bara hålla reda på vilken den minsta representanten för $[a]_{n_1}$ i $G$ är, för alla $[a]_{n_1} \in \mathbb{Z}_{n_1}$, när vi systematiskt går igenom linjärkombinationerna. Algoritmen går till som följer:
+
+\begin{enumerate}
+\item Först skapar vi en lista $\mathbb{Z}_{min}$ med $n_1$ heltal, alla satta till $0$. Denna motsvarar $\mathbb{Z}_{n_1}$. Vi antar fortfarande att $n_1$ är den minsta av generatorerna (annars fungerar inte algoritmen).
+
+\item En slinga går igenom generatorerna $n_1, \ldots, n_k$ i turordning.
+
+\begin{enumerate}
+\item För varje generator $n_i$ skapar vi en ny slinga som genererar multiplarna $x_{i,j} = j \cdot n_i$, tills dess att alla multiplarna $[j \cdot n_i]_{n_1}$ har genererats. Detta behöver göras $n_i/\gcd(n_1, n_i)$ gånger.
+
+\begin{enumerate}
+\item För varje nollskiljt element $a$ i listan $\mathbb{Z}_{min}$ tittar vi i listan på position $a + x_{i,j} \mod{n_1}$. Om där står $0$ eller ett annat tal som är större än $a + x_{i,j}$ fyller vi den med värdet $a + x_{i,j}$, annars låter vi det vara.
+
+\item Vi tittar även i listan på position $x_{i,j} \mod{n_1}$. Om där står $0$ eller ett annat tal som är större än $x_{i,j}$ fyller vi den med värdet $x_{i,j}$, annars låter vi det vara.
+\end{enumerate}
+\end{enumerate}
+
+\item När slingorna ovan har genomförts är hela $\mathbb{Z}_{min}$ fylld av positiva heltal, enligt sats \ref{S4}. Vi går då igenom $\mathbb{Z}_{min}$ och ser vilket tal där som är störst. Vi kallar detta tal för $m$.
+
+\item Konduktören $c$ blir således $c = m - n_1 + 1$, enligt ett resonemang liknande det i sats \ref{S1}:
+
+\begin{proof}
+Vi vet att $m-n_1$ inte är struket, dvs. $m-n_1 \notin G$. Hade $m-n_1 \in G$ hade ju inte $m$ varit störst i $\mathbb{Z}_{min}$. Då hade ju $m-n_1$ tagit $m$'s plats i $\mathbb{Z}_{min}$, då $[m-n_1]_{n_1} = [m]_{n_1}$.
+
+Nu måste också alla tal mellan $m-n_1$ och $m$ vara med i $G$, dvs. vara strukna. För att se det tittar vi på övriga element $a \in \mathbb{Z}_{min}$. Vi vet från sats \ref{S4} att alla dessa element är skilda från noll och att $0 < a < m$.
+
+Om $a < m-n_1 \Longleftrightarrow a+n_1<m$. Eftersom vi vet att alla kombinationer $a+b\cdot n_1 \in G$, kan vi enkelt välja $b$ sådan att $m-n_1 < a+b\cdot n_1 < m$. (Ovan ser vi att $a+b\cdot n_1 \neq m-n_1$ då detta implicerat att $m-n_1 \in \mathbb{Z}_{min}$, vilket det inte är.)
+
+Om istället $m-n_1 < a < m$ vet vi att detta tal strukits, dvs. $a \in G$, per definition hur vi beräknar $\mathbb{Z}_{min}$.
+\[\therefore m-n_1 \notin G \wedge a \in G, \forall a > m-n_1+1\]
+\end{proof}
+\end{enumerate}
+
+För att se exempel på denna algoritm, och även en algoritm för beräkning av semigrupper från dess generatorer, se bilaga \ref{Semigrupper}.
+
+\section{Polynomringen $\mathbb{C}\left[t\right]$ och dess delringar}
+
+I resten av kapitlet ska vi studera en speciell typ av numeriska semigrupper som motsvarar delringar av polynomringen $\mathbb{C}\left[t\right]$. Polynomringen $\mathbb{C}\left[t\right]$ definieras som bekant som ringen innehållande alla polynom i en komplex variabel $t$, där addition, negation, multiplikation, noll och ett har de naturliga innebörderna. Men innan vi kan göra det, presenterar vi först en viktig sats gällande delringar till $\mathbb{C}\left[t\right]$:
+
+\begin{Theorem}
+\label{FinitelyGenerated}
+För varje icketrivial delring $S \subset \mathbb{C}\left[t\right]$ finns ett ändligt antal polynom $p_1,\ldots,p_n \in \mathbb{C}\left[t\right]$ som genererar $S$. Detta skrivs $S=\mathbb{C}\left[p_1,\ldots,p_n\right]$.
+\end{Theorem}
+
+\begin{proof}
+Vi antar motsatsen. Det betyder att det går att hitta en oändlig följd av polynom $p_i\in S:\deg(p_i)<deg(p_{i+1})$: Vi börjar med att välja $p_1$ bland de polynom i $S$ av lägst grad. $p_{n+1}$ väljs sedan bland de polynom i $S \setminus \mathbb{C}\left[p_1,\ldots,p_n\right]$ av lägst grad. Vi får på detta sätt en oändlig serie av strikt växande delringar $S_1=\mathbb{C}\left[p_1\right] \subset \ldots \subset S_n=\mathbb{C}\left[p_1,\ldots,p_n\right] \subset \ldots \subset \mathbb{C}\left[x\right]$.
+
+Låt oss nu titta på sekvensen $\left\{I_i \subset \mathbb{Z}: I_i=\deg(S_i)\right\}$. Här har $\deg(S_i)$ den kanoniska betydelsen $\deg(S_i)=\left\{\deg(p), p \in S_i\right\}$. Detta ger oss en växande serie delmängder $I_1 \subseteq \ldots \subseteq I_i \subseteq \ldots \subseteq \mathbb{N}$. Att $I_i$ är slutna under addition och multiplikation ser vi på följande sätt ($a, b\in I_i \Longrightarrow \exists p_j, p_k \in S_i : a=\deg(p_j) \wedge b=\deg(p_k)$):
+
+\begin{itemize}
+\item $\deg(p_j \cdot p_k) = \deg(p_j)+deg(p_k) = a+b \in I_i$ eftersom $p_j \cdot p_k \in S_i$.
+
+\item $deg(p_j^b) = \deg(p_j)\cdot b = a \cdot b \in I_i$ eftersom $p_j^b \in S_i$.
+\end{itemize}
+
+Vi kompletterar $I_i$, på föjande sätt: $\overline{I_i} = I_i \cup -I_i \cup \{0\}$. Vi ser då att $\overline{I_i}$ är delringar till $\mathbb{Z}$, och att $\overline{I_1} \subseteq \ldots \subseteq \overline{I_i} \subseteq \ldots \subseteq \mathbb{Z}$ är en växande serie delringar i $\mathbb{Z}$.
+
+Men vi vet att alla delringar $I \subset \mathbb{Z}$ måste vara på formen $I=m\mathbb{Z}$, för ett heltal $m$. För att se att så är fallet, antar vi först motsatsen: Först väljer vi $m$ som det minsta positiva heltalet i $I$. Därefter väljer vi ett $n \in I\setminus m\mathbb{Z}$. Detta betyder att $\exists q, r \in \mathbb{Z}: n=q\cdot m + r, 0 < r < m$. Men alla multiplar av $m$ finns i $I$ (då $m+\ldots+m\in I \wedge (-m)+\ldots+(-m)\in I$), vilket ger oss att $q \cdot m \in I$. Men då $n\in I$ får vi att $r = n - q\cdot m \in I$ vilket motsäger att $m$ är det minsta positiva heltalet i $I$.
+
+Således ser vi alla delringar $I \subset \mathbb{Z}$ är på formen $I=m\mathbb{Z}$. Vi kan alltså hitta en sekvens med heltal $\left\{m_i\right\}$ sådan att $\overline{I_i}=m_i\mathbb{Z}$ och att $m_1\mathbb{Z} \subseteq \ldots \subseteq m_i\mathbb{Z} \subseteq \ldots \subseteq \mathbb{Z}$ är en växande serie delringar i $\mathbb{Z}$. Men $m_i\mathbb{Z} \subseteq m_j\mathbb{Z} \Longleftrightarrow m_j \mid m_i \Longrightarrow m_j \leq m_i$. Men sekvensen $m_1 \geq \ldots \geq m_i \geq \ldots 1$ kan inte vara en oändlig serie med strikt minskande heltal. Således måste det finnas ett heltal $N$ sådan att $m_i = m_N, \forall i \geq N$.
+
+Men att sekvensen $\{m_i\}$ bara har ett ändligt antal unika element innebär att sekvensen $\{\overline{I_i}\}$ också har ett ändligt antal unika element, vilket i sin tur innebär att sekvensen $\{I_i\}$ också har ett ändligt antal unika element, och att den största delmängden är $I_N$. Men om alla $I_i=I_N, \forall i \geq N$, betyder det att inga nya grader av polynom tillkommer i $S_i, i > N$, dvs. att $\deg(p_i)$ inte växer i oändlighet, utan har en övre gräns $M=\max(\{deg(p_i)\})$. Således får vi att $\deg(p_i) \leq M, \forall i$. Men detta leder till en motsägelse, då maximalt $M+1$ polynom av grad som mest $M$ kan vara linjärt oberoende av varandra. (Vi kan se detta med hjälp av att använda Gauss-Jordan eliminering.)
+
+$\therefore S=\mathbb{C}\left[p_1,\ldots,p_n\right]$ för ett ändligt antal polynom $p_i \in \mathbb{C}\left[x\right]$.
+\end{proof}
+
+Ovanstående sats är ett specialfall av \emph{Hilbert Basis Theorem} \cite{HilbertBasisTheorem}, som visar att en polynomring över en Noethersk ring också är Noethersk.
+
+\section{Semigrupper för $\mathbb{C}\left[p_1,\ldots,p_n\right]$}
+
+När vi nu vet att alla delringar $S \subset \mathbb{C}\left[x\right]$ genereras av ett ändligt antal polynom $S=\mathbb{C}\left[p_1,\ldots,p_n\right]$, har vi en möjlighet att börja studera dessa delringar, genom att analysera hur polynomen $\left\{p_i\right\}$ beter sig. Vi börjar med att studera $G_S = \mathbf{o}(S) = \left\{\mathbf{o}(p), p \in S \wedge p \neq 0 \right\} \cup \left\{0\right\}$. (Vi antar för enkelhetens skull i just detta exempel att $\mathbf{o}(0)=0$, även om vi lämnat värdet för $\mathbf{o}(0)$ odefinierad generellt.)
+
+Att $G_S$ är en semigrupp följer av att den innehåller $0$ samt är sluten under addition: Om $a,b\in G_S \Longrightarrow \exists p_a, p_b \in S:\mathbf{o}(p_a)=a \wedge \mathbf{o}(p_b)=b$. Men $\mathbf{o}(p_a \cdot p_b) = \mathbf{o}(p_a) \cdot \mathbf{o}(p_b) = a \cdot b \Longrightarrow a \cdot b \in G_S$ eftersom $p_a \cdot p_b \in S$.
+
+Att $\left<\mathbf{o}(p_1),\ldots,\mathbf{o}(p_n)\right> \subseteq G_S$ är uppenbart, men det är värt att notera att $G_S$ kan vara större. Betrakta exempelvis $S=\mathbb{C}\left[t^2,t^4+t^5\right]$. Här har vi $\left<\mathbf{o}(t^2),\mathbf{o}(t^4+t^5)\right> = \left<2,4\right>=\left<2\right> = 2\mathbb{Z}$, vilken inte är numerisk. Men $\left(t^4+t^5\right)-\left(t^2\right)^2 = t^5 \in S \Longrightarrow 5 \in G_S$. Men $5 \notin 2\mathbb{Z}$. Således är $G_S$ större i detta fall. Att $5 \in G_S$ innebär också att $\left<2,5\right> \subset G_S$. Men $\left<2,5\right> = \left\{2, 4, 5, 6, \ldots\right\}$, dvs. den innehåller 2 och alla tal större än 4 (konduktören är 4). Det är enkelt att se att $3 \notin G_S$. Vi kan inte från $p_1=t^2$ och $p_2=t^4+t^5$ skapa ett polynom av ordning 3. Således får vi:
+\[\left<\mathbf{o}(p_1),\mathbf{o}(p_2)\right> = \left<2\right> \subset \left<2,5\right> = G_S \]
+
+\label{SearchPolynomials}
+För att beräkna vilka tal som finns i $G_S$ behöver vi systematiskt gå igenom de möjligheter vi har att kombinera nya polynom från generatorerna $\left\{p_i\right\}$. Polynom som kan generera polynom av nya ordningar, och som inte är kända sedan tidigare, kan göras på två sätt:
+
+\begin{enumerate}
+\item Antingen genom att två kända polynom multipliceras med varandra. I detta fallet blir ordningen av det nya polynomet summan av ordningarna för de individuella polynomen.
+
+\item Alternativt kan två kända polynom av samma ordning adderas till varandra, med möjlig föregående skalär multiplicering av det ena, så att termen motsvarande den aktuella ordningen elimineras från svaret. I detta fallet blir ordningen av svaret beroende av de ingående polynomen.
+\end{enumerate}
+
+I bilaga \ref{FindSemiGroupFromPolynomialRing} presenteras en sökalgoritm som beräknar generatorerna för $G_S$, samt även hur dessa uppnås givet generatorerna $p_i$ för $S$, samt en serie exempel. Kortfattat gör algoritmen följande:
+
+\begin{enumerate}
+\item Först elimineras linjära samband mellan polynomen, med hjälp av Gauss-Jordan-eliminering. Här kan vi se listan av polynom $\{p_i\}=\left\{\sum a_{i,j} t_i^j\right\}$ som rader i en matris, där polynomens koefficienter bildar matrisens element. Koefficienter av högre grad, åt höger, lägre grad åt vänster. Efter elimineringen kommer vi ha en serie polynom $\{p_i^*\}$ med följande egenskaper:
+\begin{itemize}
+\item Polynom som är linjärkombinationer av tidigare polynom, kommer att ha eliminerats ur listan. Sådana noll-rader ignorerar vi och listan kan således alltså vara kortare än den ursprungliga.
+
+\item Bara ett polynom av varje ordning kommer att finnas i listan.
+
+\item Alla polynom saknar termer som motsvarar ordningen av andra polynom i listan.
+
+\item Koefficienten för den term motsvarande ordningen i ett polynom kommer vara $1$ för samtliga polynom.
+
+\item $\mathbf{o}(\left\{p_i\right\}) \subset \mathbf{o}(\left\{p_i^*\right\})$, dvs. Gauss-Jordan eliminering kan inte eliminera ordningar, bara hitta nya som tidigare dolts på grund av ingående linjärkombinationer mellan alla $p_i$.
+\end{itemize}
+
+\item Därefter gås alla kombinationer av polynompar igenom. De multipliceras med varandra, och eventuella elimineringar utförs om tidigare polynom av samma ordningar som termer i resultatet hittas. Listan över polynom utökas under algoritmens gång då nya polynom hittas.
+
+\item Då nya polynom hittas, gås även tidigare polynom igenom för att se om ytterligare elimineringar är möjliga. Sådana elimineringar läggs också till i slutet av listan över polynom att gå igenom. 
+
+\item Även konduktören för $G_S$ beräknas om då nya polynom hittas, ifall funna ordningar är relativt prima. Framtida polynom läggs bara till listan om dess ordning understiger denna konduktör. Detta ger en bortre gräns för hur lång tid sökningen kan pågå. Dessutom kan konduktören komma att minska ytterligare i takt med att nya ordningar hittas, vilket minskar mängden polynompar att gå igenom.
+
+\item Om en konduktör hittas, kommer även alla polynom att trunkeras, så termer överstigande termen för konduktören elimineras. Detta påverkar inte resultatet, men tiden det tar att utföra beräkningar. Tidsåtgången för polynomoperationer beror på antalet termer i polynomen, och dessa växer exponentiellt i takt med antalet multiplikationer.
+
+\item I slutet returneras generatorerna till $G_S$ som hittats under sökningen, samt hur dessa fås från ursprungspolynomen, om så önskas.
+\end{enumerate}
+

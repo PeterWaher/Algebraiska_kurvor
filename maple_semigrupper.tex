@@ -1,0 +1,1165 @@
+\chapter[Källtexter --- Semigrupper]{Källtexter till Maple --- Semigrupper}
+\label{Semigrupper}
+
+\section{FindGCD}
+
+\emph{FindGCD}-funktionen beräknar den största gemensamma delaren (greatest common divisor) mellan två heltal $a$ och $b$. Den beräknar också de två heltalen $A$ och $B$, sådana att $\gcd = A a + B b$.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{FindGCD}}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+$a$ & Det första heltalet. \\
+$b$ & Det andra heltalet. \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+FindGCD := proc(a, b)
+   local a0 , b0 , m, n, r, GCD, BList, Position, A, B, switch;
+
+   if not type(a, integer) then
+      ERROR("a must be an integer!", a)
+   end if;
+
+   if not type(b, integer) then
+      ERROR("b must be an integer!", b)
+   end if;
+
+   if a < b then
+      m := b; 
+      n := a; 
+      switch := true
+   else
+      m := a; 
+      n := b; 
+      switch := false
+   end if;
+
+   a0 := m;
+   b0 := n;
+   GCD := n;
+   r := m mod n;
+   Position := 1;
+
+   while r <> 0 do
+      BList[Position] := -(m - r)/n;
+      Position := Position + 1;
+      m := n;
+      n := r;
+      GCD := r;
+      r := m mod n
+   end do;
+
+   A := 0;
+   B := 1;
+
+   while 1 < Position do
+      Position := Position - 1;
+      r := B;
+      B := A + BList[Position] * B;
+      A := r
+   end do;
+
+   if switch then
+      RETURN([GCD, B, A])
+   else
+      RETURN([GCD, A, B])
+   end if
+end proc
+\end{verbatim}
+
+\subsection{Exempel}
+
+Följande exempel beräknar den största gemensamma delaren för 12312334 och 239487192:
+
+\begin{verbatim}
+> FindGCD(12312334,239487192);
+\end{verbatim}
+\[\left[2, -1065409, 54774\right]\]
+
+Resultatet blir $2$. Dessutom får vi:
+\[2 = 12312334 \cdot (-1065409) + 239487192 \cdot 54774\]
+
+\section{FindGCDList}
+
+\emph{FindGCDList}-funktionen beräknar den största gemensamma delaren (greatest common divisor) för en lista med heltal. Den returnerar också en lista med heltal sådana att summan av koefficienterna i den ursprungliga heltalslistan multiplicerat med motsvarande koefficienter i den returnerade listan blir lika med den största gemensamma delaren.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{FindGCDList}}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+$IntegerList$ & En lista med heltal. \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+FindGCDList := proc(IntegerList)
+   local NrIntegers, Position, GCD, Coefficients, l;
+
+   if not type(IntegerList, list) then
+      ERROR("IntegerList must be a list of integers!", 
+         IntegerList)
+   end if;
+
+   NrIntegers := nops(IntegerList);
+   if NrIntegers < 1 then
+      ERROR("IntegerList must be a list of at least one integer!", 
+         IntegerList)
+   elif NrIntegers = 1 then
+      RETURN([IntegerList1, [1]])
+   end if;
+
+   l := FindGCD(IntegerList[1], IntegerList[2]);
+   GCD := l[1];
+   Coefficients := [l[2], l[3]];
+   Position := 3;
+
+   while Position <= NrIntegers do
+      l := FindGCD(GCD, IntegerList[Position]);
+      GCD := l[1];
+      Coefficients := [op(Coefficients * l[2]), l[3]];
+      Position := Position + 1
+   end do;
+
+   RETURN([GCD, Coefficients])
+end proc
+\end{verbatim}
+
+\subsection{Exempel}
+
+Följande exempel beräknar den största gemensamma delaren för 6, 9 och 20:
+
+\begin{verbatim}
+> FindGCDList([6,9,20]);
+\end{verbatim}
+\[\left[1, \left[-7, 7, -1\right]\right]\]
+
+Från svaret kan man också utläsa att
+\[1 = 6 \cdot (-7) + 9 \cdot 7 + 20 \cdot (-1)\]
+
+\section{FindConductor}
+
+\emph{FindConductor}-funktionen beräknar konduktören för en lista med heltal vars största gemensamma delare är 1. Sats \ref{S4} säger ju att en sådan finns (förutsatt att den största gemensamma delaren är 1).
+
+\begin{table}[h]
+\caption{Parametrar för \emph{FindConductor}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$Generators$ & En lista med heltal, vars största gemensamma delare måste vara 1.\\
+$PrintTime$ & En frivillig parameter. Om \emph{true} så skrivs tidsåtgången för beräkningen ut på skärmen.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+FindConductor := proc(Generators)
+   local Conductor, l, MinValue, NrGenerators, g, ZMin, GCD, 
+      a, b, c, d, e, StartTime;
+
+   StartTime := time();
+
+   if not type(Generators, list) then
+      ERROR("Generators must be a list of integers!", 
+         Generators)
+   end if;
+
+   l := FindGCDList(Generators);
+   if l[1] <> 1 then
+      ERROR(cat("The Generators must not have a common ",
+         "divisor greater than 1!"), [Generators, l[1]])
+   end if;
+
+   NrGenerators := nops(Generators);
+   MinValue := min(op(Generators));
+   ZMin := array(0..MinValue - 1);
+   ZMin[0] := MinValue;
+
+   for l from 1 to MinValue - 1 do
+      ZMin[l] := 0
+   end do;
+
+   for l to NrGenerators do
+      g := Generators[l];
+      if g <> MinValue then
+         GCD := gcd(g, MinValue);
+         b := MinValue/GCD;
+         for e from 0 to MinValue do
+            if e = MinValue then
+               c := 0
+            elif ZMin[e] <> 0 then
+               c := ZMin[e]
+            else
+               c := -1
+            end if;
+
+            if 0 <= c then
+               for a to b do
+                  c := c + g;
+                  d := c mod MinValue;
+                  if ZMin[d] = 0 or c < ZMin[d] then
+                     ZMin[d] := c
+                  end if
+               end do
+            end if
+         end do
+      end if
+   end do;
+
+   Conductor := ZMin[0];
+   for a to MinValue - 1 do
+      if Conductor < ZMin[a] then
+         Conductor := ZMin[a]
+      end if
+   end do;
+
+   Conductor := Conductor - MinValue + 1;
+
+   if nargs = 1 or args[2] then
+      printf("Elapsed Time: %0.3f s.\n", time() - StartTime)
+   end if;
+
+   RETURN(Conductor)
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Explicit generalisering möjlig?}
+\label{ConductorGeneralized}
+
+För att se om vi kan generalisera formeln för beräkningen av konduktören för en numerisk semigrupp genererad av fler än två element, beräknar vi konduktören för $\left<2 \cdot 3 \cdot 5, 2 \cdot 3 \cdot 7, 2 \cdot 5 \cdot 7, 3 \cdot 5 \cdot 7\right> = \left<30, 42, 70, 105\right>$:
+
+\begin{verbatim}
+> FindConductor([2*3*5,2*3*7,2*5*7,3*5*7]);
+
+Elapsed Time: 0.000 s.
+\end{verbatim}
+\[384\]
+
+Konduktören blir i detta exempel $384 = 2^7 \cdot 3$. Som man kan se i detta exempel verkar det inte finnas någon enkel självklar generalisering av formeln för konduktören av $\left<m, n\right>$, då $m$ och $n$ är relativt prima ($c = (m-1)(n-1)$).
+
+\subsection{Exempel --- Stor semigrupp}
+\label{ExempelStorSemigrupp}
+
+I följande exempel illustreras fördelen med att beräkningen av konduktören genomförs utan att motsvarande semigrupp genereras:
+
+\begin{verbatim}
+> FindConductor([2139,2398,3321]);
+
+Elapsed Time: 8.062 s.
+\end{verbatim}
+\[277188\]
+
+Konduktören för $\left<2139, 2398, 3321\right>$ är alltså $277188$, dvs. lite mer än 129 ggr större än den minsta generatorn ($2139$). Beräkningen av motsvarande semigrupp kommer att ta betydligt mer tid (326.313 s). Utskriften av semigruppen kan också krascha Maple (vilket den gjorde i mitt fall).
+
+\section{FindSemiGroup}
+
+\emph{FindSemiGroup}-funktionen genererar semigruppen från en lista med generatorer. Den returnerar konduktören och alla element fram till och med konduktören i semigruppen. Skulle inte generatorerna vara relativt prima (dvs. de har en största gemensam delare större än 1), delar den först generatorerna med den största gemensamma delaren, skapar motsvarande semigrupp, multiplicerar sedan elementen med den största gemensamma delaren och returnerar motsvarande ``konduktör'', den största gemensamma delaren, samt vilka element som ingår i semigruppen fram till och med ``konduktören''\footnote{Med ``konduktören'' i detta fall menas konduktören av semigruppen som genereras av generatorerna delat med den största gemensamma delaren, multiplicerat med den största gemensamma delaren.}.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{FindSemiGroup}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$Generators$ & En lista med heltal.\\
+$PrintTime$ & En frivillig parameter. Om \emph{true} så skrivs tidsåtgången för beräkningen ut på skärmen.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+FindSemiGroup := proc(Generators)
+   local Conductor, l, GCD, Generators2, MinValue, NrGenerators, 
+   g, ZMin, GCD2,a, b, c, d, e, SemiGroup, StartTime;
+
+   StartTime := time();
+
+   if not type(Generators, list) then
+      ERROR("Generators must be a list of integers!", Generators)
+   end if;
+
+   l := FindGCDList(Generators);
+   GCD := l[1];
+   if GCD = 1 then
+      Generators2 := Generators
+   else
+      Generators2 := Generators/GCD
+   end if;
+
+   NrGenerators := nops(Generators2);
+   MinValue := min(op(Generators2));
+   ZMin := array(0..MinValue - 1);
+   ZMin[0] := MinValue;
+
+   for l from 1 to MinValue - 1 do
+      ZMin[l] := 0
+   end do;
+
+   for l to NrGenerators do
+      g := Generators2[l];
+      if g <> MinValue then
+         GCD2 := gcd(g, MinValue);
+         b := MinValue/GCD2;
+
+         for e from 0 to MinValue do
+            if e = MinValue then
+               c := 0
+            elif ZMin[e] <> 0 then
+               c := ZMin[e]
+            else
+               c := -1
+            end if;
+
+            if 0 <= c then
+               for a to b do
+                  c := c + g;
+                  d := c mod MinValue;
+
+                  if ZMin[d] = 0 or c < ZMin[d] then
+                     ZMin[d] := c
+                  end if
+               end do
+            end if
+         end do
+      end if
+   end do;
+
+   Conductor := ZMin[0];
+   for a to MinValue - 1 do
+      if Conductor < ZMin[a] then
+         Conductor := ZMin[a]
+      end if
+   end do;
+
+   Conductor := Conductor - MinValue + 1;
+   ZMin := array(1..Conductor);
+   for l to Conductor do
+      ZMin[l] := 0
+   end do;
+
+   for l to NrGenerators do
+      g := Generators2[l];
+
+      for a to Conductor + 1 do
+         if Conductor < a then
+            b := g
+         elif ZMin[a] <> 0 then
+            b := ZMin[a] + g
+         else
+            b := 0
+         end if;
+
+         if 0 < b then
+            while b <= Conductor do
+               ZMin[b] := b;
+               b := b + g
+            end do
+         end if
+      end do
+   end do;
+
+   SemiGroup := {};
+
+   for a to Conductor do
+      if 0 < ZMin[a] then
+         SemiGroup := SemiGroup union {ZMin[a]}
+      end if
+   end do;
+
+   if GCD <> 1 then
+      SemiGroup := GCD * SemiGroup
+   end if;
+
+   if nargs = 1 or args2 then
+      printf("Elapsed Time: %0.3f s.\n", time() - StartTime)
+   end if;
+
+   RETURN([Conductor * GCD, SemiGroup])
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Enkel semigrupp}
+
+Det första exemplet beräknar $\left<15, 10, 6\right>$:
+
+\begin{verbatim}
+> FindSemiGroup([15,10,6]);
+
+Elapsed Time: .000 s.
+\end{verbatim}
+\[\left[30, \left\{6, 10, 12, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30\right\}\right]\]
+
+Vi får att konduktören är $30$ och att 
+\[\left<15, 10, 6\right> = \left\{6, 10, 12, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30, \ldots\right\}\]
+där ``\ldots'' betyder ``alla heltal som kommer därefter''.
+
+\subsection{Exempel --- $\gcd \neq 1$}
+
+Detta exempel beräknar $\left<30, 20, 12\right>$:
+
+\begin{verbatim}
+> FindSemiGroup([30,20,12]);
+
+Elapsed Time: .000 s.
+\end{verbatim}
+\[\left[60, 2 \left\{6, 10, 12, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30\right\}\right]\]
+
+Eftersom den största gemensamma delaren av 30, 20 och 12 är 2 (vilket även ses i resultatet) kan vi uttyda att
+\[\left<30, 20, 12\right> = 2 \cdot \left\{6, 10, 12, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30, \ldots\right\}\]
+
+Multiplikationen av 2 med hela mängden skall läsas som att varje element i mängden skall multipliceras med 2.
+
+\subsection{Exempel --- Lite större semigrupp}
+
+Vi kan också beräkna lite större semigrupper. I detta exempel beräknas $\left<21, 93, 32\right>$:
+
+\begin{verbatim}
+> FindSemiGroup([21,93,32]);
+
+Elapsed Time: .000 s.
+\end{verbatim}
+\[
+\begin{array}{ll}
+\left[332\right., & \left\{21, 32, 42, 53, 63, 64, 74, 84, 85, 93, 95, 96, 105, 106,\right. \\
+&	114, 116, 117, 125, 126, 127, 128, 135, 137, 138, 146, 147, 148, 149,\\
+&	156, 157, 158, 159, 160, 167, 168, 169, 170, 177, 178, 179, 180, 181,\\
+&	186, 188, 189, 190, 191, 192, 198, 199, 200, 201, 202, 207, 209, 210,\\
+&	211, 212, 213, 218, 219, 220, 221, 222, 223, 224, 228, 230, 231, 232,\\
+&	233, 234, 239, 240, 241, 242, 243, 244, 245, 249, 250, 251, 252, 253,\\
+&	254, 255, 256, 260, 261, 262, 263, 264, 265, 266, 270, 271, 272, 273,\\
+&	274, 275, 276, 277, 279, 281, 282, 283, 284, 285, 286, 287, 288, 291,\\
+&	292, 293, 294, 295, 296, 297, 298, 300, 302, 303, 304, 305, 306, 307,\\
+&	308, 309, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 323,\\
+&	\left.\left.324, 325, 326, 327, 328, 329, 330, 332\right\}\right]\end{array}
+\]
+
+Som man kan se växer semigruppen ganska fort. Det kan vara en bra idé att först kolla vad konduktören till en semigrupp är, innan själva semigruppen beräknas. Annars kan man riskera att krascha Maple. Exemplet i \ref{ExempelStorSemigrupp} är ett exempel på en sådan semigrupp.
+
+\subsection{Exempel --- generalisering av formel?}
+
+I detta exempel beräknar vi semigruppen som definierades i exempel \ref{ConductorGeneralized} i beskrivningen av \emph{FindConductor}-funktionen. Notera att det normalt tar längre tid att beräkna semigruppen än konduktören, även om det inte är synligt i just detta exempel.
+
+\begin{verbatim}
+FindSemiGroup([2*3*5,2*3*7,2*5*7,3*5*7]);
+
+Elapsed Time: .000 s.
+\end{verbatim}
+\[
+\begin{array}{ll}
+\left[384\right., & \left\{30, 42, 60, 70, 72, 84, 90, 100, 102, 105, 112, 114, 120, 126,\right\}\\
+&	130, 132, 135, 140, 142, 144, 147, 150, 154, 156, 160, 162, 165, 168,\\
+&	170, 172, 174, 175, 177, 180, 182, 184, 186, 189, 190, 192, 195, 196,\\
+&	198, 200, 202, 204, 205, 207, 210, 212, 214, 216, 217, 219, 220, 222,\\
+&	224, 225, 226, 228, 230, 231, 232, 234, 235, 237, 238, 240, 242, 244,\\
+&	245, 246, 247, 249, 250, 252, 254, 255, 256, 258, 259, 260, 261, 262,\\
+&	264, 265, 266, 267, 268, 270, 272, 273, 274, 275, 276, 277, 279, 280,\\
+&	282, 284, 285, 286, 287, 288, 289, 290, 291, 292, 294, 295, 296, 297,\\
+&	298, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 312, 314,\\
+&	315, 316, 317, 318, 319, 320, 321, 322, 324, 325, 326, 327, 328, 329,\\
+&	330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 342, 343, 344,\\
+&	345, 346, 347, 348, 349, 350, 351, 352, 354, 355, 356, 357, 358, 359,\\
+&	360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373,\\
+&	\left.\left.374, 375, 376, 377, 378, 379, 380, 381, 382, 384\right\}\right]
+\end{array}
+\]
+
+\section{FindSemiGroupFromPolynomialRing}
+\label{FindSemiGroupFromPolynomialRing}
+Funktionen \emph{FindSemiGroupFromPolynomialRing} beräknar en serie generatorer för semigruppen motsvarande polynomringen $\mathbb{C}\left[g_1, \ldots, g_n\right]$, där $g_i$ är polynomen som anges i parameter 1 när man anropar funktionen. Semigruppen består av alla de heltal $n : \exists f \in \mathbb{C}\left[g_1, \ldots, g_n\right] : n = \mathbf{o}(f)$. Detta kan skrivas enklare som $\mathbf{o}(\mathbb{C}\left[g_1, \ldots, g_n\right])$.
+
+\begin{table}[h]
+\caption{Parametrar för \emph{FindSemiGroupFromPolynomialRing}}
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+$Polynomials$ & En lista med polynom.\\
+$Variable$ & Namnet på variabeln.\\
+$PrintTime$ & En frivillig parameter. Om \emph{true} så skrivs tidsåtgången för beräkningen ut på skärmen.\\
+$PrintFormulae$ & En frivillig parameter. Om \emph{true} så skrivs för varje generator en explicit formel för hur motsvarande polynom genererats.\\
+$MaxPolynomials$ & En frivillig parameter. Om den anges, anger den det maximala antalet polynom som kan genereras av algoritmen, innan den ger upp i sitt sökande efter lösningen. Om den inte anges, antas 5000 polynom vara gränsen.\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{verbatim}
+FindSemiGroupFromPolynomialRing := proc(PolynomialGenerators, 
+   Variable)
+   local StartTime, GCD, Conductor, Polynomials, NrPolynomials,
+      MaxPolynomials, Generators, PolynomialsByOrder, Orders,
+      ExplicitNotation, FirstExplicitNotation, 
+      NrOriginalPolynomials, OriginalOrders, MaxExponent, 
+      MinOrder, HighestOrder, CalcExplicit, MaxTerm, MaxTerms, 
+      a, b, c, d, e, f, g, h, e1, e2, g1, g2, g3, d1, d2, d3, p;
+
+   StartTime := time();
+
+   CalcExplicit := 4 <= nargs and args[4];
+
+   if 5 <= nargs then
+      MaxPolynomials:=args[5]
+   else
+      MaxPolynomials:=5000
+   end if;
+
+   if not type(PolynomialGenerators, list) then
+      ERROR(cat("PolynomialGenerators must be a list of ",
+         "polynomials!"), PolynomialGenerators)
+   end if;
+
+   NrOriginalPolynomials := nops(PolynomialGenerators);
+   if NrOriginalPolynomials = 0 then
+      ERROR("List of polynomials cannot be empty!")
+   end if;
+
+   f := PolynomialGenerators;
+   for a to NrOriginalPolynomials do
+      g1 := f[a];
+      if not type(g1, polynom) then
+         ERROR(cat("PolynomialGenerators must be a list of ",
+            "polynomials!"), PolynomialGenerators)
+      end if;
+
+      ExplicitNotation[a] := p[a];
+      OriginalOrders[a] := ldegree(g1, Variable);
+      Orders[a] := OriginalOrders[a]
+   end do;
+
+   for a from 2 to NrOriginalPolynomials do
+      for b to a - 1 do
+         if Orders[a] < Orders[b] then
+            c := Orders[a];
+            Orders[a] := Orders[b];
+            Orders[b] := c;
+            c := f[a];
+            f[a] := f[b];
+            f[b] := c;
+            c := ExplicitNotation[a];
+            ExplicitNotation[a] := ExplicitNotation[b];
+            ExplicitNotation[b] := c
+         end if
+      end do
+   end do;
+
+   MinOrder := Orders[1];
+   GCD := MinOrder;
+   Generators := [MinOrder];
+   g1 := f[1];
+   e := coeff(g1, Variable, MinOrder);
+   Polynomials[1] := g1/e;
+   ExplicitNotation[1] := ExplicitNotation[1]/e;
+   g := 1;
+
+   for a from 2 to NrOriginalPolynomials do
+      g1 := f[a];
+      b := ExplicitNotation[a];
+
+      for h to g do
+         g2 := Polynomials[h];
+         d2 := ldegree(g2, Variable);
+         e := coeff(g1, Variable, d2);
+
+         if e <> 0 then
+            g1 := g1 - e * g2;
+            b := b - e * ExplicitNotation[h]
+         end if
+      end do;
+
+      if g1 <> 0 then
+         d := ldegree(g1, Variable);
+         Generators := [op(Generators), d];
+         GCD := gcd(GCD, d);
+         e := coeff(g1, Variable, d);
+         g1 := g1/e;
+         b := b/e;
+         g := g + 1;
+         Polynomials[g] := g1;
+         ExplicitNotation[g] := b;
+
+         for h to g - 1 do
+            g2 := Polynomials[h];
+            e := coeff(g2, Variable, d);
+            if e <> 0 then
+               g2 := g2 - e * g1;
+               Polynomials[h] := g2;
+               ExplicitNotation[h] := ExplicitNotation[h] - e * b
+            end if
+         end do
+      end if
+   end do;
+
+   NrPolynomials := g;
+   if GCD = 1 then
+      Conductor := FindConductor(Generators, false);
+      MaxTerm := Variable^(Conductor+1);
+
+      for c to NrOriginalPolynomials do
+         MaxExponent[c] := ceil((Conductor + 1)/OriginalOrders[c])
+      end do
+   else
+      Conductor := infinity
+   end if;
+
+   HighestOrder := max(op(Generators));
+   for a from MinOrder to HighestOrder do
+      PolynomialsByOrder[a] := 0
+   end do;
+
+   for a to NrPolynomials do
+      f := Polynomials[a];
+      d := ldegree(f, Variable);
+      Orders[a] := d;
+      PolynomialsByOrder[d] := a;
+      FirstExplicitNotation[d] := ExplicitNotation[a]
+   end do;
+
+   a := 1;
+   while a <= NrPolynomials do
+      g1 := Polynomials[a];
+      d1 := Orders[a];
+
+      if g1 <> 0 and d1 <= Conductor then
+         if CalcExplicit then
+            e1 := ExplicitNotation[a]
+         end if;
+
+         b := 1;
+         while b <= a do
+            if b = a then
+               g2 := g1;
+               d2 := d1
+            else
+               g2 := Polynomials[b];
+               d2 := Orders[b]
+            end if;
+
+            if g2 <> 0 and d2 <= Conductor then
+               d := sort(simplify(expand(g1 * g2)));
+               if CalcExplicit then
+                  e2 := expand(e1 * ExplicitNotation[b])
+               end if;
+
+               d3 := d1 + d2;
+               while d3 <= HighestOrder and d3 <= Conductor and 
+                  d <> 0 and PolynomialsByOrder[d3] <> 0 do
+                  
+                  c := PolynomialsByOrder[d3];
+                  g3 := Polynomials[c];
+
+                  if g3 = 0 then
+                     ERROR("Runtime Error", d)
+                  end if;
+
+                  e := coeff(d, Variable, d3);
+                  d := d - e * g3;
+
+                  if CalcExplicit then
+                     e2 := e2 - e * ExplicitNotation[c]
+                  end if;
+
+                  d3 := ldegree(d, Variable)
+               end do;
+
+               if d <> 0 and d3 <= Conductor then
+                  e := coeff(d, Variable, d3);
+                  d := d/e;
+
+                  if CalcExplicit then
+                     e2 := e2/e
+                  end if;
+
+                  Generators := [op(Generators), d3];
+                  GCD := gcd(GCD, d3);
+
+                  if GCD = 1 and Conductor = infinity then
+                     Conductor := FindConductor(Generators, false);
+
+                     if Conductor < d3 then
+                        Conductor := d3
+                     end if;
+
+                     for c to NrOriginalPolynomials do
+                        MaxExponent[c] := ceil((Conductor + 1)/
+                           OriginalOrders[c]);
+                        MaxTerms[c] := p[c]^MaxExponent[c]
+                     end do;
+
+                     MaxTerm := Variable^(Conductor+1);
+                     if Conductor < degree(d, Variable) then
+                        d := rem(d, MaxTerm, Variable);
+                        if CalcExplicit then
+                           for c to NrOriginalPolynomials do
+                              if MaxExponent[c] < 
+                                 degree(e2, p[c]) then
+                                 e2 := expand(rem(e2, 
+                                    MaxTerms[c], p[c]))
+                              end if
+                           end do
+                        end if
+                     end if;
+
+                     for c to NrPolynomials do
+                        e := Polynomials[c];
+                        if e <> 0 and 
+                           Conductor < degree(e, Variable) then
+                           
+                           Polynomials[c] := rem(e, MaxTerm, 
+                              Variable);
+
+                           if CalcExplicit then
+                              if Polynomials[c] = 0 then
+                                 ExplicitNotation[c] := 0
+                              end if
+                           else
+                              e := ExplicitNotation[c];
+                              for f to NrOriginalPolynomials do
+                                 if MaxExponent[f] < 
+                                    degree(e, p[f]) then
+                                    
+                                    e := expand(rem(e, 
+                                       MaxTerms[f], p[f]))
+                                 end if
+                              end do;
+
+                              ExplicitNotation[c] := e
+                           end if
+                        end if
+                     end do
+                  elif Conductor < degree(d, Variable) then
+                     d := rem(d, MaxTerm, Variable);
+                     if CalcExplicit then
+                        for c to NrOriginalPolynomials do
+                           if MaxExponent[c] < 
+                              degree(e2, p[c]) then
+                              e2 := expand(rem(e2, 
+                                 MaxTerms[c], p[c]))
+                           end if
+                        end do
+                     end if
+                  end if;
+
+                  NrPolynomials := NrPolynomials + 1;
+                  if NrPolynomials > MaxPolynomials then
+                     ERROR(cat("Generated more polynomials than",
+                        "allowed. Solution not found."),
+                        MaxPolynomials)
+                  end if;
+
+                  Polynomials[NrPolynomials] := d;
+                  Orders[NrPolynomials] := d3;
+
+                  if CalcExplicit then
+                     ExplicitNotation[NrPolynomials] := e2;
+                     FirstExplicitNotation[d3] := e2
+                  end if;
+
+                  if HighestOrder < d3 then
+                     HighestOrder := HighestOrder + 1;
+                     while HighestOrder < d3 do
+                        PolynomialsByOrder[HighestOrder] := 0;
+                        HighestOrder := HighestOrder + 1
+                     end do
+                  end if;
+
+                  PolynomialsByOrder[d3] := NrPolynomials;
+                  h := NrPolynomials - 1;
+
+                  for c to h do
+                     e := Polynomials[c];
+                     if e <> 0 then
+                        f := coeff(e, Variable, d3);
+                        if f <> 0 then
+                           e := e - f * d;
+                           NrPolynomials := NrPolynomials + 1;
+                           if NrPolynomials > 
+                              MaxPolynomials then
+                              ERROR(cat("Generated more ",
+                                 "polynomials than allowed. ",
+                                 "Solution not found."),
+                                 MaxPolynomials)
+                           end if;
+
+                           g := Orders[c];
+                           Polynomials[NrPolynomials] := e;
+                           Orders[NrPolynomials] := g;
+                           PolynomialsByOrder[g] := 
+                              NrPolynomials;
+
+                           if CalcExplicit then
+                              e := ExplicitNotation[c] - 
+                                 f * e2;
+                              ExplicitNotation[
+                                 NrPolynomials] := e
+                           end if;
+
+                           Polynomials[c] := 0
+                        end if
+                     end if
+                  end do
+               end if
+            end if;
+
+            b := b + 1
+         end do
+      end if;
+
+      a := a + 1
+   end do;
+
+   if Conductor = infinity then
+      ERROR("No upper bound found.", PolynomialGenerators)
+   end if;
+
+   Generators := sort(Generators);
+   a := {};
+   b := [];
+   for c to nops(Generators) do
+      d := Generators[c];
+      if d <= Conductor and not member(d, a) then
+         b := [op(b), d];
+         e := d;
+         f := {};
+         while e <= Conductor do
+            f := f union {e};
+
+            for h to nops(a) do
+               g := a[h] + e;
+               if g <= Conductor then 
+                  f := f union {g}
+               end if
+            end do;
+
+            e := e + d
+         end do;
+
+         a := a union f
+      end if
+   end do;
+
+   Generators := b;
+   if CalcExplicit then
+      for c to NrOriginalPolynomials do
+         MaxExponent[c] := ceil((Conductor + 1)/OriginalOrders[c]);
+         MaxTerms[c] := p[c]^MaxExponent[c]
+      end do;
+
+      MaxTerm := Variable^(Conductor+1);
+
+      for a to nops(Generators) do
+         b := Generators[a];
+         c := FirstExplicitNotation[b];
+
+         for e to NrOriginalPolynomials do
+            c := expand(rem(c, MaxTerms[e], p[e]))
+         end do;
+
+         d := convert(c, list);
+         if 1 < nops(d) then
+            for e to nops(d) do
+               f := d[e];
+
+               for g to NrOriginalPolynomials do
+                  f := subs(p[g] = PolynomialGenerators[g], f)
+               end do;
+
+               if b < ldegree(f) then 
+                  c := c - d[e] 
+               end if
+            end do
+         end if;
+
+         d := c;
+         for g to NrOriginalPolynomials do
+            d := subs(p[g] = PolynomialGenerators[g], d)
+         end do;
+
+         d := sort(expand(d));
+         e := lcm(denom(c), denom(d));
+         c := sort(e * c);
+         d := sort(e * d);
+         print(c = d)
+      end do
+   end if;
+
+   if nargs < 3 or args[3] then
+      printf("Elapsed Time: %0.3f s.\n", time() - StartTime)
+   end if;
+
+   RETURN(Generators)
+end proc
+\end{verbatim}
+
+\subsection{Exempel --- Enkelt första exempel}
+\label{SimplePolynomialRingExample}
+
+I följande exempel beräknar vi den numeriska semigruppen $G_1$ motsvarande polynomringen $\mathbb{C}\left[t^4 + t^5, t^6 + t^7\right]$:
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^4+t^5,t^6+t^7],t,true,true);
+\end{verbatim}
+\[\begin{array}{c}
+p_1 = t^5 + t^4\\[3pt]
+p_2 = t^7 + t^6\\[3pt]
+p_1^3 - p_2^2 = t^{15} + 2 t^{14} + t^{13}\\
+\end{array}\]
+\begin{verbatim}
+Elapsed Time: .000 s.
+\end{verbatim}
+\[\left[4, 6, 13\right]\]
+\begin{verbatim}
+> FindSemiGroup([4,6,13]);
+
+Elapsed Time: 0.000 s.
+\end{verbatim}
+\[\left[16, \left\{4, 6, 8, 10, 12, 13, 14, 16\right\}\right]\]
+
+Vi fick alltså att $G_1 = \left<4, 6, 13\right>=\left\{4, 6, 8, 10, 12, 13, 14, 16, \ldots\right\}$. Konduktören för semigruppen är 16. Vi fick dessutom veta att 13 kommer från $p_1^3 - p_2^2 = t^{15} + 2 t^{14} + t^{13}$, där $p_1 = t^5 + t^4$ och $p_2 = t^7 + t^6$.
+
+Vi kan också jämföra detta resultat med den numeriska semigruppen som motsvarar polynomringen vi får om vi först gör en omparametrisering av kurvan i punkten $t = 0$:
+
+\begin{verbatim}
+> Reparametrize(t^4+t^5,t^6+t^7,t,0,15,0,false);
+
+Elapsed Time: 0.047 s.
+\end{verbatim}
+\[
+\begin{array}{l}
+\left[t^4, t^6+\frac{1}{2}*t^7+\frac{1}{2}t^8+\frac{39}{64}t^9+\frac{105}{128}t^{10}+\frac{4807}{4096}t^{11}+\frac{7}{4}t^{12}+\right.\\[8pt]
+\left.\frac{352495}{131072}t^{13}+\frac{138567}{32768}t^{14}+\frac{113591595}{16777216}t^{15}\right]\\
+\end{array}
+\]
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^4,t^6 + 1/2*t^7 + 1/2*t^8 + 
+   39/64*t^9 + 105/128*t^10 + 4807/4096*t^11 + 7/4*t^12 + 
+   352495/131072*t^13 + 138567/32768*t^14 + 
+   113591595/16777216*t^15],t,true,true);
+\end{verbatim}
+
+\[p_1=t^4\]
+\[
+\begin{array}{rcl}
+16777216 p_2 & = & 113591595 t^{15} + 70946304 t^{14} + 45119360 t^{13} +\\[3pt]
+& + & 29360128 t^{12} + 19689472 t^{11} + 13762560 t^{10} +\\[3pt]
+ & + & 10223616 t^9 + 8388608 t^8 + 8388608 t^7 + 16777216 t^6\\[3pt]
+\end{array}\]
+\[
+\begin{array}{l}
+-281474976710656 p_1^3 + 281474976710656 p_2^2 =\\[3pt]
+\qquad 12903050454644025 t^{30} + 16117807661429760 t^{29} +\\[3pt]
+\qquad 15283738186818816 t^{28} + 13072231199539200 t^{27} +\\[3pt]
+\qquad 10674858838319104 t^{26} + 8569833185345536 t^{25} +\\[3pt]
+\qquad 6914209094303744 t^{24} + 5754492897198080 t^{23} +\\[3pt]
+\qquad 5214414567374848 t^{22} + 6901048593612800 t^{21} +\\[3pt]
+\qquad 4222124650659840 t^{20} + 2618276488151040 t^{19} +\\[3pt]
+\qquad 1650916709105664 t^{18} + 1063090305105920 t^{17} +\\[3pt]
+\qquad 703687441776640 t^{16} + 483785116221440 t^{15} +\\[3pt]
+\qquad 351843720888320 t^{14} + 281474976710656 t^{13}\\
+\end{array}
+\]
+
+\begin{verbatim}
+Elapsed Time: 0.015 s.
+\end{verbatim}
+\[\left[4, 6, 13\right]\]
+
+Från detta ser vi inte bara att den numeriska semigruppen är oförändrad vid omparametriseringen. Vi kan även notera att generatorn 13 genereras på samma sätt i båda fallen:
+\[\mathbf{o}(p_1^3 - p_2^2) = 13\]
+
+\subsection{Exempel --- Beräkningsintensivitet}
+\label{CostRingExample}
+
+Följande exempel är mer beräkningsintensivt. Vi skall beräkna den numeriska semigruppen $G_2$ motsvarande $\mathbb{C}\left[t^8 + t^{11}, t^{12} + t^{13}\right]$. För att se skillnaden i tidsåtgång mellan att endast beräkna generatorerna till semigruppen och att dessutom beräkna motsvarande polynom, gör vi två exekveringar enligt följande:
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^11+t^8, t^13+t^12], t);
+
+Elapsed Time: 1.078 s.
+\end{verbatim}
+\[\left[8, 12, 25\right]\]
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^11+t^8, t^13+t^12], t, 
+     true, true);
+\end{verbatim}
+\[p_1 = t^{11} + t^8 \]
+\[p_2 = t^{13} + t^{12} \]
+\[-p_1^3+p_2^2 = -t^{33}-3t^{30}-3t^{27}+t^{26}+2t^{25}\]
+\begin{verbatim}
+Elapsed Time: 4.671 s.
+\end{verbatim}
+\[\left[8, 12, 25\right]\]
+
+\begin{verbatim}
+> FindSemiGroup([8,12,25]);
+
+Elapsed Time: 0.016 s.
+\end{verbatim}
+\[
+\begin{array}{l}
+\left[80, \left\{8, 12, 16, 20, 24, 25, 28, 32, 33, 36, 37, 40, 41, 44, 45, 48, 49, 50, 52, 53,\right.\right.\\
+\left.\left.56, 57, 58, 60, 61, 62, 64, 65, 66, 68, 69, 70, 72, 73, 74, 75, 76, 77, 78, 80\right\}\right]\\
+\end{array}
+\]
+
+Vi fick alltså att $G_2 = \left<8, 12, 25\right>$. Konduktören för semigruppen är 80. Vi fick dessutom veta att 25 kommer från $-p_1^3 +p_2^2 = -t^{33}-3t^{30}-3t^{27}+t^{26}+2t^{25}$, där $p_1 = t^{11} + t^8$ och $p_2 = t^{13} + t^{12}$.
+
+För att förstå varför detta exempel är så beräkningsintensivt i jämförelse med exempel \ref{SimplePolynomialRingExample} betraktar vi förhållandet mellan konduktörerna och den lägsta av generatorerna i varje exempel. I Exempel \ref{SimplePolynomialRingExample} är den lägsta generatorn 4 och konduktören 16. Dvs. den största potens av denna generator som kan förekomma i algoritmen är 4. I detta exempel däremot, är den lägsta generatorn 8 men konduktören är 80. Detta betyder att den högsta potensen av denna generator som förekommer i algoritmen är 10. Antalet kombinationer av generatorerna är i detta exempel mycket större, varför algoritmen måste generera betydligt fler polynom innan den är klar. Dessutom växer polynomen i takt med att större potenser förekommer i dem. Detta gör polynommultiplikationer kostbara m.a.p. tidsåtgång. Att denna faktor är betydande ser man i detta senare exempel. Vi beräknar semigruppen två gånger, först beräknas bara generatorerna, sedan även polynom motsvarande dessa generatorer. Eftersom komplexiteten är densamma i de två anropen ser vi att polynomaritmetiken i det senare fallet gjorde att funktionsanropet tog flera gånger längre tid att beräknas.
+
+För att avsluta exemplet, undersöker vi vad som händer om vi först gör en
+omparametrisering av kurvan:
+
+\begin{verbatim}
+> Reparametrize(t^8+t^11,t^12+t^13,t,0,20,2,false);
+
+Elapsed Time: 0.062 s.
+\end{verbatim}
+\[\left[t^8, t^{13}+t^{12}-\frac{3}{2}t^{15}-\frac{13}{8}t^{16}+\frac{39}{16}t^{18}+\frac{351}{128}t^{19}\right]\]
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^8, t^12 + t^13-3/2*t^15-
+     13/8*t^16+39/16*t^18+351/128*t^19],t,true,true);
+\end{verbatim}
+\[p_1 = t^8\]
+\[128p_2 = 351t^{19}+312t^{18}-208t^{16}-192t^{15}+128t^{13}+128t^{12}\]
+\[
+\begin{array}{rcl}
+-16384p_1^3+16384p_2^2 & = & 123201t^{38}+219024t^{37}+97344t^{36}-\\
+& - & 146016t^{35}-264576t^{34}-119808t^{33}+\\
+& + & 133120t^{32}+249600t^{31}+116736t^{30}-\\
+& - & 53248t^{29}-102400t^{28}-49152t^{27}+\\
+& + & 16384t^{26}+32768t^{25}\\
+\end{array}
+\]
+\begin{verbatim}
+Elapsed Time: 4.000 s.
+\end{verbatim}
+\[\left[8, 12, 25\right]\]
+
+Även i detta exempel förblir semigruppen oförändrad. Dessutom fås generatorerna på samma sätt: $\mathbf{o}(p_1^3 - p_2^2) = 25$.
+
+\subsection{Exempel --- Flera polynom}
+
+Följande enkla exempel visar att vi kan använda fler än två polynom som indata. Vi skall beräkna den numeriska semigruppen $G_3$ motsvarande $\mathbb{C}\left[t^5, t^7, t^{12} + t^{13}\right]$:
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^5,t^7,t^12+t^13],t,
+     true,true);
+\end{verbatim}
+\[p_1 = t^5\]
+\[p_2 = t^7\]
+\[-p_1 p_2 + p_3 = t^{13}\]
+\begin{verbatim}
+Elapsed Time: 0.016 s.
+\end{verbatim}
+\[\left[5, 7, 13\right]\]
+
+\begin{verbatim}
+> FindSemiGroup([5,7,13]);
+
+Elapsed Time: 0.000 s.
+\end{verbatim}
+\[\left[17, \left\{5, 7, 10, 12, 13, 14, 15, 17\right\}\right]\]
+
+Vi fick alltså att $G_3 = \left<5, 7, 13\right>=\left\{5, 7, 10, 12, 13, 14, 15, 17, \ldots\right\}$. Konduktören för semigruppen är 17. Vi fick dessutom veta att 13 kommer från $-p_1 p_2 + p_3 = t^{13}$, där $p_1 = t^5$, $p_2 = t^7$ och $p_3 = t^{12} + t^{13}$.
+
+\subsection{Exempel --- Längre kedjor}
+
+Här är ett annat enkelt litet exempel som visar att kedjan för att hitta generatorerna kan vara litet längre. Vi skall beräkna den numeriska semigruppen $G_4$ motsvarande $\mathbb{C}\left[t^4, t^6 + t^8 + t^{11}\right]$.
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^4,t^6+t^8+t^11],
+     t,true,true);
+\end{verbatim}
+\[p_1 = t^4\]
+\[p_2 = t^{11}+t^8+t^6\]
+\[p_1^4-p_1^3-2p_1^2 p_2+p_2^2 = t^{22}+2t^{17}\]
+\begin{verbatim}
+Elapsed Time: 0.000 s.
+\end{verbatim}
+\[\left[4, 6, 17\right]\]
+
+\begin{verbatim}
+> FindSemiGroup([4,6,17]);
+
+Elapsed Time: 0.000 s.
+\end{verbatim}
+\[\left[20, \left\{4, 6, 8, 10, 12, 14, 16, 17, 18, 20\right\}\right]\]
+
+Vi får att $G_4 = \left<4, 6, 17\right>=\left\{4, 6, 8, 10, 12, 14, 16, 17, 18, 20, \ldots\right\}$. Konduktören för semigruppen är 20. Vi fick dessutom veta att generatorn 17 kommer från $p_1^4 -p_1^3 - 2 p_1^2 p_2 +p_2^2 = t^{22} + 2 t^{17}$, där $p_1 = t^4$ och $p_2 = t^{11} +t^8 +t^6$.
+
+\subsection{Exempel --- Andra enkel längre kedja}
+
+Ett annat trivialt exempel: Här beräknas den numeriska semigruppen $G_5$ motsvarande $\mathbb{C}\left[t^2, t^4 + t^6 + t^{10} + t^{13}\right]$.
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^2,t^4+t^6+t^10+t^13],
+     t,true,true);
+\end{verbatim}
+\[p_1 = t^2\]
+\[-p_1^5 - p_1^3 - p_1^2 + p_2 = t^{13}\]
+\begin{verbatim}
+Elapsed Time: 0.015 s.
+\end{verbatim}
+\[\left[2, 13\right]\]
+\begin{verbatim}
+> FindSemiGroup([2,13]);
+
+Elapsed Time: 0.000 s.
+\end{verbatim}
+\[\left[12, \left\{2, 4, 6, 8, 10, 12\right\}\right]\]
+
+Vi fick att $G_5 = \left<2, 13\right>=\left\{2, 4, 6, 8, 10, 12, \ldots\right\}$. Konduktören för semigruppen är 12 (dvs. mindre än den större generatorn). Vi fick dessutom veta att 13 kommer från $-p_1^5-p_1^3-p_1^2+p2 = t^{13}$, där $p_1 = t^2$ och $p_2 = t^4+t^6+t^{10}+t^{13}$.
+
+\subsection{Exempel --- Avslutande exempel}
+
+Här kommer ett litet besvärligare exempel: Vi ska beräkna den numeriska semigruppen $G_6$ motsvarande $\mathbb{C}\left[t^2 + t^5, t^4 + t^6 + t^{10} + t^{13}\right]$:
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^2+t^5,
+     t^4+t^6+t^10+t^13],t,true,true);
+\end{verbatim}
+\[p_1 = t^5+t^2\]
+\[p_1^3+p_1^2-p_2 = t^{15}-t^{13}+3t^{12}+3t^9+2t^7\]
+\begin{verbatim}
+Elapsed Time: 0.000 s.
+\end{verbatim}
+\[\left[2, 7\right]\]
+\begin{verbatim}
+> FindSemiGroup([2,7]);
+
+Elapsed Time: 0.000 s.
+\end{verbatim}
+\[\left[6, \left\{2, 4, 6\right\}\right]\]
+
+Vi fick att $G_6 = \left<2, 7\right>=\left\{2, 4, 6,\ldots\right\}$. Konduktören för semigruppen är 6 (dvs. mindre än den större generatorn). Vi fick dessutom veta att 7 kommer från $p_1^3 + p_1^2 - p_2 = t^{15} - t^{13} + 3 t^{12} + 3 t^9 + 2 t^7$, där $p_1 = t^2 + t^5$ och $p_2 = t^4 + t^6 + t^{10} + t^{13}$.
+
+För skojs skull gör vi även här en omparametrisering för att se dess motsvarande semigrupp, och hur generatorerna härleds:
+
+\begin{verbatim}
+> Reparametrize(t^5+t^2, t^13+t^10+t^6+t^4, t, 0, 10, 0, false);
+
+Elapsed Time: 0.016 s.
+\end{verbatim}
+\[\left[t^2,7t^{10}-3t^9-2t^7+t^6+t^4\right]\]
+
+\begin{verbatim}
+> FindSemiGroupFromPolynomialRing([t^2,t^4+t^6-2*t^7
+     -3*t^9+7*t^10],t,true,true);
+\end{verbatim}
+\[p_1 = t^2\]
+\[p_1^3 + p_1^2 - p_2 = -7 t^{10} + 3 t^9 + 2 t^7\]
+\begin{verbatim}
+Elapsed Time: 0.000 s.
+\end{verbatim}
+\[\left[2, 7\right]\]
+
+Återigen ser vi att semigruppen förblir oförändrad vid omparametrisering. Även generatorerna fås på samma sätt: $\mathbf{o}\left(p_1^3 + p_1^2 - p_2\right) = 7$.

@@ -1,0 +1,23 @@
+TestFunctionsXYForMultiplicitySequenceSum := proc(SumM,PrintFunctions)
+	local Sequences, Sequence, i, c, F, StartTime;
+
+	StartTime := time();
+
+	Sequences:=FindMultiplicitySequences(SumM);
+	c:=nops(Sequences);
+
+	for i to c do
+		Sequence:=Sequences[i];
+		F:=FindFunctionXYFromMultiplicitySequence(Sequence,true);
+		
+		if MultiplicitySequenceXY(F[1],x,y)<>Sequence then
+			ERROR("Unable to find correct function.", F[1], Sequence)
+		end if;
+
+		if PrintFunctions then
+			print (Sequence, op(F[2..nops(F)]))
+		end if
+	end do;
+
+	RETURN([nops(Sequences), time() - StartTime])
+end proc

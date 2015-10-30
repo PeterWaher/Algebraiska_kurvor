@@ -1,0 +1,60 @@
+\documentclass[twoside]{report}
+\pagestyle{headings}
+\usepackage[swedish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{maplestd2e}
+
+
+\newtheorem{Definition}{Definition}[chapter]
+\newtheorem{Theorem}{Sats}[chapter]
+\newtheorem{Lemma}{Lemma}[chapter]
+\newtheorem{Corollary}{Följdsats}[chapter]
+
+
+% Title Page
+\title{Algoritmer inom \\
+	kommutativ \& geometrisk algebra \\[20pt]
+	\large Omparametrisering av kurvor, semigrupper, \\
+	implicit notation \& multiplicitetsföljder}
+\author{Peter Waher}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\tableofcontents{}
+
+\input{notation.tex}
+\input{kurvor.tex}
+\input{semigrupper.tex}
+\input{implicit_notation.tex}
+\input{multiplicitetsfoljder.tex}
+
+\appendix{}
+
+\input{maple_kurvor.tex}
+\input{maple_semigrupper.tex}
+\input{maple_implicit_notation.tex}
+\input{maple_multiplicitetsfoljder.tex}
+
+\begin{thebibliography}{99}
+\bibitem{HilbertBasisTheorem} Oscar Zariski, Pierre Samuel, Cohen (1975): Commutative Algebra I, Springer Verlag, Graduate Texts in Mathematics vol. 28, ISBN 978-0-387-90089-6. Hilbert Basis Theorem: Chapter IV (Noetherian Rings), §1, Theorem 1.
+
+\bibitem{WeierstrassPreparationTheorem} Oscar Zariski, Pierre Samuel (1975): Commutative Algebra II, Springer Verlag, Graduate Texts in Mathematics vol. 29, ISBN 978-0-387-90171-8. Weierstrass Preparation Theorem: Chapter VII (Formal Power Series), §1, Theorem 5.
+
+\bibitem{GitHub} Peter Waher (2015): FindNrMultiplicitySequences project on GitHub: https://github.com/PeterWaher/FindNrMultiplicitySequences/
+
+\bibitem{NelderMead} Jeff Heaton (2013): Artificial Intelligence for Humans, Volume 1, ISBN 978-1493682225. Nelder Mead Algoritm: Chapter 8, page 179.
+
+\bibitem{ClaysterScript} Peter Waher (2008-2015): Clayster Script. Script syntax, online: https://wiki.clayster.com/mediawiki/index.php?title=Script\_syntax
+
+\end{thebibliography}
+
+\end{document}          

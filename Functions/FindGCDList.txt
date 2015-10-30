@@ -1,0 +1,28 @@
+FindGCDList := proc(IntegerList)
+	local NrIntegers, Position, GCD, Coefficients, l;
+
+	if not type(IntegerList, list) then
+		ERROR("IntegerList must be a list of integers!", IntegerList)
+	end if;
+
+	NrIntegers := nops(IntegerList);
+	if NrIntegers < 1 then
+		ERROR("IntegerList must be a list of at least one integer!", IntegerList)
+	elif NrIntegers = 1 then
+		RETURN([IntegerList1, [1]])
+	end if;
+
+	l := FindGCD(IntegerList[1], IntegerList[2]);
+	GCD := l[1];
+	Coefficients := [l[2], l[3]];
+	Position := 3;
+
+	while Position <= NrIntegers do
+		l := FindGCD(GCD, IntegerList[Position]);
+		GCD := l[1];
+		Coefficients := [op(Coefficients * l[2]), l[3]];
+		Position := Position + 1
+	end do;
+
+	RETURN([GCD, Coefficients])
+end proc

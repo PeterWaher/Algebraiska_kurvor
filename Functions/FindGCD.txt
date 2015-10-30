@@ -1,0 +1,52 @@
+﻿FindGCD := proc(a, b)
+	local a0, b0, m, n, r, GCD, BList, Position, A, B, switch;
+
+	if not type(a, integer) then
+		ERROR("a must be an integer!", a)
+	end if;
+
+	if not type(b, integer) then
+		ERROR("b must be an integer!", b)
+	end if;
+
+	if a < b then
+		m := b; 
+		n := a; 
+		switch := true
+	else
+		m := a; 
+		n := b; 
+		switch := false
+	end if;
+
+	a0 := m;
+	b0 := n;
+	GCD := n;
+	r := m mod n;
+	Position := 1;
+
+	while r <> 0 do
+		BList[Position] := -(m - r)/n;
+		Position := Position + 1;
+		m := n;
+		n := r;
+		GCD := r;
+		r := m mod n
+	end do;
+
+	A := 0;
+	B := 1;
+
+	while 1 < Position do
+		Position := Position - 1;
+		r := B;
+		B := A + BList[Position] * B;
+		A := r
+	end do;
+
+	if switch then
+		RETURN([GCD, B, A])
+	else
+		RETURN([GCD, A, B])
+	end if
+end proc

@@ -1,0 +1,32 @@
+MultiplicitySequenceXY := proc(F, XVariable, YVariable)
+	local M, m, G, resp;
+
+	if coeff(F, YVariable, 0) = 0 then
+		ERROR("Function not irreducible.", F )
+	end if;
+
+	m := infinity;
+	M := [];
+	G := F;
+
+	while 1 <= m and degree(G)>0 do
+		resp := BlowUpXY(G, XVariable, YVariable);
+		m := resp[1];
+
+		if G = resp[2] then 
+			ERROR("Infinite loop.", G)
+		end if;
+
+		G := resp[2];
+
+		if 0 < m then
+			M := [op(M), m]
+		end if;
+
+		if 4 <= nargs then
+			print([m, G])
+		end if
+	end do;
+
+	RETURN(M)
+end proc

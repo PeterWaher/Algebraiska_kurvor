@@ -1,0 +1,30 @@
+FindMultiplicitySequences := proc(SumM)
+	local Sequences, SubSequences, MaxMultiplicity, i, j, c;
+
+	if nargs >= 2 then
+		MaxMultiplicity:=args[2];
+		if (MaxMultiplicity>SumM) then
+			MaxMultiplicity:=SumM
+		end if
+	else
+		MaxMultiplicity:=SumM
+	end if;
+
+	Sequences:={};
+
+	if (MaxMultiplicity>0) then
+		for i to MaxMultiplicity do
+			if (i<SumM) then
+				SubSequences:=FindMultiplicitySequences(SumM-i, i);
+				c:=nops(SubSequences);
+				for j to c do
+					Sequences:=Sequences union {[i, op(SubSequences[j])]};
+				end do
+			else
+				Sequences:=Sequences union {[i]};
+			end if
+		end do
+	end if;
+
+	RETURN(Sequences)
+end proc

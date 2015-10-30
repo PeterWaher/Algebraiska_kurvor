@@ -1,0 +1,378 @@
+FindSemiGroupFromPolynomialRing := proc(PolynomialGenerators, Variable)
+	local StartTime, GCD, Conductor, Polynomials, NrPolynomials, MaxPolynomials,
+		Generators, PolynomialsByOrder, Orders, ExplicitNotation,
+		FirstExplicitNotation, NrOriginalPolynomials, OriginalOrders,
+		MaxExponent, MinOrder, HighestOrder, CalcExplicit, MaxTerm,
+		MaxTerms, a, b, c, d, e, f, g, h, e1, e2, g1, g2, g3, d1, d2, d3, p;
+
+	StartTime := time();
+
+	CalcExplicit := 4 <= nargs and args[4];
+
+	if 5 <= nargs then
+		MaxPolynomials:=args[5]
+	else
+		MaxPolynomials:=5000
+	end if;
+
+	if not type(PolynomialGenerators, list) then
+		ERROR("PolynomialGenerators must be a list of polynomials!", PolynomialGenerators)
+	end if;
+
+	NrOriginalPolynomials := nops(PolynomialGenerators);
+	if NrOriginalPolynomials = 0 then
+		ERROR("List of polynomials cannot be empty!")
+	end if;
+
+	f := PolynomialGenerators;
+	for a to NrOriginalPolynomials do
+		g1 := f[a];
+		if not type(g1, polynom) then
+			ERROR("PolynomialGenerators must be a list of polynomials!", PolynomialGenerators)
+		end if;
+
+		ExplicitNotation[a] := p[a];
+		OriginalOrders[a] := ldegree(g1, Variable);
+		Orders[a] := OriginalOrders[a]
+	end do;
+
+	for a from 2 to NrOriginalPolynomials do
+		for b to a - 1 do
+			if Orders[a] < Orders[b] then
+				c := Orders[a];
+				Orders[a] := Orders[b];
+				Orders[b] := c;
+				c := f[a];
+				f[a] := f[b];
+				f[b] := c;
+				c := ExplicitNotation[a];
+				ExplicitNotation[a] := ExplicitNotation[b];
+				ExplicitNotation[b] := c
+			end if
+		end do
+	end do;
+
+	MinOrder := Orders[1];
+	GCD := MinOrder;
+	Generators := [MinOrder];
+	g1 := f[1];
+	e := coeff(g1, Variable, MinOrder);
+	Polynomials[1] := g1/e;
+	ExplicitNotation[1] := ExplicitNotation[1]/e;
+	g := 1;
+
+	for a from 2 to NrOriginalPolynomials do
+		g1 := f[a];
+		b := ExplicitNotation[a];
+
+		for h to g do
+			g2 := Polynomials[h];
+			d2 := ldegree(g2, Variable);
+			e := coeff(g1, Variable, d2);
+
+			if e <> 0 then
+				g1 := g1 - e * g2;
+				b := b - e * ExplicitNotation[h]
+			end if
+		end do;
+
+		if g1 <> 0 then
+			d := ldegree(g1, Variable);
+			Generators := [op(Generators), d];
+			GCD := gcd(GCD, d);
+			e := coeff(g1, Variable, d);
+			g1 := g1/e;
+			b := b/e;
+			g := g + 1;
+			Polynomials[g] := g1;
+			ExplicitNotation[g] := b;
+
+			for h to g - 1 do
+				g2 := Polynomials[h];
+				e := coeff(g2, Variable, d);
+				if e <> 0 then
+					g2 := g2 - e * g1;
+					Polynomials[h] := g2;
+					ExplicitNotation[h] := ExplicitNotation[h] - e * b
+				end if
+			end do
+		end if
+	end do;
+
+	NrPolynomials := g;
+	if GCD = 1 then
+		Conductor := FindConductor(Generators, false);
+		MaxTerm := Variable^(Conductor+1);
+
+		for c to NrOriginalPolynomials do
+			MaxExponent[c] := ceil((Conductor + 1)/OriginalOrders[c])
+		end do
+	else
+		Conductor := infinity
+	end if;
+
+	HighestOrder := max(op(Generators));
+	for a from MinOrder to HighestOrder do
+		PolynomialsByOrder[a] := 0
+	end do;
+
+	for a to NrPolynomials do
+		f := Polynomials[a];
+		d := ldegree(f, Variable);
+		Orders[a] := d;
+		PolynomialsByOrder[d] := a;
+		FirstExplicitNotation[d] := ExplicitNotation[a]
+	end do;
+
+	a := 1;
+	while a <= NrPolynomials do
+		g1 := Polynomials[a];
+		d1 := Orders[a];
+
+		if g1 <> 0 and d1 <= Conductor then
+			if CalcExplicit then
+				e1 := ExplicitNotation[a]
+			end if;
+
+			b := 1;
+			while b <= a do
+				if b = a then
+					g2 := g1;
+					d2 := d1
+				else
+					g2 := Polynomials[b];
+					d2 := Orders[b]
+				end if;
+
+				if g2 <> 0 and d2 <= Conductor then
+					d := sort(simplify(expand(g1 * g2)));
+					if CalcExplicit then
+						e2 := expand(e1 * ExplicitNotation[b])
+					end if;
+
+					d3 := d1 + d2;
+					while d3 <= HighestOrder and d3 <= Conductor and d <> 0 and PolynomialsByOrder[d3] <> 0 do
+						c := PolynomialsByOrder[d3];
+						g3 := Polynomials[c];
+
+						if g3 = 0 then
+							ERROR("Runtime Error", d)
+						end if;
+
+						e := coeff(d, Variable, d3);
+						d := d - e * g3;
+
+						if CalcExplicit then
+							e2 := e2 - e * ExplicitNotation[c]
+						end if;
+
+						d3 := ldegree(d, Variable)
+					end do;
+
+					if d <> 0 and d3 <= Conductor then
+						e := coeff(d, Variable, d3);
+						d := d/e;
+
+						if CalcExplicit then
+							e2 := e2/e
+						end if;
+
+						Generators := [op(Generators), d3];
+						GCD := gcd(GCD, d3);
+
+						if GCD = 1 and Conductor = infinity then
+							Conductor := FindConductor(Generators, false);
+
+							if Conductor < d3 then
+								Conductor := d3
+							end if;
+
+							for c to NrOriginalPolynomials do
+								MaxExponent[c] := ceil((Conductor + 1)/OriginalOrders[c]);
+								MaxTerms[c] := p[c]^MaxExponent[c]
+							end do;
+
+							MaxTerm := Variable^(Conductor+1);
+							if Conductor < degree(d, Variable) then
+								d := rem(d, MaxTerm, Variable);
+								if CalcExplicit then
+									for c to NrOriginalPolynomials do
+										if MaxExponent[c] < degree(e2, p[c]) then
+											e2 := expand(rem(e2, MaxTerms[c], p[c]))
+										end if
+									end do
+								end if
+							end if;
+
+							for c to NrPolynomials do
+								e := Polynomials[c];
+								if e <> 0 and Conductor < degree(e, Variable) then
+									Polynomials[c] := rem(e, MaxTerm, Variable);
+
+									if CalcExplicit then
+										if Polynomials[c] = 0 then
+											ExplicitNotation[c] := 0
+										end if
+									else
+										e := ExplicitNotation[c];
+										for f to NrOriginalPolynomials do
+											if MaxExponent[f] < degree(e, p[f]) then
+												e := expand(rem(e, MaxTerms[f], p[f]))
+											end if
+										end do;
+
+										ExplicitNotation[c] := e
+									end if
+								end if
+							end do
+						elif Conductor < degree(d, Variable) then
+							d := rem(d, MaxTerm, Variable);
+							if CalcExplicit then
+								for c to NrOriginalPolynomials do
+									if MaxExponent[c] < degree(e2, p[c]) then
+										e2 := expand(rem(e2, MaxTerms[c], p[c]))
+									end if
+								end do
+							end if
+						end if;
+
+						NrPolynomials := NrPolynomials + 1;
+						if NrPolynomials > MaxPolynomials then
+							ERROR("Generated more polynomials than allowed. Solution not found.", MaxPolynomials)
+						end if;
+
+						Polynomials[NrPolynomials] := d;
+						Orders[NrPolynomials] := d3;
+
+						if CalcExplicit then
+							ExplicitNotation[NrPolynomials] := e2;
+							FirstExplicitNotation[d3] := e2
+						end if;
+
+						if HighestOrder < d3 then
+							HighestOrder := HighestOrder + 1;
+							while HighestOrder < d3 do
+								PolynomialsByOrder[HighestOrder] := 0;
+								HighestOrder := HighestOrder + 1
+							end do
+						end if;
+
+						PolynomialsByOrder[d3] := NrPolynomials;
+						h := NrPolynomials - 1;
+
+						for c to h do
+							e := Polynomials[c];
+							if e <> 0 then
+								f := coeff(e, Variable, d3);
+								if f <> 0 then
+									e := e - f * d;
+									NrPolynomials := NrPolynomials + 1;
+									if NrPolynomials > MaxPolynomials then
+										ERROR("Generated more polynomials than allowed. Solution not found.", MaxPolynomials)
+									end if;
+
+									g := Orders[c];
+									Polynomials[NrPolynomials] := e;
+									Orders[NrPolynomials] := g;
+									PolynomialsByOrder[g] := NrPolynomials;
+
+									if CalcExplicit then
+										e := ExplicitNotation[c] - f * e2;
+										ExplicitNotation[NrPolynomials] := e
+									end if;
+
+									Polynomials[c] := 0
+								end if
+							end if
+						end do
+					end if
+				end if;
+
+				b := b + 1
+			end do
+		end if;
+
+		a := a + 1
+	end do;
+
+	if Conductor = infinity then
+		ERROR("No upper bound found.", PolynomialGenerators)
+	end if;
+
+	Generators := sort(Generators);
+	a := {};
+	b := [];
+	for c to nops(Generators) do
+		d := Generators[c];
+		if d <= Conductor and not member(d, a) then
+			b := [op(b), d];
+			e := d;
+			f := {};
+			while e <= Conductor do
+				f := f union {e};
+
+				for h to nops(a) do
+					g := a[h] + e;
+					if g <= Conductor then 
+						f := f union {g}
+					end if
+				end do;
+
+				e := e + d
+			end do;
+
+			a := a union f
+		end if
+	end do;
+
+	Generators := b;
+	if CalcExplicit then
+		for c to NrOriginalPolynomials do
+			MaxExponent[c] := ceil((Conductor + 1)/OriginalOrders[c]);
+			MaxTerms[c] := p[c]^MaxExponent[c]
+		end do;
+
+		MaxTerm := Variable^(Conductor+1);
+
+		for a to nops(Generators) do
+			b := Generators[a];
+			c := FirstExplicitNotation[b];
+
+			for e to NrOriginalPolynomials do
+				c := expand(rem(c, MaxTerms[e], p[e]))
+			end do;
+
+			d := convert(c, list);
+			if 1 < nops(d) then
+				for e to nops(d) do
+					f := d[e];
+
+					for g to NrOriginalPolynomials do
+						f := subs(p[g] = PolynomialGenerators[g], f)
+					end do;
+
+					if b < ldegree(f) then 
+						c := c - d[e] 
+					end if
+				end do
+			end if;
+
+			d := c;
+			for g to NrOriginalPolynomials do
+				d := subs(p[g] = PolynomialGenerators[g], d)
+			end do;
+
+			d := sort(expand(d));
+			e := lcm(denom(c), denom(d));
+			c := sort(e * c);
+			d := sort(e * d);
+			print(c = d)
+		end do
+	end if;
+
+	if nargs < 3 or args[3] then
+		printf("Elapsed Time: %0.3f s.\n", time() - StartTime)
+	end if;
+
+	RETURN(Generators)
+end proc

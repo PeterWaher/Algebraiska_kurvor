@@ -1,0 +1,21 @@
+\chapter{Implicit notation}
+
+Hittills har vi studerat parametriserade kurvor på formen $C(t)=(p_x(t),p_y(t))$ för polynom, potensserier eller analytiska funktioner $p_x(t)$ och $p_y(t)$. Men ibland är det enklare och mer fördelaktigt att studera en kurva om kurvan anges implicit, via en ekvation $F(x,y)=0$, där $F: \mathbb{C}^2 \mapsto \mathbb{C}$. I detta kapitel ska vi ägna oss åt hur vi kan omvandla en explicit parametrisering av en kurva till ett implicit angivet uttryck för samma kurva, dvs. söka efter $F(x,y)$ sådan att $F(p_x(t),p_y(t))=0,\forall t \in \mathbb{R}$.
+
+\section{Sökalgoritm}
+
+I kapitel \ref{SearchPolynomials} presenterade vi en sökalgoritm som systematiskt går igenom alla kombinationer (under en given maximal ordning) av ett ändligt antal polynom $p_1,\ldots,p_n$ för att avgöra vilka ordningar som förekommer i den genererade delringen $S=\mathbb{C}\left[p_1,\ldots,p_n\right]$. Vi kan specialanpassa denna algoritm för att hitta den implicita formen av en algebraisk kurva, givet dess parametrisering av två polynom $C(t)=\left(X_p(t),Y_p(t)\right)$:
+
+\begin{itemize}
+\item Vi använder bara två polynom som indata, och sätter $p_1=X_p$ och $p_2=Y_p$.
+
+\item Algoritmen i \ref{SearchPolynomials} begränsar sökningen till polynom av en maximal ordning. Vår algoritm för att hitta den implicita formen kommer begränsa sökningen till en maximal grad av polynom istället.
+
+\item Precis som i \ref{SearchPolynomials} kommer kombinationerna som genereras av parvis multiplikation och därefter linjär eliminering successivt skapa nya polynom av högre och högre ordning, så länge polynomen inte överskrider den givna maximala graden. Men istället för att intressera sig för de nya polynomen i sig, är det nollresultat som är intressanta. Dessa representerar kombinationer av $X_p(t)$ och $Y_p(t)$ som är noll algebraiskt, dvs. oavsett värde på $t$.
+
+\item Det är den kombination av lägst grad som först hittas som returneras av funktionen, om en sådan hittas. Det är också denna kombination som representerar den implicita formen för kurvan.
+\end{itemize}
+
+Vi kallar denna kombination av $p_1$ och $p_2$ av lägst grad som först hittas för $F(x,y)$. Att $F(x,y)=0$ innehåller hela $C(t)$ är klart, då $F$ konstruerades precis så att $F(X_p,Y_p)=0$ rent algebraiskt. Och eftersom $F(x,y)$ är av minimal grad, kan inte $F(x,y)$ vara produkten av två polynom $G(x,y)\cdot H(x,y)$, där $C(t)$ är nollställe till den ena, men inte den andra. Således är $F(x,y)$ den bästa implicita beskrivningen av kurvan som kan fås från $p_1$ och $p_2$.
+
+I bilaga \ref{FindImplicitNotation} presenteras en implementation av ovanstående algoritm, samt flera exempel som visar hur den fungerar.

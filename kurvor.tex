@@ -1,0 +1,142 @@
+\chapter{Kurvor}
+\label{Curves}
+
+\section{Introduktion}
+
+\begin{Definition}
+En \textbf{plan kurva} $C$ är en delmängd i $\mathbb{C}^2$ sådan att det finns två kontinuerliga funktioner $f : \mathbb{R} \rightarrow \mathbb{C}$ och 
+$g : \mathbb{R} \rightarrow \mathbb{C}$ sådana att $C = \left\{\left(f(t), g(t)\right) : t \in \mathbb{R}\right\}$. $(f, g)$ är en \textbf{parametrisering} av $C$. Om $C$ kan parametriseras av två analytiska funktioner $f$ och $g$ kallas $C$ \textbf{analytisk}. Om den kan parametriseras av två polynom kallas $C$ för \textbf{algebraisk}. Om den kan parametriseras av två formella potensserier kallas $C$ \textbf{algebroid}.
+\end{Definition}
+
+Eftersom vi kommer att studera kurvor lokalt, kommer de olika termerna nämnda ovan inte att skilja sig åt så mycket: Polynom är ju i sig formella potensserier där bara ett ändligt antal koefficienter är nollskilda. Analytiska funktioner kan också skrivas som formella potensserier som konvergerar i ett område kring den punkt vi vill studera.
+
+För att förenkla notationen kan vi identifiera kurvan $C$ med en viss parametrisering $(f, g)$, även om parametriseringen inte är unik. Detta görs enklast genom att identifiera kurvan med funktionen $C : R \rightarrow \mathbb{C}^2$, $C(t) = \left(f(t), g(t)\right)$. Notera dock att kurvan som sådan och en av dess parametriseringar är två olika objekt.
+
+När vi studerar egenskaper hos plana kurvor kan vi anta att kurvan går
+genom origo, samt att $f(0) = g(0) = 0$, eller enklare skrivet $C(0) = \mathbf{0}$. Om så inte är fallet kan vi först göra en omparametrisering av $C$ och sedan ett enkelt byte av koordinatsystem:
+
+Anta att $(f, g)$ är en parametrisering av $C$ och att vi vill studera kurvan
+kring punkten $\left(x_0, y_0\right)$, och att $t = t_0$ är sådan att $x_0 = f(t_0)$ och $y_0 = g(t_0)$. Omparametriseringen kan vi göra på följande enkla sätt:
+
+\begin{equation*}
+\left\{
+\begin{array}{lll}
+f^*(t) & = & f(t+t_0) \\
+g^*(t) & = & g(t+t_0) \\
+C^*(t) & = & (f^*(t),g^*(t)) \\
+\end{array}
+\right.
+\end{equation*}
+
+Detta ger att $C^*(\mathbb{R}) = C(\mathbb{R})$, och kurvorna $C^*$ och $C$ är identiska. Koordinatbytet gör man enklast:
+
+\begin{equation*}
+\left\{
+\begin{array}{lll}
+x^{**} & = & x-x_0 \\
+y^{**} & = & y-y_0 \\
+f^{**}(t) & = & f^*(t)-x_0 \\
+g^{**}(t) & = & g^*(t)-y_0 \\
+C^{**}(t) & = & (f^{**}(t),g^{**}(t)) \\
+\end{array}
+\right.
+\end{equation*}
+
+Detta ger $C^{**}(\mathbb{R}) = C^*(\mathbb{R}) - (x_0, y_0) = C(\mathbb{R}) - (x_0, y_0)$ och $C^{**}(0) = \mathbf{0}$. I fortsättningen antar vi därför att de plana kurvor $C$ som vi studerar har egenskapen $C(0) = \mathbf{0}$.
+
+
+\begin{Definition}
+Om en kurva $C$ har en parametrisering $(f, g)$ sådan att $f'(0) \neq 0$ eller $g'(0) \neq 0$ kallas kurvan \textbf{reguljär}. Annars kallas kurvan \textbf{singulär}.
+\end{Definition}
+
+Bara för att $f'(0) = 0$ och $g'(0) = 0$ i en parametrisering $(f, g)$ av en
+kurva $C$, betyder inte det att kurvan är singulär. Det kan ju finnas en parametrisering av samma kurva där någon av derivatorna är nollskilda. Exempelvis är $(t^3, t^3)$ och $(t, t)$ två olika parametriseringar av samma kurva. I det första exemplet är derivatorna $0$ i origo medan de i det andra
+exemplet båda är nollskilda. (Notera dock att $(t^2, t^2)$ och $(t, t)$ inte motsvarar samma kurva. Den första innehåller inte punkterna $(t, t)$ för $t < 0$.)
+
+\section{Omparametrisering av kurvor}
+
+För att studera egenskaper hos en viss kurva $C = (f(t), g(t))$ kan det ibland vara intressant att göra en omparametrisering av kurvan till en enklare eller mer fördelaktig form. För utritande av kurvor spelar kanske parametriseringen inte så stor roll. Men vill man beräkna $y(x) = g(f^{-1}(x))$ eller $x(y) = f(g^{-1}(y))$ för motsvarande kurva, står man genast inför en mängd problem eftersom parametriseringen kan vara så generell. Ofta är det väldigt svårt att explicit hitta inversen av en analytisk funktion, även om den är så ``enkel'' som ett polynom. Dessutom brukar inverserna vara flervärda så man måste på något sätt bestämma sig för vilken del av kurvan man är intresserad av.
+
+Vi kan väldigt lätt skapa omparametriseringar av kurvan $C$ ovan, genom
+att ta en funktion $\phi(t)$ som är analytisk kring $t = 0$ och sådan att $\phi(0) = 0$, och därefter skapa parametriseringen \[C^*(t) = (f^*(t), g^*(t)) = (f(\phi(t)), g(\phi(t)))\]
+
+Om $\phi(t)$, $f(t)$ och $g(t)$ är reellvärda är också parametriseringen $C^*(t)$ reellvärd.
+
+Eftersom $\phi$ är analytisk kring $t = 0$ och $\phi(0) = 0$ vet vi att den är ett-till-ett i ett område kring $t = 0$. Detta säger oss att $\exists I1 \subseteq \mathbb{R}, I2 \subseteq \mathbb{R}$ sådana att $C^*(I1) = C(I2)$, dvs. kurvan som den nya parametriseringen $(f^*(t), g^*(t))$ bildar och den gamla $(f(t), g(t))$ överensstämmer ``delvis''. Är dessutom $\phi$ ett-till-ett i hela $\mathbb{R}$ gäller att $C^*(\mathbb{R}) = C(\mathbb{R})$ eller att kurvorna överensstämmer ``helt''.
+
+Eftersom alla funktioner $\phi$ som är analytiska kring $t = 0$ och $\phi(0) = 0$ kan skrivas på formen \[\phi(t)=\sum_{k=1}^{\infty}a_k t^k\] i ett område kring $t = 0$ (även f(t) och g(t) kan ha denna form om $C$ är analytisk, algebraisk eller algebroid) skall vi studera våra möjligheter att skapa omparametriseringar av kurvan $C(t)$ med hjälp av potensserier.
+
+Först några definitioner:
+
+\begin{Definition}
+\textbf{Ordningen} av ett polynom eller en potensserie $f(t) =
+\sum a_i t^i \neq 0$ är det minsta heltalet $k$ sådant att koefficienten $a_k$ är nollskild, och skrivs $\mathbf{o}(f)$. \textbf{Graden} for motsvarande polynom är det största heltalet $k$ sådant att koefficienten $a_k$ inte är noll, och skrivs $\deg(f)$.
+\end{Definition}
+
+Om $\phi(t) = \sum a_k t^k$ och $f(t) = \sum b_k t^k$, hur ser då $f^*(t) = f(\phi(t)) = \sum c_k t^k$ ut? Följande vet vi: $\mathbf{o}(f^*) = \mathbf{o}(f(\phi)) = \mathbf{o}(f) \cdot \mathbf{o}(\phi)$, samt att \[c_{\mathbf{o}(f^*)}=b_{\mathbf{o}(f)} \cdot {a_{\mathbf{o}(\phi)}}^{\mathbf{o}(f)}\]
+
+Om vi vill att $f^*(t)$ skall vara på formen $f^*(t) = t^n$, där $n = \mathbf{o}(f) \cdot \mathbf{o}(\phi)$, måste således \[a_{\mathbf{o}(\phi)} = \left(\frac{1}{b_{\mathbf{o}(f)}}\right)^\frac{1}{\mathbf{o}(f)} \neq 0\]
+
+Betraktar man hela $\mathbb{C}$ finns $\mathbf{o}(f)$ olika lösningar för $a_{\mathbf{o}(\phi)}$. Dock skall vi försöka välja en lösning sådan att alla $a_k$ blir reella (förutsatt att alla $b_k$ är reella).
+
+För att göra beräkningarna lite enklare och överskådligare, kan vi tills vidare begränsa oss till att bara betrakta funktioner $\phi(t)$ sådana att $a_1 \neq 0$, dvs. att $\mathbf{o}(\phi)=1$. Detta medför att $n = \mathbf{o}(f^*) = \mathbf{o}(f)$ och att 
+\[c_n=b_n \cdot {a_1}^n\]
+
+och vi får
+\[a_1 = \left(\frac{1}{b_n}\right)^\frac{1}{n} \neq 0\]
+
+vilket har $n$ lösningar i $\mathbb{C}$. Den andra koefficienten $c_{n+1}$ i $f^*$ får följande utseende:
+\[c_{n+1} = b_{n+1} {a_1}^{n+1} + n b_n {a_1}^{n-1} a_2\]
+
+Eftersom $n \neq 0$, $b_n \neq 0$ och $a_1 \neq 0$ är detta en linjär ekvation i $a_2$ med en unik lösning. Eftersom vi vill att $f^*$ skall vara på formen $f^*(t) = t^n$ sätter vi således $c_{n+1} = 0$, och vi får:
+
+\[a_2 = -\frac{b_{n+1} {a_1}^{n+1}}{n b_n {a_1}^{n-1}}=-\frac{b_{n+1}}{n b_n} {a_1}^2\]
+
+Vi antar nu att $a_1, \ldots, a_m$ är beräknade och att $c_{n+1} = \ldots = c_{n+m-1} = 0$. För att beräkna $a_{m+1}$ tittar vi på $c_{n+m}$, och sätter denna till $0$. $c_{n+m}$ har bidrag från de $m + 1$ lägsta potenserna i $f(\phi(t))$: $b_n\phi(t)^n$, $b_{n+1}\phi(t)^{n+1}$, \ldots, $b_{n+m}\phi(t)^{n+m}$.
+
+Från $b_{n+m} \phi(t)^{n+m}$ fås ett bidrag $b_{n+m} {a_1}^{n+m}$, som är en konstant (vi har ju antagit att $a1,\ldots,a_m$ är givna). Alla andra termer i denna potens har en grad större än $m + n$.
+
+Från $b_{n+m-k} \phi(t)^{n+m-k}$ skapas en mängd termer på formen
+\[b_{n+m-k} \cdot \prod_{j=1}^{n+m-k} a_{i_j} t^{i_j} = b_{n+m-k} \cdot \left( \prod_{j=1}^{n+m-k} a_{i_j} \right) t^{\sum i_j} \]
+för alla olika talserier $\{i_j\}_1^{n+m-k}$ där $i_j \in \mathbb{Z}^+$ (dvs. $i_j \geq 1$). (Två talserier $\{i_j\}$ och $\{i^*_j\}$ anses lika, om $i_j=i^*_j, \forall j$.) Till koefficienten $c_{n+m}$ bidrar bara termer sådana att $\sum i_j = n+m$. Eftersom $i_j \geq 1$ får vi att $\sum i_j \geq n+m-k$, oavsett val av $\{i_j\}$. $\sum i_j = n+m-k$ fås om $i_j = 1, \forall j$. Det högsta $a_i$ som kan förekomma i termen $c_{n+m}$, motsvarar det största värde $i_j$ kan anta, vilket fås om alla $\{i_j\}$ förutom ett (det största) är $1$:
+\[\max \left( i_j \Bigm| \sum i_j = n+m \right) = (n+m)-(n+m-k-1)=k+1\] 
+$a_{k+1}$ motsvarar således koefficienten i $\phi$ av högst ordning som förekommer i $c_{n+m}$. Vi ser ytterligare att termen där denna koefficient förekommer har formen:
+\[b_{n+m-k} {a_1}^{n+m-k-1} a_{k+1} t^{n+m}\]
+Nämnda val av $\{i_j\}$ kan endast göras på $n + m - k$ olika sätt.
+
+Av ovanstående resonemang ser man att bidragen till $c_{n+m}$ från termerna $b_{n+m-k} \phi(t)^{n+m-k}$ är konstanta (bara beroende av $a_1, \ldots, a_m$), för $k = 0, \ldots , m - 1$, och att bidraget från $b_n \phi(t)^n$ (dvs. då $k = m$) till $c_{n+m}$ är på formen
+\[A_m(a1, \ldots, a_m) + b_n n {a_1}^{n-1} a_{m+1}\]
+där $A_m(a1, \ldots, a_m)$ är en konstant (bara beroende av de givna $a_1, \ldots, a_m$). Om vi kallar bidragen från $b_{n+m-k} \phi(t)^{n+m-k}$ till $c_{n+m}$ ($0 \leq k \leq m-1$) för $B_m(a1, \ldots, a_m)$, vilket vi också såg bara beror på $a_1, \ldots, a_m$, får vi alltså:
+\[c_{n+m} = A_m(a_1, \ldots, a_m) + B_m(a_1, \ldots, a_m) + n b_n {a_1}^{n-1} a_{m+1}\]
+
+Eftersom det var givet att $b_n \neq 0$, $n \neq 0$ och att $a_1 \neq 0$ ser vi att ekvationen $c_{n+m} = 0$ har en unik lösning:
+\[a_{m+1} = -\frac{A_m(a_1, \ldots, a_m) + B_m(a_1, \ldots, a_m)}{n b_n {a_1}^{n-1}}\]
+Värt att observera är följande: $A_m(a_1, \ldots, a_m)$ och $B_m(a_1, \ldots, a_m)$ beror bara på koefficienterna $a_1, \ldots, a_m$ och $\{b_j\}$. Om alla dessa koefficienter är reella är således också $a_{m+1}$ reell.
+
+Vi är nu redo för följande sats.
+
+\begin{Theorem}
+\label{ReparametrizeTheorem}
+Om $C = C(t) = \left(f(t), g(t)\right)$ är en analytisk, algebroid eller algebraisk kurva och $f(t)$ och $g(t)$ är reellvärda, samt att $f(0) = g(0) = 0$, kan kurvan $C$ omparametriseras på formen $C^*(t) = \left(\pm t^n, g^*(t)\right)$ eller på formen $C^*(t) = \left(f^*(t), \pm t^n \right)$ i ett intervall kring $t = 0$, där $f(t)$ och $g(t)$ är formella potensserier. Dessutom gäller att $\mathbf{o}\left(f^*\right) \geq n$ eller att $\mathbf{o}\left(g^*\right) \geq n$.
+\end{Theorem}
+
+\begin{proof}
+Vi kan utan att begränsa oss anta att $f(t)$ och $g(t)$ kan skrivas som potensserier kring $t = 0$. Vi antar först att $n = \mathbf{o}(f) \leq \mathbf{o}(g)$.
+
+Från resonemanget ovan ser vi att vi kan skapa en formell potensserie $\phi(t) = \sum a_k t^k$ sådan att $f^*(t) = f\left(\phi(t)\right) = b_n {a_1}^n t^n = c \cdot t^n$. Vi vill välja $a_1$ sådan att $c = \pm 1$.
+
+Om $n$ är udda, eller om $b_n > 0$ låter vi $c = 1$ vilket ger oss att
+\[a_1 = \left( \frac{1}{b_n} \right) ^ \frac{1}{n}\]
+
+Vi väljer här huvudgrenen för funktionen $x^{1/n}$, vilket ger oss ett reellt tal $a_1$. Om nu $n$ är ett jämnt tal och $b_n < 0$, låter vi istället $c = -1$ vilket ger oss att
+\[a_1 = \left( \frac{1}{-b_n} \right) ^ \frac{1}{n}\]
+
+Även detta tal är ett reellt tal. Om $f(t)$ är reellvärd består dess potensserie bara av reellvärda koefficienter ($\{b_k\}$). Eftersom $a_1$ är reellvärd fås med induktion att alla $a_k$ också är reellvärda, för $k > 1$. Detta ger oss att $g^*(t) = g\left(\phi(t)\right)$ också är reellvärd. Dessutom fås att
+\[\mathbf{o}(g^*) = \mathbf{o}(g) \cdot \mathbf{o}(\phi) = \mathbf{o}(g) \cdot 1 = \mathbf{o}(g) \geq \mathbf{o}(f)\]
+
+Om nu istället $\mathbf{o}(f) > \mathbf{o}(g)$, väljer vi $\phi(t)$ sådan att $g^*(t) = g\left(\phi(t)\right) = \pm t^n$. Resten av beviset är identiskt med ovanstående diskussion, vilket avslutar beviset.
+\end{proof}
+
+Från \emph{Weierstrass Preparation Theorem} \cite{WeierstrassPreparationTheorem} får man att en sådan omparametrisering existerar. Dock presenteras inte en metod över hur en sådan omparametrisering kan tas fram. Genom ovanstående bevis ges inte bara existensen utan även en metod över hur man kan skapa en sådan omparametrisering, givet en algebraisk eller algebroid plan kurva. En analytisk plan kurva kan parametriseras i en delmängd av $\mathbb{R}$ med hjälp av potensserier, så en analytisk plan kurva kan ses som en delvis algebroid kurva kring varje punkt i $\mathbb{R}$.
+
+I bilaga \ref{Reparametrize} på sidan \pageref{Reparametrize} finns även beskrivet en algoritm som beräknar ovanstående omparametrisering för en godtycklig algebraisk kurva, upp till en maximal grad.

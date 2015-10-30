@@ -1,0 +1,14 @@
+TestFunctionsXYForMultiplicitySequences := proc(MaxSumM,PrintFunctions,PrintTimes)
+	local Sequences, StartTime, i, N;
+
+	StartTime := time();
+
+	for i to MaxSumM do
+		N:=TestFunctionsXYForMultiplicitySequenceSum(i, PrintFunctions);
+		if PrintTimes then
+			print([i, op(N)])
+		end if
+	end do;
+
+	printf("Elapsed Time: %0.3f s.\n", time() - StartTime);
+end proc
