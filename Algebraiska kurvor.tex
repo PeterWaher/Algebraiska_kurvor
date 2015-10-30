@@ -19,7 +19,12 @@
 \title{Algoritmer inom \\
 	kommutativ algebra \& algebraisk geometri \\[20pt]
 	\large Omparametrisering av kurvor, semigrupper, \\
-	implicit notation \& multiplicitetsföljder}
+	implicit notation \& multiplicitetsföljder\\[15pt]
+	\hrule \\[15pt]
+	\Large Algorithms in\\
+	commutative algebra \& algebraic geometry \\[20pt]
+	\large Reparametrization of curves, semi-groups, \\
+	implicit notation \& multiplicity sequences\\[20pt]}
 \author{Peter Waher}
 
 
@@ -27,7 +32,19 @@
 \maketitle
 
 \begin{abstract}
+I denna rapport presenteras olika algoritmer inom ramen för kommutativ algebra och algebraisk geometri, med fokus på omparametrisering av algebraiska plana kurvor, semigrupper, implicit notation och multiplicitetsföljder. Höjdpunkter inkluderar egenutvecklade algoritmer för omparametriserar plana algebraiska kurvor på formen $(\pm t^n, p(t))$ eller $(p(t), \pm t^n)$, där $\mathbf{o}(p)\geq n$, beräkning av generatorerna till semigrupper motsvarande givna delringar i $\mathbb{C}[x_1,\ldots,x_n]$, sökning efter den implicita notationen för en kurva givet en parametrisering, generering av multiplicitetsföljder från den implicita notationen samt omvänt hitta funktionsfamiljer motsvarande en given multiplicitetsföljd. Rapporten avslutas med en empirisk studie i komplexiteten hos talföljden $N_i$ av antalet multiplicitetsföljder vars multiplicitetssumma motsvarar $i$.
+
+\begin{center}
+	\textbf{Abstract}
+\end{center}
+
+In this report various algorithms within the realm of commutative algebra and algebraic geometry are presented. The focus is set on re-parametrization of plane algebraic curves, semi-groups, implicit notation and multiplicity sequences. Highlights include self-developed algorithms that re-parametrize plane algebraic curves to the form $(\pm t^n, p(t))$ or $(p(t), \pm t^n)$, were $\mathbf{o}(p)\geq n$, calculation of the generators of semi-groups corresponding to given sub-rings to $\mathbb{C}[x_1,\ldots,x_n]$, search for the implicit notation of a curve, given a parametrization, generation of multiplicity sequences from the implicit notation as well as reversely find a family of curves that correspond to a given multiplicity sequence. The report finishes with an empiric study of the complexity of the number sequence $N_i$ of the number of multiplicity sequences whose multiplicity sum corresponds to $i$.
 \end{abstract}
+
+\section*{Förord}
+
+Denna rapport, vilken är resultatet av ett självständigt arbete inom Matematik om 30 poäng, är en rapport av typ $\mathfrak{L}_2$, eller $\text{\emph{Lasaros}}^2$. Efter att ha avbrutit mina matematikstudier 1993 utan att ta examen för att arbeta med utveckling av TV-spel, gav professor Ralf Fröberg på matematiska institutionen vid Stockholms Universitet mig möjligheten att ta examen i matematik igen år 2002 då lusten att avsluta studierna gjorde sig känd. Efter att ha gjort klart största delen av arbetet, ville dock ödet sätta käppar i hjulet och ge mig en läxa, genom att få min dator och hårddisk att totalt haverera. Efter ett dyrbart besök hos en specialist på området gav jag dock upp hoppet om att kunna återskapa arbetet från de sektorer han lyckades rädda. \TeX är inte förlåtande, och tiden det skulle ta att återskapa arbetet från den genererade PDF-filen för att kunna skriva klart arbetet var för mycket för mig vid den tiden, då jag även jobbade samtidigt. Så jag avbröt mina studier, för andra gången, denna gång på grund av bristande tid och energi. Men, skam den som ger sig! År 2015 får jag åter igen möjlighet att göra klart arbetet, denna gång av Rikard Bögvad på samma universitet. Ralf Fröberg har nu blivit professor emeritus, men fortsätter som handledare. 
+
 
 \tableofcontents{}
 
