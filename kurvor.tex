@@ -4,13 +4,14 @@
 \section{Introduktion}
 
 \begin{Definition}
-En \textbf{plan kurva} $C$ är en delmängd i $\mathbb{C}^2$ sådan att det finns två kontinuerliga funktioner $f : \mathbb{R} \rightarrow \mathbb{C}$ och 
-$g : \mathbb{R} \rightarrow \mathbb{C}$ sådana att $C = \left\{\left(f(t), g(t)\right) : t \in \mathbb{R}\right\}$. $(f, g)$ är en \textbf{parametrisering} av $C$. Om $C$ kan parametriseras av två analytiska funktioner $f$ och $g$ kallas $C$ \textbf{analytisk}. Om den kan parametriseras av två polynom kallas $C$ för \textbf{algebraisk}. Om den kan parametriseras av två formella potensserier kallas $C$ \textbf{algebroid}.
+En \textbf{plan kurva} $C$ är en delmängd i $\mathbb{C}^2$ sådan att det finns två kontinuerliga funktioner $f : \mathbb{C} \rightarrow \mathbb{C}$ och 
+$g : \mathbb{C} \rightarrow \mathbb{C}$ sådana att $C = \left\{\left(f(t), g(t)\right) : t \in \mathbb{C}\right\}$. $(f, g)$ är en \textbf{parametrisering} av $C$. Om $C$ kan parametriseras av två analytiska funktioner $f$ och $g$ kallas $C$ \textbf{analytisk}. Om den kan parametriseras av två polynom kallas $C$ för \textbf{algebraisk}. Om den kan parametriseras av två formella potensserier kallas $C$ \textbf{algebroid}.
 \end{Definition}
 
-Eftersom vi kommer att studera kurvor lokalt, kommer de olika termerna nämnda ovan inte att skilja sig åt så mycket: Polynom är ju i sig formella potensserier där bara ett ändligt antal koefficienter är nollskilda. Analytiska funktioner kan också skrivas som formella potensserier som konvergerar i ett område kring den punkt vi vill studera.
+Traditionellt har man ofta studerat plana kurvor i det \emph{Euklidiska planet}. I detta fall är kurvan parametriserad av reellvärda funktioner $f : \mathbb{R} \rightarrow \mathbb{R}$ och 
+$g : \mathbb{R} \rightarrow \mathbb{R}$. Vi gör dock ingen sådan begränsning i vår studie av plana kurvor, och arbetar således mer generellt med \emph{komplexa plana kurvor}. Eftersom vi dessutom kommer att studera kurvor lokalt, kommer de olika termerna nämnda ovan inte att skilja sig så mycket åt: Polynom är ju i sig formella potensserier där bara ett ändligt antal koefficienter är nollskilda. Analytiska funktioner kan också skrivas som formella potensserier som konvergerar i ett område kring den punkt vi vill studera.
 
-För att förenkla notationen kan vi identifiera kurvan $C$ med en viss parametrisering $(f, g)$, även om parametriseringen inte är unik. Detta görs enklast genom att identifiera kurvan med funktionen $C : R \rightarrow \mathbb{C}^2$, $C(t) = \left(f(t), g(t)\right)$. Notera dock att kurvan som sådan och en av dess parametriseringar är två olika objekt.
+För att förenkla notationen kan vi identifiera kurvan $C$ med en viss parametrisering $(f, g)$, även om parametriseringen inte är unik. Detta görs enklast genom att identifiera kurvan med funktionen $C : \mathbb{C} \rightarrow \mathbb{C}^2$, $C(t) = \left(f(t), g(t)\right)$. Notera dock att kurvan som sådan och en av dess parametriseringar är två olika objekt.
 
 När vi studerar egenskaper hos plana kurvor kan vi anta att kurvan går
 genom origo, samt att $f(0) = g(0) = 0$, eller enklare skrivet $C(0) = \mathbf{0}$. Om så inte är fallet kan vi först göra en omparametrisering av $C$ och sedan ett enkelt byte av koordinatsystem:
@@ -28,7 +29,7 @@ C^*(t) & = & (f^*(t),g^*(t)) \\
 \right.
 \end{equation*}
 
-Detta ger att $C^*(\mathbb{R}) = C(\mathbb{R})$, och kurvorna $C^*$ och $C$ är identiska. Koordinatbytet gör man enklast:
+Detta ger att $C^*(\mathbb{C}) = C(\mathbb{C})$, och kurvorna $C^*$ och $C$ är identiska. Koordinatbytet gör man enklast:
 
 \begin{equation*}
 \left\{
@@ -42,7 +43,7 @@ C^{**}(t) & = & (f^{**}(t),g^{**}(t)) \\
 \right.
 \end{equation*}
 
-Detta ger $C^{**}(\mathbb{R}) = C^*(\mathbb{R}) - (x_0, y_0) = C(\mathbb{R}) - (x_0, y_0)$ och $C^{**}(0) = \mathbf{0}$. I fortsättningen antar vi därför att de plana kurvor $C$ som vi studerar har egenskapen $C(0) = \mathbf{0}$.
+Detta ger $C^{**}(\mathbb{C}) = C^*(\mathbb{C}) - (x_0, y_0) = C(\mathbb{C}) - (x_0, y_0)$ och $C^{**}(0) = \mathbf{0}$. I fortsättningen antar vi därför att de plana kurvor $C$ som vi studerar har egenskapen $C(0) = \mathbf{0}$.
 
 
 \begin{Definition}
@@ -62,11 +63,9 @@ att ta en funktion $\phi(t)$ som är analytisk kring $t = 0$ och sådan att $\ph
 
 Om $\phi(t)$, $f(t)$ och $g(t)$ är reellvärda är också parametriseringen $C^*(t)$ reellvärd.
 
-Eftersom $\phi$ är analytisk kring $t = 0$ och $\phi(0) = 0$ vet vi att den är ett-till-ett i ett område kring $t = 0$. Detta säger oss att $\exists I1 \subseteq \mathbb{R}, I2 \subseteq \mathbb{R}$ sådana att $C^*(I1) = C(I2)$, dvs. kurvan som den nya parametriseringen $(f^*(t), g^*(t))$ bildar och den gamla $(f(t), g(t))$ överensstämmer ``delvis''. Är dessutom $\phi$ ett-till-ett i hela $\mathbb{R}$ gäller att $C^*(\mathbb{R}) = C(\mathbb{R})$ eller att kurvorna överensstämmer ``helt''.
+Eftersom $\phi$ är analytisk kring $t = 0$ och $\phi(0) = 0$ vet vi att den är ett-till-ett i ett område kring $t = 0$. Detta säger oss att $\exists D_1 \subseteq \mathbb{C}, I_2 \subseteq \mathbb{C}$ sådana att $C^*(D_1) = C(D_2)$, dvs. kurvan som den nya parametriseringen $(f^*(t), g^*(t))$ bildar och den gamla $(f(t), g(t))$ överensstämmer ``delvis''. Är dessutom kurvan reellvärd och $\phi$ ett-till-ett i hela $\mathbb{R}$, gäller att $C^*(\mathbb{R}) = C(\mathbb{R})$ eller att kurvorna överensstämmer ``helt'' i det euklidiska planet.
 
-Eftersom alla funktioner $\phi$ som är analytiska kring $t = 0$ och $\phi(0) = 0$ kan skrivas på formen \[\phi(t)=\sum_{k=1}^{\infty}a_k t^k\] i ett område kring $t = 0$ (även f(t) och g(t) kan ha denna form om $C$ är analytisk, algebraisk eller algebroid) skall vi studera våra möjligheter att skapa omparametriseringar av kurvan $C(t)$ med hjälp av potensserier.
-
-Först några definitioner:
+Eftersom alla funktioner $\phi$ som är analytiska kring $t = 0$ och som uppfyller $\phi(0) = 0$ kan skrivas på formen \[\phi(t)=\sum_{k=1}^{\infty}a_k t^k\] i ett område kring $t = 0$ (även f(t) och g(t) kan ha denna form om $C$ är analytisk, algebraisk eller algebroid) skall vi studera våra möjligheter att skapa omparametriseringar av kurvan $C(t)$ med hjälp av potensserier. Först några definitioner:
 
 \begin{Definition}
 \textbf{Ordningen} av ett polynom eller en potensserie $f(t) =
@@ -117,7 +116,7 @@ Vi är nu redo för följande sats.
 
 \begin{Theorem}
 \label{ReparametrizeTheorem}
-Om $C = C(t) = \left(f(t), g(t)\right)$ är en analytisk, algebroid eller algebraisk kurva och $f(t)$ och $g(t)$ är reellvärda, samt att $f(0) = g(0) = 0$, kan kurvan $C$ omparametriseras på formen $C^*(t) = \left(\pm t^n, g^*(t)\right)$ eller på formen $C^*(t) = \left(f^*(t), \pm t^n \right)$ i ett intervall kring $t = 0$, där $f(t)$ och $g(t)$ är formella potensserier. Dessutom gäller att $\mathbf{o}\left(f^*\right) \geq n$ eller att $\mathbf{o}\left(g^*\right) \geq n$.
+Om $C = C(t) = \left(f(t), g(t)\right)$ är en komplex analytisk, algebroid eller algebraisk kurva, samt att $f(0) = g(0) = 0$, kan kurvan $C$ omparametriseras på formen $C^*(t) = \left(\pm t^n, g^*(t)\right)$ eller på formen $C^*(t) = \left(f^*(t), \pm t^n \right)$ i ett område kring $t = 0$, där $f(t)$ och $g(t)$ är formella potensserier. Dessutom gäller att $\mathbf{o}\left(f^*\right) \geq n$ eller att $\mathbf{o}\left(g^*\right) \geq n$. Om $f(t)$ och $g(t)$ är reellvärda, kan också omparametriseringen göras reellvärd.
 \end{Theorem}
 
 \begin{proof}
@@ -137,6 +136,6 @@ Vi väljer här huvudgrenen för funktionen $x^{1/n}$, vilket ger oss ett reellt
 Om nu istället $\mathbf{o}(f) > \mathbf{o}(g)$, väljer vi $\phi(t)$ sådan att $g^*(t) = g\left(\phi(t)\right) = \pm t^n$. Resten av beviset är identiskt med ovanstående diskussion, vilket avslutar beviset.
 \end{proof}
 
-Från \emph{Weierstrass Preparation Theorem} \cite{WeierstrassPreparationTheorem} får man att en sådan omparametrisering existerar. Dock presenteras inte en metod över hur en sådan omparametrisering kan tas fram. Genom ovanstående bevis ges inte bara existensen utan även en metod över hur man kan skapa en sådan omparametrisering, givet en algebraisk eller algebroid plan kurva. En analytisk plan kurva kan parametriseras i en delmängd av $\mathbb{R}$ med hjälp av potensserier, så en analytisk plan kurva kan ses som en delvis algebroid kurva kring varje punkt i $\mathbb{R}$.
+Från \emph{Weierstrass Preparation Theorem} \cite{WeierstrassPreparationTheorem} får man att en sådan omparametrisering existerar. Dock presenteras inte en metod över hur en sådan omparametrisering kan tas fram. Genom ovanstående bevis ges inte bara existensen utan även en metod över hur man kan skapa en sådan omparametrisering, givet en algebraisk eller algebroid plan kurva. En analytisk plan kurva kan parametriseras i ett område kring varje punkt i $\mathbb{C}$ med hjälp av potensserier, så en analytisk plan kurva kan ses som en delvis algebroid kurva kring varje punkt i $\mathbb{C}$.
 
-I bilaga \ref{Reparametrize} på sidan \pageref{Reparametrize} finns även beskrivet en algoritm som beräknar ovanstående omparametrisering för en godtycklig algebraisk kurva, upp till en maximal grad.
+I bilaga \ref{Reparametrize} på sidan \pageref{Reparametrize} finns beskrivet en algoritm som beräknar ovanstående omparametrisering för en godtycklig algebraisk kurva, upp till en given maximal grad.
