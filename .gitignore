@@ -90,9 +90,6 @@ maple*.def
 # minted
 *.pyg
 
-# morewrites
-*.mw
-
 # nomencl
 *.nlo
 
