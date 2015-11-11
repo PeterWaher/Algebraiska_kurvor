@@ -40,8 +40,24 @@
 	\tableofcontents[pausesections]
 \end{frame}
 
+
+
+
+
 \section{Plana algebraiska kurvor}
-\subsection{Introduktion}
+\subsection{Introduktion - kurvor}
+
+
+\begin{frame}
+	\frametitle{Plana algebraiska kurvor}
+	\begin{enumerate}
+		\item<1-> Plana algebraiska kurvor
+		\begin{enumerate}
+			\item<2-> Introduktion
+			\item<3-> Omparametrisering
+		\end{enumerate}
+	\end{enumerate}
+\end{frame}
 
 \begin{frame}
 \frametitle{Vad är en plan kurva?}
@@ -116,12 +132,11 @@
 \begin{frame}
 	\frametitle{Omparametrisering av kurvor}
 \begin{Theorem}
-	\label{ReparametrizeTheorem}
 	Om $C = C(t) = \left(f(t), g(t)\right)$ är en komplex analytisk, algebroid eller algebraisk kurva, samt att $f(0) = g(0) = 0$, kan kurvan $C$ omparametriseras på formen $C^*(t) = \left(\pm t^n, g^*(t)\right)$ eller på formen $C^*(t) = \left(f^*(t), \pm t^n \right)$ i ett område kring $t = 0$, där $f(t)$ och $g(t)$ är formella potensserier. Dessutom gäller att $\mathbf{o}\left(f^*\right) \geq n$ eller att $\mathbf{o}\left(g^*\right) \geq n$. Om $f(t)$ och $g(t)$ är reellvärda, kan också omparametriseringen göras reellvärd.
 \end{Theorem}
 
 \vspace{20pt}
-\scriptsize Not: Från \emph{Weierstrass Preparation Theorem} får man att en sådan omparametrisering existerar. Dock presenteras inte en metod över hur en sådan omparametrisering kan tas fram.
+\scriptsize Not: Från \emph{Weierstrass Preparation Theorem} kan man få att en sådan omparametrisering existerar. Dock presenteras inte en metod över hur en sådan omparametrisering kan tas fram.
 \end{frame}
 
 \begin{frame}
@@ -144,32 +159,452 @@
 			
 		\end{enumerate}
 		
-		\item<7-> Med början i $a_1$, löses koefficienterna $a_i$ ut ur $\phi(t)=\sum_{k=1}^{\infty}a_k t^k$ för att uppfylla ovanstående.
+		\item<7-> Med början i $a_1$ (som har $n$ lösningar), löses koefficienterna $a_i$ ut ur $\phi(t)=\sum_{k=1}^{\infty}a_k t^k$ för att uppfylla ovanstående.
 		
-		\item<8-> Finns precis en lösning i det generella fallet som uppfyller ovanstående samt satsens krav.
+		\item<8-> Finns precis en lösning i det generella fallet som uppfyller ovanstående, samt satsens, krav.
 		
 	\end{enumerate}
 \end{frame}
 
 \begin{frame}
 	\frametitle{\texttt{Reparametrize()}}
+
+\begin{semiverbatim}
+Reparametrize := proc(x, y, Variable, t0 , MaxDegree,
+
+\qquad Branch, AllowNegation)
+\end{semiverbatim}
+	
+	\begin{enumerate}
+		\item<1-> Algoritm som omparametriserar en algebraisk kurva med given noggrannhet.
+		
+		\item<2-> Maple-kod finns i \texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/kurvor.mw}
+		
+		\item<3-> Text-version finns i
+		\texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/Functions/\\
+			\qquad Reparametrize.txt} 
+	\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}
+	\frametitle{Reparametrize - exempel 1 (1/4)}
+	
+  	\begin{example}
+  		Kurvan $(t^2+t^3,t^5+t^6)$ har en singularitet i $t = 0$. Dessutom passerar kurvan genom origo då $t = -1$.
+  		
+		\begin{center}
+			\includegraphics[scale=0.35]{Export/kurvorplot2d1_0.png}
+		\end{center}
+  	\end{example}
+\end{frame}
+  		
+\begin{frame}
+	\frametitle{Reparametrize - exempel 1 (2/4)}
+	
+	\begin{example}
+  		Först ber vi Maple att parametrisera om kurvan kring $t = 0$:
+  		
+		\begin{semiverbatim}
+		> Reparametrize(t\^{}3+t\^{}2,t\^{}6+t\^{}5,t,0,10,0,false);
+		
+		
+		Elapsed Time: 0.016 s.
+		\end{semiverbatim}
+				 
+		 \[\left[{t}^{2},{t}^{5}-3/2\,{t}^{6}+{\frac {21\,{t}^{7}}{8}}-5\,{t}^{8}+{\frac {1287\,{t}^{9}}{128}}-21\,{t}^{10}\right]\]
+  	\end{example}
 \end{frame}
 
 \begin{frame}
-	\frametitle{}
+	\frametitle{Reparametrize - exempel 1 (3/4)}
+	
+	\begin{example}
+		Därefter vill vi ha en omparametrisering kring $t = -1$:
+
+\begin{semiverbatim}
+> Reparametrize(t\^{}3+t\^{}2, t\^{}6+t\^{}5, t, -1, 10,
+
+\qquad 0, false);
+
+
+Elapsed Time: 0.016 s.
+\end{semiverbatim}		
+		\[\left[t,163438\,{t}^{10}+29070\,{t}^{9}+5304\,{t}^{8}+1001\,{t}^{7}+198\,{t}^{6}+42\,{t}^{5}+\right.\]
+		\[\left.+10\,{t}^{4}+3\,{t}^{3}+3\,{t}^{2}-t\right]\]
+	\end{example}
 \end{frame}
 
 \begin{frame}
-	\frametitle{}
+	\frametitle{Reparametrize - exempel 1 (4/4)}
+	
+	\begin{example}
+	Nedan kurvan $C(t)=(t^2+t^3,t^5+t^6)$, med omparametriseringarna kring $t=0$ och $t=-1$.
+	
+		\begin{center}
+			\includegraphics[scale=0.35]{Export/kurvorplot2d1.png}
+		\end{center}
+	\end{example}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+	\frametitle{Reparametrize - exempel 2 (1/6)}
+	
+	\begin{example}
+		Ellipsen $\left(3 \sin(t), 2 \cos(t)\right)$ är reguljär, men vi kan parametrisera om kurvan ändå för att illustrera axelbyte. 
+  		
+  		\begin{center}
+  			\includegraphics[scale=0.35]{Export/kurvorplot2d2_0.png}
+  		\end{center}
+  	\end{example}
+  \end{frame}
+  
+  \begin{frame}
+  	\frametitle{Reparametrize - exempel 2 (2/6)}
+  	
+  	\begin{example}
+		Första omparametriseringen gör vi kring $t=0$:
+
+		\begin{semiverbatim}
+			> Reparametrize(3*sin(t),2*cos(t),t,0,10,0,false);
+			
+			
+			Elapsed Time: 0.015 s.
+		\end{semiverbatim}
+		
+		\[\left[t,2-1/9\,{t}^{2}-{\frac {{t}^{4}}{324}}-{\frac {{t}^{6}}{5832}}-{\frac {5\,{t}^{8}}{419904}}-{\frac {7\,{t}^{10}}{7558272}}\right]\]
+	\end{example}
 \end{frame}
 
 \begin{frame}
-	\frametitle{}
+	\frametitle{Reparametrize - exempel 2 (3/6)}
+	
+	\begin{example}
+		Andra omparametriseringen gör vi kring $t=\pi$:
+		
+		\begin{semiverbatim}
+			> Reparametrize(3*sin(t),2*cos(t),t,Pi,10,0,false);
+			
+			
+			Elapsed Time: 0.016 s.
+		\end{semiverbatim}
+		
+		\[\left[t,-2+1/9\,{t}^{2}+{\frac {{t}^{4}}{324}}+{\frac {{t}^{6}}{5832}}+{\frac {5\,{t}^{8}}{419904}}+{\frac {7\,{t}^{10}}{7558272}}\right]\]
+	\end{example}
 \end{frame}
+
+\begin{frame}
+	\frametitle{Reparametrize - exempel 2 (4/6)}
+	
+	\begin{example}
+		Tredje omparametriseringen gör vi kring $t=\frac{\pi}{2}$. Notera hur omparametriseringarna skiljer från $t=0$ och $t=\pi$, jämfört med $t=\pm \frac{\pi}{2}:$
+		
+		\begin{semiverbatim}
+			> Reparametrize(3*sin(t),2*cos(t),t,(1/2)*Pi,
+
+			\qquad 10,0,false);
+			
+			
+			Elapsed Time: 0.016 s.
+		\end{semiverbatim}
+		
+		\[\left[3-3/8\,{t}^{2}-{\frac {3\,{t}^{4}}{128}}-{\frac {3\,{t}^{6}}{1024}}-{\frac {15\,{t}^{8}}{32768}}-{\frac {21\,{t}^{10}}{262144}},t\right]\]
+	\end{example}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Reparametrize - exempel 2 (5/6)}
+	
+	\begin{example}
+		Fjärde omparametriseringen gör vi kring $t=-\frac{\pi}{2}$:
+		
+		\begin{semiverbatim}
+			> Reparametrize(3*sin(t),2*cos(t),t,-(1/2)*Pi,
+			
+			\qquad 10,0,false);
+			
+			
+			Elapsed Time: 0.015 s.
+		\end{semiverbatim}
+		
+		\[\left[-3+3/8\,{t}^{2}+{\frac {3\,{t}^{4}}{128}}+{\frac {3\,{t}^{6}}{1024}}+{\frac {15\,{t}^{8}}{32768}}+{\frac {21\,{t}^{10}}{262144}},t\right]\]
+	\end{example}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Reparametrize - exempel 2 (6/6)}
+	
+	\begin{example}
+		Nedan kurvan $C(t)=(3\sin(t),2\cos(t))$, med de fyra omparametriseringarna kring $t=0$, $t=\pi$ och $t=\pm \frac{\pi}{2}$:
+		
+		\begin{center}
+			\includegraphics[scale=0.35]{Export/kurvorplot2d2.png}
+		\end{center}
+	\end{example}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+	\frametitle{Reparametrize - exempel 3 (1/5)}
+	
+	\begin{example}
+		Kurvan $\left(t^3(t - 1)^3(t + 1)^3,t^5(t - 1)^2(t + 1)^2\right)$ har singulariteter i $t = 0, 1, -1$ av ordningar 2, 1, 1 respektive.
+  		
+  		\begin{center}
+  			\includegraphics[scale=0.35]{Export/kurvorplot2d3_0.png}
+  		\end{center}
+  	\end{example}
+  \end{frame}
+  
+  \begin{frame}
+  	\frametitle{Reparametrize - exempel 3 (2/5)}
+  	
+  	\begin{example}
+		Vi analyserar hur omparametriseringarna uppför sig i dessa tre singulariteter. Första omparametriseringen gör vi kring $t=0$:
+
+		\begin{semiverbatim}
+			> Reparametrize(t\^{}3*(t-1)\^{}3*(t+1)\^{}3,
+
+			\qquad t\^{}5*(t-1)\^{}2*(t+1)\^{}2,t,0,15,0, false);
+			
+			
+			Elapsed Time: 0.031 s.
+		\end{semiverbatim}
+		
+		\[\left[{t}^{3},-1428\,{t}^{15}-273\,{t}^{13}-55\,{t}^{11}-12\,{t}^{9}-3\,{t}^{7}-{t}^{5}\right]\]
+	\end{example}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Reparametrize - exempel 3 (3/5)}
+	
+	\begin{example}
+		Därefter kring $t=1$:
+		
+		\begin{semiverbatim}
+			> Reparametrize(t\^{}3*(t-1)\^{}3*(t+1)\^{}3,
+			
+			\qquad t\^{}5*(t-1)\^{}2*(t+1)\^{}2,t,1,15,0,false);
+			
+			
+			Elapsed Time: 0.063 s.
+		\end{semiverbatim}
+		
+		\[\begin{array}{l}
+		\left[1/2\, \sqrt{4}{t}^{3}-9/4\,{t}^{4}+{\frac {207\, \sqrt{4}{t}^{5}}{64}}-21\,{t}^{6}+{\frac {150183\, \sqrt{4}{t}^{7}}{4096}}\right. \\
+		\mbox{}-{\frac {137655\,{t}^{8}}{512}}+{\frac {66893079\, \sqrt{4}{t}^{9}}{131072}}-3978\,{t}^{10}+{\frac {132735945771\, \sqrt{4}{t}^{11}}{16777216}}\\
+		\mbox{}-{\frac {8385901667\,{t}^{12}}{131072}}+{\frac {70379121262905\, \sqrt{4}{t}^{13}}{536870912}}\\
+		\left.\mbox{}-{\frac {4345965\,{t}^{14}}{4}}+{\frac {78087826643607459\, \sqrt{4}{t}^{15}}{34359738368}},{t}^{2}\right]
+		\end{array}\]
+	\end{example}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Reparametrize - exempel 3 (4/5)}
+	
+	\begin{example}
+		Och sist kring $t=-1$:
+		
+		\begin{semiverbatim}
+			> Reparametrize(t\^{}3*(t-1)\^{}3*(t+1)\^{}3,
+			
+			\qquad t\^{}5*(t-1)\^{}2*(t+1)\^{}2,t,-1,15,0,true);
+			
+			
+			Elapsed Time: 0.047 s.
+		\end{semiverbatim}
+		
+		\[\begin{array}{l}
+		\left[1/2\, \sqrt{4}{t}^{3}+9/4\,{t}^{4}+{\frac {207\, \sqrt{4}{t}^{5}}{64}}+21\,{t}^{6}+{\frac {150183\, \sqrt{4}{t}^{7}}{4096}}\right.\\
+		\mbox{}+{\frac {137655\,{t}^{8}}{512}}+{\frac {66893079\, \sqrt{4}{t}^{9}}{131072}}+3978\,{t}^{10}+{\frac {132735945771\, \sqrt{4}{t}^{11}}{16777216}}\\
+		\mbox{}+{\frac {8385901667\,{t}^{12}}{131072}}+{\frac {70379121262905\, \sqrt{4}{t}^{13}}{536870912}}\\
+		\left.\mbox{}+{\frac {4345965\,{t}^{14}}{4}}+{\frac {78087826643607459\, \sqrt{4}{t}^{15}}{34359738368}},-{t}^{2}\right]
+		\end{array}\]
+	\end{example}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Reparametrize - exempel 3 (5/5)}
+	
+	\begin{example}
+		Ritar vi sedan ut originalparametriseringen av kurvan tillsammans med de tre omparametriseringarna får vi följande intressanta bild:
+
+		\begin{center}
+			\includegraphics[scale=0.35]{Export/kurvorplot2d3.png}
+		\end{center}
+	\end{example}
+\end{frame}
+
+
+
+
+
+
 
 
 \section{Semigrupper}
-\subsection{Definitioner}
+\subsection{Introduktion - semigrupper}
+
+
+\begin{frame}
+	\frametitle{Semigrupper}
+	\begin{enumerate}
+		\item<1-> Semigrupper
+		\begin{enumerate}
+			\item<2-> Modulär aritmetik
+			\item<3-> Semigrupper
+			\item<4-> Numeriska semigrupper
+			\item<5-> Konduktören
+			\item<6-> $\mathbb{C}[t]$ och dess delringar
+			\item<7-> Semigrupper för $\mathbb{C}[p_1,\ldots,p_n]$
+		\end{enumerate}
+	\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Modulär aritmetik}
+\begin{Definition}
+	Heltalen $m \in \mathbb{Z}^+$ och $n \in \mathbb{Z}^+$ sägs vara \textbf{relativt prima} om $m \geq 2$, $n \geq 2$ samt $p \mid m \wedge p \mid n \Longrightarrow p = 1$.
+\end{Definition}
+\uncover<2->{\begin{Lemma}
+	Om $m$ och $n$ är relativt prima och $0 < a < m$ gäller att $[a \cdot n]_m \neq 0$.
+	\end{Lemma}}
+\uncover<3->{\begin{Lemma}
+		Om $m$ och $n$ är relativt prima och $0 < a, b < m$ gäller:
+		\[[a \cdot n]_m = [b \cdot n]_m \Longleftrightarrow a = b\]
+	\end{Lemma}}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Semigrupper}
+\begin{Definition}
+	För en \textbf{semigrupp} $G$, med den implicit definierade operatorn $+$ gäller:
+	\[0 \in G\]
+	\[a \in G \wedge b \in G \Longrightarrow (a + b) \in G\]
+\end{Definition}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Generatorer av semigrupp}
+\begin{Definition}
+	En serie tal $n_1, \ldots, n_k$ \textbf{genererar} semigruppen $G$ om
+	\[G = \left\{\sum_{a_i\neq 0} a_i \cdot n_i : a_i \in \mathbb{N}\text{, inte alla $a_i=0$}\right\}\]
+	Detta skrivs även $G = \left<n_1, \ldots, n_k \right>$.
+\end{Definition}
+
+\vspace{20pt}
+\scriptsize Not: Notera att med multiplikation med ett positivt heltal inom en semigrupp avses repetitiv användning av additionsoperatorn.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Konduktören för $\left<m,n\right>$ ($m, n$ relativt prima)}
+\begin{Theorem}
+	Om $m$ och $n$ är relativt prima innehåller semigruppen $G = \left<m, n\right>$ alla tal större än eller lika med $c = (m - 1)(n - 1)$, men inte talet $c - 1$.
+\end{Theorem}
+
+\uncover<2->{Översikt av bevis:}
+\begin{enumerate}
+	\item<3-> $\mathbb{Z}_m = \left<[n]_m\right>$.
+	\item<4-> Antag att $m<n$.
+	\item<5-> Uppdelning av $\mathbb{N}$ i segment om $m$ tal vardera.
+	\item<6-> Stryk alla tal i $[0]_m$, därefter $[n]_m$, $[2n]_m$, \ldots, $\left[(m-1)n\right]_m$.
+	\item<7-> Alla tal större än eller lika med $(m-1)n$ ur $\mathbb{N}$
+	\item<8-> Det högsta ostrukna talet, är således $(m - 1)n - m$.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Numerisk semigrupp}
+\begin{Definition}
+	En \textbf{numerisk semigrupp} $G$ är en speciell form av semigrupp, där även följande villkor gäller:
+	\[
+	\begin{array}{rcl}
+	G & \subseteq & \mathbb{N} \\
+	\left\| \mathbb{N} \setminus G \right\| & < & \infty \\
+	\end{array}\]
+\end{Definition}
+
+\uncover<2->{\begin{Lemma}
+		$G = \left<m, n\right>$ där $m$ och $n$ är relativt prima, är en numerisk semigrupp.
+	\end{Lemma}
+	}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Konduktör}
+\begin{Definition}
+	I varje numerisk semigrupp $G$ finns det ett tal $c_G$ sådant att följande villkor uppfylls:
+	\[\begin{array}{rcl}
+	c_G & \in & G \\
+	n > c_G & \Longrightarrow & n \in G \\
+	c_G - 1 & \notin & G \\
+	\end{array}\]
+	$c_G$ kallas för \textbf{konduktören} för $G$.
+\end{Definition}
+\uncover<2->{$c=(m-1)(n-1)$ där $m$ och $n$ är relativt prima, är konduktör för den numeriska semigruppen $G = \left<m, n\right>$.}
+\end{frame}
+
+\begin{frame}
+	\frametitle{$\gcd(n_1, \ldots, n_k) = 1$}
+\begin{Theorem}
+	Om semigruppen $G = \left<n_1, \ldots, n_k\right>$ är numerisk så är den största gemensamma delaren av talen $\gcd(n_1, \ldots, n_k) = 1$.
+\end{Theorem}
+
+\uncover<2->{Översikt av trivialt bevis:}
+\begin{enumerate}
+	\item<3-> $\gcd(G)=\gcd(n_1,\ldots,n_k)=d$.
+	\item<4-> $d>1 \Longrightarrow \left\|\mathbb{N} \setminus G \right\| = \infty$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Minimalt generatorsystem}
+\begin{Theorem}
+	För varje numerisk semigrupp $G$ finns ett minimalt generatorsystem $n_1, \ldots, n_k$, sådant att $G = \left<n_1, \ldots, n_k\right>$. Detta system är unikt för $G$.
+\end{Theorem}
+
+\uncover<2->{Översikt av bevis:}
+\begin{enumerate}
+	\item<3-> Ändlig mängd tal i $G$ som genererar semigruppen.
+	\item<4-> $\widehat{M}$ mängden av alla ändliga mängder av generatorer.
+	\item<5-> $\widehat{M}' = \{ \left\|M\right\| : M \in \widehat{M}\}$
+	\item<6-> $k = \inf \widehat{M}'$ existerar.
+	\item<7-> $\exists M_- \in \widehat{M} : \left\|M_-\right\|=k$
+	\item<8-> $N_- \in \widehat{M} \wedge \left\|N_-\right\|=k \Longrightarrow N_- = M_-$
+\end{enumerate}\end{frame}
+
+\begin{frame}
+	\frametitle{$\gcd(\left\{n_i\right\})=1 \Longrightarrow \left<\left\{n_i\right\}\right> \text{ numerisk}$}
+\begin{Theorem}
+	\label{S4}
+	Om $n_1, \ldots, n_k$ är heltal sådana att $\gcd(n_1, \ldots, n_k) = 1$ så gäller att $G = \left<n_1, \ldots, n_k\right>$ är en numerisk semigrupp.
+\end{Theorem}
+
+\uncover<2->{Översikt av bevis:}
+\begin{enumerate}
+	\item<2->Anta $n_1 < \ldots < n_k$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+
 \subsection{Beräkning av konduktören}
 \subsection{Polynomringen $\mathbb{C}[t]$ och dess delringar}
 \subsection{Semigrupper för $\mathbb{C}[p_1,\ldots,p_n]$}
