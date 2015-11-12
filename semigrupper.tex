@@ -42,12 +42,12 @@ Vi kan utan att begränsa oss antaga att $a \geq b$:
 \section{Semigrupper}
 
 \begin{Definition}
-För en \textbf{semigrupp} $G$, med den implicit definierade operatorn $+$ gäller:
-\[0 \in G\]
+För en \textbf{semigrupp} $G$, med den implicit definierade binära operatorn $+$ gäller:
 \[a \in G \wedge b \in G \Longrightarrow (a + b) \in G\]
+\[(a+b)+c = a+(b+c)\]
 \end{Definition}
 
-Notera skillnaden mellan en semigrupp och en grupp: Alla element i en grupp har även en additiv invers, dvs. i gruppen tillåts subtraktion. I en semigrupp är det tillräckligt med bara addition av element, samt att det finns ett noll-element.
+Notera skillnaden mellan en semigrupp och en grupp: Alla element i en grupp har även en additiv invers, dvs. i gruppen tillåts subtraktion. I en semigrupp är det tillräckligt att bara addition av element stöds.
 
 \begin{Definition}
 En serie tal $n_1, \ldots, n_k$ \textbf{genererar} semigruppen $G$ om
@@ -55,7 +55,7 @@ En serie tal $n_1, \ldots, n_k$ \textbf{genererar} semigruppen $G$ om
 Detta skrivs även $G = \left<n_1, \ldots, n_k \right>$.
 \end{Definition}
 
-Notera att det är viktigt att särskilja mellan generation av semigrupper och grupper. Vid generering av grupper gäller det att $a_i \in \mathbb{Z}$. Det finns ingen annan skillnad i notationen. Notera också att med multiplikation med ett positivt heltal inom en semigrupp avses repetitiv användning av additionsoperatorn.
+Notera att det är viktigt att särskilja mellan generation av semigrupper och grupper. Vid generering av grupper gäller det att $a_i \in \mathbb{Z}$, samt att alla $a_i$ kan vara noll. Det finns ingen annan skillnad i notationen. Notera också att med multiplikation med ett positivt heltal inom en semigrupp avses repetitiv användning av additionsoperatorn.
 
 \begin{Theorem}
 \label{S1}
@@ -108,8 +108,8 @@ $G = \left<m, n\right>$ i sats \ref{S1} är en numerisk semigrupp.
 \end{Lemma}
 
 \begin{proof}
+Vi vet redan att den binära operatorn + är associativ. Dessutom får vi:
 \[\begin{array}{rcl}
-0 & = & 0 \cdot m + 0 \cdot n \in G \\
 a \in G \wedge b \in G & \Longleftrightarrow & \exists c, d, e, f \in \mathbb{N} : a = cm + dn \wedge b = em + fn \\
  & \Longrightarrow & a + b = (c + e)m + (d + f)n \in G \\
 G & \subset & \mathbb{N} \quad\text{(per definition av } \left<m, n\right> \text{)} \\
@@ -253,7 +253,7 @@ För att se exempel på denna algoritm, och även en algoritm för beräkning av
 
 \section{Polynomringen $\mathbb{C}[t]$ och dess delringar}
 
-I resten av kapitlet ska vi studera en speciell typ av numeriska semigrupper som motsvarar delringar av polynomringen $\mathbb{C}[t]$. Polynomringen $\mathbb{C}[t]$ definieras som bekant som ringen innehållande alla polynom i en komplex variabel $t$, där addition, negation, multiplikation, noll och ett har de naturliga innebörderna. Likaså definieras polynomringen $\mathbb{C}[t_1,\ldots,t_n]$ som ringen innehållande alla polynom i $n$ komplexa variabler $t_1,\ldots,t_n$. Om $p_1,\ldots,p_n \in \mathbb{C}[t]$, så är $\mathbb{C}[p_1,\ldots,p_n] \subset \mathbb{C}[t]$ den delring som genereras av motsvarande polynom, motsvarande avbildningen av den naturliga homomorfismen $\mathbb{C}[t_1,\ldots,t_n] \mapsto \mathbb{C}[p_1,\ldots,p_n]$. Men innan vi fortsätter, presenterar vi först en viktig sats gällande delringar till $\mathbb{C}[t]$, en sats som inte är kan generaliseras till polynomringar i flera variabler:
+I resten av kapitlet ska vi studera en speciell typ av numeriska semigrupper som motsvarar delringar av polynomringen $\mathbb{C}[t]$. Polynomringen $\mathbb{C}[t]$ definieras som bekant som ringen innehållande alla polynom i en komplex variabel $t$, där addition, negation, multiplikation, noll och ett har de naturliga innebörderna. Likaså definieras polynomringen $\mathbb{C}[t_1,\ldots,t_n]$ som ringen innehållande alla polynom i $n$ komplexa variabler $t_1,\ldots,t_n$. Om $p_1,\ldots,p_n \in \mathbb{C}[t]$, så är $\mathbb{C}[p_1,\ldots,p_n] \subset \mathbb{C}[t]$ den delring som genereras av motsvarande polynom. Men innan vi fortsätter, presenterar vi först en viktig sats gällande delringar till $\mathbb{C}[t]$, en sats som inte kan generaliseras till polynomringar i flera variabler:
 
 \begin{Theorem}
 \label{FinitelyGenerated}
@@ -265,18 +265,27 @@ Vi antar motsatsen. Det betyder att det går att hitta en oändlig följd av pol
 
 Låt oss nu titta på sekvensen $\left\{I_i \subset \mathbb{Z}: I_i=\deg(S_i)\right\}$. Här har $\deg(S_i)$ den kanoniska betydelsen $\deg(S_i)=\left\{\deg(p), p \in S_i\right\}$. Detta ger oss en strikt växande serie delmängder $I_1 \subsetneq \ldots \subsetneq I_i \subsetneq \ldots \subseteq \mathbb{N}$. Vi vet att serien är strikt växande, eftersom valet av $p_{i+1}$ görs på så sätt att $\deg(p_{i+1})\notin \deg(\mathbb{C}[p_1,\ldots,p_i])$, enligt samma resonemang som ovan.
 
-Vi ska nu med uteslutningsmetoden visa att denna serie måste sluta efter ett ändligt antal steg. Vi gör det genom att betrakta sekvensen $\left\{\overline{I}_i\right\}$, där $\overline{I}_i=\left\{[d]_m:d\in I_i \right\} \subseteq \mathbb{Z}_m$, där $m=\deg(p_1)$. Även här är följden växande, dock inte nödvändigtvis strikt växande: $\overline{I}_1 \subseteq \ldots \subseteq \overline{I}_i \subseteq \ldots \subseteq \mathbb{Z}_m$. Eftersom det bara finns ett ändligt antal element i $\mathbb{Z}_m$, närmare bestämt $m$ stycken, måste det finnas en gräns då inga fler element tillkommer i sekvensen. Alltså $\exists N : \overline{I}_i = \overline{I}_N, \forall i \geq N$. Dessutom vet vi, att $\forall [i]_m \in \overline{I}_N, 0 \leq i < m$ finns en mängd av polynom $Q_i=\left\{q \in \mathbb{C}[p_1,\ldots,p_N] : \deg(q) \equiv i \mod{m}\right\}$. Eftersom $\deg(Q_i) \subset \mathbb{N}$ måste den innehålla ett minsta värde $d_i=\min(Q_i)$. Låt $q_i \in Q_i$ vara ett polynom som har ledande koefficient 1 och $\deg(q_i)=d_i$, dvs. vara av minimal grad. Låt också $n_i \in \mathbb{N} : \deg(q_i) = i + n_i \cdot m$.
+Vi ska nu med uteslutningsmetoden visa att denna serie måste sluta efter ett ändligt antal steg. Vi gör det genom att betrakta sekvensen $\left\{\overline{I}_i\right\}$, där $\overline{I}_i=\left\{[d]_m:d\in I_i \right\} \subseteq \mathbb{Z}_m$, där $m=\deg(p_1)$. Även här är följden växande, dock inte nödvändigtvis strikt växande: $\overline{I}_1 \subseteq \ldots \subseteq \overline{I}_i \subseteq \ldots \subseteq \mathbb{Z}_m$. Eftersom det bara finns ett ändligt antal element i $\mathbb{Z}_m$, närmare bestämt $m$ stycken, måste det finnas en gräns då inga fler element tillkommer i sekvensen. Alltså $\exists N : \overline{I}_i = \overline{I}_N, \forall i \geq N$. Dessutom vet vi, att $\forall [i]_m \in \overline{I}_N, 0 \leq i < m$ finns en mängd av polynom $Q_i=\left\{q \in \mathbb{C}[p_1,\ldots,p_N] : \deg(q) \equiv i \mod{m}\right\}$. Eftersom $\deg(Q_i) \subset \mathbb{N}$ måste den innehålla ett minsta värde $d_i=\min(\deg(Q_i))$. Låt $q_i \in Q_i$ vara ett polynom som har ledande koefficient 1 och $\deg(q_i)=d_i$, dvs. vara av minimal grad. Låt också $n_i \in \mathbb{N} : \deg(q_i) = i + n_i \cdot m$.
 
-Låt oss nu ta ett godtyckligt $f \in S$: Vi vet att $\deg(f)\in \overline{I}_N \Longrightarrow \exists [j]_m \in \overline{I}_N, 0 \leq j < m : \deg(f) \equiv j \mod{m}$. Men eftersom $q_i$ är ett polynom av minimal grad som uppfyller detta vet vi att $\exists k \in \mathbb{N} : k\geq n_j \wedge \deg(f) = j + k\cdot m = j + n_j\cdot m + m\cdot(k-n_j) =\deg(q_j)+\deg(p_1^{k-n_j}) = \deg(q_j\cdot p_1^{k-n_j})$, där $f_0 = a_0\cdot q_j\cdot p_1^{k-n_j} \in \mathbb{C}[p_1,\ldots,p_N] \subset S$, där $a_0$ är den ledande koefficienten för $f$. Detta ger oss att $f-f_0 \in S$, där $\deg(f-f_0)<\deg(f)$. Via induktion kan vi på samma sätt skapa en serie $f_0,\ldots,f_l$ sådana att alla $f_j\in \mathbb{C}[p_1,\ldots,p_N]$ samt att $\deg(f)<\deg(f-f_0)<\ldots<\deg(f-\sum f_j)$. Till slut måste denna serie ta slut, dvs. $f-\sum f_j=0$, annars hade inte $\overline{I}_N$ varit det största av alla $\overline{I}_i$. Men detta betyder att $f = \sum f_i \in \mathbb{C}[p_1,\ldots,p_N]$, vilket motsäger det ursprungliga antagandet. $S$ genereras av en ändlig mängd polynom:
+Låt oss nu ta ett godtyckligt $f \in S$: Vi vet att $\deg(f)\in \overline{I}_N \Longrightarrow \exists [j]_m \in \overline{I}_N, 0 \leq j < m : \deg(f) \equiv j \mod{m}$. Men eftersom $q_i$ är ett polynom av minimal grad som uppfyller detta vet vi att $\exists k \in \mathbb{N} : k\geq n_j \wedge \deg(f) = j + k\cdot m = j + n_j\cdot m + m\cdot(k-n_j) =\deg(q_j)+\deg(p_1^{k-n_j}) = \deg(q_j\cdot p_1^{k-n_j})$. Vi låter $f_0 = a_0\cdot q_j\cdot p_1^{k-n_j} \in \mathbb{C}[p_1,\ldots,p_N] \subset S$, där $a_0$ är den ledande koefficienten för $f$. Detta ger oss att $f-f_0 \in S$, där $\deg(f-f_0)<\deg(f)$. Via induktion kan vi på samma sätt skapa en serie $f_0,\ldots,f_l$ sådana att alla $f_j\in \mathbb{C}[p_1,\ldots,p_N]$ samt att $\deg(f)>\deg(f-f_0)>\ldots>\deg(f-\sum f_j)$. Till slut måste denna serie ta slut, dvs. $f-\sum f_j=0$, annars hade inte $\overline{I}_N$ varit det största av alla $\overline{I}_i$. Men detta betyder att $f = \sum f_i \in \mathbb{C}[p_1,\ldots,p_N]$, vilket motsäger det ursprungliga antagandet. $S$ genereras av en ändlig mängd polynom:
 
 \[\therefore S=\mathbb{C}[p_1,\ldots,p_N]\]
 \end{proof}
 
+För att se att denna sats inte kan generaliseras till fler variabler kan vi betrakta delringen $S=x\cdot\mathbb{C}[x,y]\subset\mathbb{C}[x,y]$. Den kan inte genereras av ett ändligt antal polynom, vilket vi ser genom att betrakta den oändliga följden $\left\{x\cdot y^i\right\} \subset S$:
+\[x\in S \]
+\[xy \notin S\setminus\mathbb{C}[x] \]
+\[xy^2 \notin S\setminus\mathbb{C}[x,xy] \]
+\[xy^3 \notin S\setminus\mathbb{C}[x,xy,xy^2] \]
+\[xy^4 \notin S\setminus\mathbb{C}[x,xy,xy^2,xy^3] \]
+\[\cdots\]
+För varje ändlig mängd generatorer $\left\{p_i\right\}$ kan du således hitta ett $N$ sådant att $x\cdot y^N \notin \left<\left\{p_i\right\}\right>$, eftersom $x\cdot y^N$ inte kan vara produkten av två $x\cdot y^a$ och $x\cdot y^b$, där $a + b = N$, eller uppstå från summor av sådana monom av lägre grad i $y$.
+
 \section{Semigrupper för $\mathbb{C}[p_1,\ldots,p_n]$}
 
-När vi nu vet att alla delringar $S \subset \mathbb{C}[t]$ genereras av ett ändligt antal polynom $S=\mathbb{C}[p_1,\ldots,p_n]$, har vi en möjlighet att börja studera dessa delringar, genom att analysera hur polynomen $\left\{p_i\right\}$ beter sig. Vi börjar med att studera $G_S = \mathbf{o}(S) = \left\{\mathbf{o}(p), p \in S \wedge p \neq 0 \right\} \cup \left\{0\right\}$. (Vi antar för enkelhetens skull i just detta exempel att $\mathbf{o}(0)=0$, även om vi lämnat värdet för $\mathbf{o}(0)$ odefinierad generellt.)
+När vi nu vet att alla delringar $S \subset \mathbb{C}[t]$ genereras av ett ändligt antal polynom $S=\mathbb{C}[p_1,\ldots,p_n]$, har vi en möjlighet att börja studera dessa delringar, genom att analysera hur polynomen $\left\{p_i\right\}$ beter sig. Vi börjar med att studera $G_S = \mathbf{o}(S) = \left\{\mathbf{o}(p), p \in S \wedge p \neq 0 \right\}$. (Notera att vi inte definierat något värde för $\mathbf{o}(0)$.)
 
-Att $G_S$ är en semigrupp följer av att den innehåller $0$ samt är sluten under addition: Om $a,b\in G_S \Longrightarrow \exists p_a, p_b \in S:\mathbf{o}(p_a)=a \wedge \mathbf{o}(p_b)=b$. Men $\mathbf{o}(p_a \cdot p_b) = \mathbf{o}(p_a) \cdot \mathbf{o}(p_b) = a \cdot b \Longrightarrow a \cdot b \in G_S$ eftersom $p_a \cdot p_b \in S$.
+Att $G_S$ är en semigrupp följer av att den är sluten under addition: Om $a,b\in G_S \Longrightarrow \exists p_a, p_b \in S:\mathbf{o}(p_a)=a \wedge \mathbf{o}(p_b)=b$. Men $\mathbf{o}(p_a \cdot p_b) = \mathbf{o}(p_a) + \mathbf{o}(p_b) = a + b \Longrightarrow a + b \in G_S$ eftersom $p_a \cdot p_b \in S$. Additionsoperatorn är dessutom som bekant också associativ.
 
 Att $\left<\mathbf{o}(p_1),\ldots,\mathbf{o}(p_n)\right> \subseteq G_S$ är uppenbart, men det är värt att notera att $G_S$ kan vara större. Betrakta exempelvis $S=\mathbb{C}[t^2,t^4+t^5]$. Här har vi $\left<\mathbf{o}(t^2),\mathbf{o}(t^4+t^5)\right> = \left<2,4\right>=\left<2\right> = 2\mathbb{Z}$, vilken inte är numerisk. Men $\left(t^4+t^5\right)-\left(t^2\right)^2 = t^5 \in S \Longrightarrow 5 \in G_S$. Men $5 \notin 2\mathbb{Z}$. Således är $G_S$ större i detta fall. Att $5 \in G_S$ innebär också att $\left<2,5\right> \subset G_S$. Men $\left<2,5\right> = \left\{2, 4, 5, 6, \ldots\right\}$, dvs. den innehåller 2 och alla tal större än 4 (konduktören är 4). Det är enkelt att se att $3 \notin G_S$. Vi kan inte från $p_1=t^2$ och $p_2=t^4+t^5$ skapa ett polynom av ordning 3. Således får vi:
 \[\left<\mathbf{o}(p_1),\mathbf{o}(p_2)\right> = \left<2\right> \subset \left<2,5\right> = G_S \]

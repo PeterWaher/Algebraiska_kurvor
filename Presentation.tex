@@ -140,7 +140,7 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Bevisdisposition}
+	\frametitle{Översikt bevis}
 	Beviset av satsen går igenom följande steg:
 	
 	\begin{enumerate}
@@ -492,9 +492,9 @@ Elapsed Time: 0.016 s.
 \begin{frame}
 	\frametitle{Semigrupper}
 \begin{Definition}
-	För en \textbf{semigrupp} $G$, med den implicit definierade operatorn $+$ gäller:
-	\[0 \in G\]
+	För en \textbf{semigrupp} $G$, med den implicit definierade binära operatorn $+$ gäller:
 	\[a \in G \wedge b \in G \Longrightarrow (a + b) \in G\]
+	\[(a+b)+c = a+(b+c)\]
 \end{Definition}
 \end{frame}
 
@@ -587,27 +587,302 @@ Elapsed Time: 0.016 s.
 	\item<8-> $N_- \in \widehat{M} \wedge \left\|N_-\right\|=k \Longrightarrow N_- = M_-$
 \end{enumerate}\end{frame}
 
+\subsection{Beräkning av konduktören}
+
 \begin{frame}
 	\frametitle{$\gcd(\left\{n_i\right\})=1 \Longrightarrow \left<\left\{n_i\right\}\right> \text{ numerisk}$}
 \begin{Theorem}
-	\label{S4}
 	Om $n_1, \ldots, n_k$ är heltal sådana att $\gcd(n_1, \ldots, n_k) = 1$ så gäller att $G = \left<n_1, \ldots, n_k\right>$ är en numerisk semigrupp.
 \end{Theorem}
 
 \uncover<2->{Översikt av bevis:}
 \begin{enumerate}
 	\item<2->Anta $n_1 < \ldots < n_k$
+	\item<3->$\left< \left[n_2\right]_{n_1}, \ldots, \left[n_k\right]_{n_1} \right> = \mathbb{Z}_{n_1}$
+	\item<4->$[a_j]_{n_1} \in \mathbb{Z}_{n_1} \Longrightarrow \exists \left\{b_{i,j}\right\}, 0 \leq b_{i,j} < n_1 : \sum b_{i,j} \cdot [n_i]_{n_1} = [a_j]_{n_1}$
+	\item<5->$b_j = \sum_{i=2}^{k} b_{i,j} \cdot n_i \in G, [b_j]_{n_1} = [a_j]_{n_1}$
+	\item<6->$0 \leq b_j < n_1 \sum_{i=2}^{k} n_i \leq (k-1) n_1 n_k = B$
+	\item<7->$S_B = \{m\cdot n_1, \ldots, (m+1)\cdot n_1 - 1\} \subset G$, där $m\cdot n_1 \geq B$
 \end{enumerate}
 \end{frame}
 
+
+
+
+\begin{frame}
+	\frametitle{\texttt{FindConductor()}}
+	
+	\begin{semiverbatim}
+		FindConductor := proc(Generators)
+	\end{semiverbatim}
+	
+	\begin{enumerate}
+		\item<1-> Algoritm som beräknar konduktören för en numerisk semigrupp givet dess generatorer.
+		
+		\item<2-> Maple-kod finns i \texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/semigrupper.mw}
+		
+		\item<3-> Text-version finns i
+		\texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/Functions/\\
+			\qquad FindConductor.txt} 
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Generalisering möjlig?}
+  	\begin{example}
+		Vi beräknar konduktören för $\left<2 \cdot 3 \cdot 5, 2 \cdot 3 \cdot 7, 2 \cdot 5 \cdot 7, 3 \cdot 5 \cdot 7\right> = \left<30, 42, 70, 105\right>$:
+  		
+  		\begin{semiverbatim}
+  			> FindConductor([2*3*5,2*3*7,2*5*7,3*5*7]);
+  			
+  			
+  			Elapsed Time: 0.000 s.
+  		\end{semiverbatim}
+  		\[384\]
+  		
+  		Konduktören blir i detta exempel $384 = 2^7 \cdot 3$. Som man kan se i detta exempel verkar det inte finnas någon enkel självklar generalisering av formeln för konduktören av $\left<m, n\right>$, då $m$ och $n$ är relativt prima ($c = (m-1)(n-1)$).
+  	\end{example}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stor semigrupp}
+	\begin{example}
+		I följande exempel illustreras fördelen med att beräkningen av konduktören genomförs utan att motsvarande semigrupp genereras:
+		
+		\begin{semiverbatim}
+			> FindConductor([2139,2398,3321]);
+			
+			
+			Elapsed Time: 8.062 s.
+		\end{semiverbatim}
+		\[277188\]
+		
+		Konduktören för $\left<2139, 2398, 3321\right>$ är alltså $277188$, dvs. lite mer än 129 ggr större än den minsta generatorn ($2139$). Beräkningen av motsvarande semigrupp kommer att ta betydligt mer tid (326.313 s). Utskriften av semigruppen kan också krascha Maple (vilket den gjorde i mitt fall).
+	\end{example}
+\end{frame}
+
+
+
+
+\begin{frame}
+	\frametitle{\texttt{FindSemiGroup()}}
+	
+	\begin{semiverbatim}
+		FindSemiGroup := proc(Generators)
+	\end{semiverbatim}
+	
+	\begin{enumerate}
+		\item<1-> Algoritm som genererar semigruppen och dess konduktör, givet dess generatorer.
+
+		\item<2-> Maple-kod finns i \texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/semigrupper.mw}
+		
+		\item<3-> Text-version finns i
+		\texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/Functions/\\
+			\qquad FindSemiGroup.txt} 
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Enkel semigrupp}
+	\begin{example}
+		Det första exemplet beräknar $\left<15, 10, 6\right>$:
+
+		\begin{semiverbatim}
+			> FindSemiGroup([15,10,6]);
+			
+			
+			Elapsed Time: 0.000 s.
+		\end{semiverbatim}
+		\[\left[30, \left\{6, 10, 12, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30\right\}\right]\]
+
+		
+		Vi får att konduktören är $30$ och att 
+		\[\left<15, 10, 6\right> = \left\{6, 10, 12, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30, \ldots\right\}\]
+		där ``\ldots'' betyder ``alla heltal som kommer därefter''.
+	\end{example}
+\end{frame}
+
+
+\subsection{Polynomringen $\mathbb{C}[t]$ och dess delringar}
+
+\begin{frame}
+	\frametitle{Delringar till $\mathbb{C}[t]$}
+	\begin{Theorem}
+		För varje icketrivial delring $S \subset \mathbb{C}[t]$, sluten under skalär multiplikation, finns ett ändligt antal polynom $p_1,\ldots,p_n \in \mathbb{C}[t]$ som genererar $S$, dvs. $S=\mathbb{C}[p_1,\ldots,p_n]$.
+	\end{Theorem}
+	
+	\uncover<2->{
+		\begin{example}
+			Gäller inte generellt. $x\cdot\mathbb{C}[x,y]$ har inte ett ändligt antal generatorer:
+			
+			\[xy^2 \notin \mathbb{C}[x,xy]\]
+			\[xy^3 \notin \mathbb{C}[x,xy,xy^2]\]	
+			\[xy^4 \notin \mathbb{C}[x,xy,xy^2,xy^3]\]
+			\[\cdots\]
+		\end{example}}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Delringar till $\mathbb{C}[t]$}
+	\begin{Theorem}
+		För varje icketrivial delring $S \subset \mathbb{C}[t]$, sluten under skalär multiplikation, finns ett ändligt antal polynom $p_1,\ldots,p_n \in \mathbb{C}[t]$ som genererar $S$, dvs. $S=\mathbb{C}[p_1,\ldots,p_n]$.
+	\end{Theorem}
+	
+	\uncover<1->{Översikt motsatsbevis: (1/4)}
+	\begin{enumerate}
+		\item<2->$p_1$ bland de polynom i $S$ av lägst grad.
+		\item<3->$p_{i+1}$ väljs bland $S \setminus \mathbb{C}[p_1,\ldots,p_i]$ av lägst grad.
+		\item<4->$\deg(p_{i+1})>\deg(p_i)$
+		\item<5->$S_1=\mathbb{C}[p_1] \subsetneq \ldots \subsetneq S_n=\mathbb{C}[p_1,\ldots,p_n] \subsetneq \ldots \subseteq S \subset \mathbb{C}[t]$
+		\item<6->$I_i=\deg(S_i) \Longrightarrow I_1 \subsetneq \ldots \subsetneq I_i \subsetneq \ldots \subseteq \mathbb{N}$
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Delringar till $\mathbb{C}[t]$}
+	\begin{Theorem}
+		För varje icketrivial delring $S \subset \mathbb{C}[t]$, sluten under skalär multiplikation, finns ett ändligt antal polynom $p_1,\ldots,p_n \in \mathbb{C}[t]$ som genererar $S$, dvs. $S=\mathbb{C}[p_1,\ldots,p_n]$.
+	\end{Theorem}
+	
+	\uncover<1->{Översikt motsatsbevis: (2/4)}
+	\begin{enumerate}
+		\item<1->$\overline{I}_i=\left\{[d]_m:d\in I_i \right\} \subseteq \mathbb{Z}_m$, där $m=\deg(p_1)$
+		\item<2->$\overline{I}_1 \subseteq \ldots \subseteq \overline{I}_i \subseteq \ldots \subseteq \mathbb{Z}_m$
+		\item<3->$\exists N : \overline{I}_i = \overline{I}_N, \forall i \geq N$
+		\item<4->$Q_i=\left\{q \in \mathbb{C}[p_1,\ldots,p_N] : \deg(q) \equiv i \mod{m}\right\}$
+		\item<5->$\forall [i]_m \in \overline{I}_N, 0 \leq i < m : Q_i \neq \emptyset$
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Delringar till $\mathbb{C}[t]$}
+	\begin{Theorem}
+		För varje icketrivial delring $S \subset \mathbb{C}[t]$, sluten under skalär multiplikation, finns ett ändligt antal polynom $p_1,\ldots,p_n \in \mathbb{C}[t]$ som genererar $S$, dvs. $S=\mathbb{C}[p_1,\ldots,p_n]$.
+	\end{Theorem}
+	
+	\uncover<1->{Översikt motsatsbevis: (3/4)}
+	\begin{enumerate}
+		\item<1->$\deg(Q_i) \subset \mathbb{N} \Longrightarrow \exists d_i=\min(\deg(Q_i))$
+		\item<2->$q_i \in Q_i: \deg(q_i)=d_i \wedge$ ledande koefficient 1.
+		\item<3->$n_i \in \mathbb{N} : \deg(q_i) = i + n_i \cdot m$
+		\item<4->Godtyckligt $f \in S$.
+		\item<5->$\deg(f)\in \overline{I}_N \Longrightarrow \exists [j]_m \in \overline{I}_N, 0 \leq j < m : \deg(f) \equiv j \mod{m}$
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Delringar till $\mathbb{C}[t]$}
+	\begin{Theorem}
+		För varje icketrivial delring $S \subset \mathbb{C}[t]$, sluten under skalär multiplikation, finns ett ändligt antal polynom $p_1,\ldots,p_n \in \mathbb{C}[t]$ som genererar $S$, dvs. $S=\mathbb{C}[p_1,\ldots,p_n]$.
+	\end{Theorem}
+	
+	\uncover<1->{Översikt motsatsbevis: (4/4)}
+	\begin{enumerate}
+		\item<1->$\exists k \in \mathbb{N} : k\geq n_j \wedge \deg(f) = j + k\cdot m = j + n_j\cdot m + m\cdot(k-n_j) =\deg(q_j)+\deg(p_1^{k-n_j}) = \deg(q_j\cdot p_1^{k-n_j})$
+		\item<2->$f_0 = a_0\cdot q_j\cdot p_1^{k-n_j} \in \mathbb{C}[p_1,\ldots,p_N] \subset S$
+		\item<3->$f-f_0 \in S \wedge \deg(f-f_0)<\deg(f)$
+		\item<4->$f_0,\ldots,f_l \in \mathbb{C}[p_1,\ldots,p_N]$
+		\item<5->$\deg(f)>\deg(f-f_0)>\ldots>\deg(f-\sum f_j)$
+	\end{enumerate}
+\end{frame}
+
+
+
+\subsection{Semigrupper för $\mathbb{C}[p_1,\ldots,p_n]$}
+
+\begin{frame}
+	\frametitle{Semigruppen av ordningar}
+	Betrakta $G_S = \mathbf{o}(S) = \left\{\mathbf{o}(p), p \in S \wedge p \neq 0 \right\}$, där $S=\mathbb{C}[p_1,\ldots,p_n]$:
+	
+	\begin{enumerate}
+		\item<2-> $G_S$ är en semigrupp.
+		\item<3-> $G_S$ kan vara större än $\left<\mathbf{o}(p_1),\ldots,\mathbf{o}(p_n)\right>$
+	\end{enumerate}
+		
+	\uncover<4->{
+		\begin{example}
+		\begin{enumerate}
+			\item<4-> $S=\mathbb{C}[t^2,t^4+t^5]$
+			\item<5-> $(t^4+t^5)-(t^2)^2=t^5\in S\Longrightarrow 5\in G_S$
+			\item<6-> $\left<\mathbf{o}(p_1),\mathbf{o}(p_2)\right> = \left<2\right> \subset \left<2,5\right> = \left\{2, 4, 5, 6, \ldots\right\} = G_S$
+		\end{enumerate}
+		\end{example}}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Sökning efter polynom}
+För att beräkna vilka tal som finns i $G_S$ behöver vi systematiskt gå igenom de möjligheter vi har att kombinera nya polynom från generatorerna $\left\{p_i\right\}$. Polynom som kan generera polynom av nya ordningar, och som inte är kända sedan tidigare, kan göras på två sätt:
+
+\begin{enumerate}
+	\item<2-> Antingen genom att två kända polynom multipliceras med varandra. I detta fallet blir ordningen av det nya polynomet summan av ordningarna för de individuella polynomen.
+	
+	\item<3-> Alternativt kan två kända polynom av samma ordning adderas till varandra, med möjlig föregående skalär multiplicering av det ena, så att termen motsvarande den aktuella ordningen elimineras från svaret. I detta fallet blir ordningen av svaret beroende av de ingående polynomen.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{\texttt{FindSemiGroupFromPolynomialRing()}}
+	
+	\begin{semiverbatim}
+		FindSemiGroupFromPolynomialRing := proc( 
+
+		\qquad PolynomialGenerators,Variable)
+	\end{semiverbatim}
+	
+	\begin{enumerate}
+		\item<1-> Algoritm som beräknar semigruppen för en delring $\mathbb{C}[p_1,\ldots,p_n] \subset \mathbb{C}[t]$ och returnerar dess generatorer. Den kan också returnera hur generatorerna härletts.
+		
+		\item<2-> Maple-kod finns i \texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/semigrupper.mw}
+		
+		\item<3-> Text-version finns i
+		\texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/Functions/\\
+			\qquad FindSemiGroupFromPolynomialRing.txt} 
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Enkelt exempel}
+	
+	\begin{example}
+		\begin{semiverbatim}
+			> FindSemiGroupFromPolynomialRing([t\^{}4+t\^{}5,
+
+\qquad t\^{}6+t\^{}7],t,true,true);
+		\end{semiverbatim}
+\[\begin{array}{c}
+p_1 = t^5 + t^4\\[3pt]
+p_2 = t^7 + t^6\\[3pt]
+p_1^3 - p_2^2 = t^{15} + 2 t^{14} + t^{13}\\
+\end{array}\]
+
+\[\left[4, 6, 13\right]\]
+
+\begin{semiverbatim}
+> FindSemiGroup([4,6,13]);
+\end{semiverbatim}
+\[\left[16, \left\{4, 6, 8, 10, 12, 13, 14, 16\right\}\right]\]
+	\end{example}
+\end{frame}
+
+
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+\begin{frame}
+	\frametitle{}
+\end{frame}
 \begin{frame}
 	\frametitle{}
 \end{frame}
 
 
-\subsection{Beräkning av konduktören}
-\subsection{Polynomringen $\mathbb{C}[t]$ och dess delringar}
-\subsection{Semigrupper för $\mathbb{C}[p_1,\ldots,p_n]$}
 
 \section{Implicit notation}
 
