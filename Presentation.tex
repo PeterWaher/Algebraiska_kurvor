@@ -74,12 +74,14 @@
 	
   	\begin{example}
 		\begin{columns}[onlytextwidth]
-			\begin{column}{0.5\textwidth}
-				\[C(t)=(t^2,t^3+t^7)\]\\[20pt]
+			\begin{column}{0.55\textwidth}
+				\[C(t)=(t^2,t^3+t^7)\]\\[10pt]
 				\scriptsize Not: För att förenkla notationen kan vi identifiera kurvan $C$ med en viss parametrisering $(f, g)$, även om parametriseringen inte är unik. Detta görs enklast genom att identifiera kurvan med funktionen $C : \mathbb{C} \rightarrow \mathbb{C}^2$, $C(t) = \left(f(t), g(t)\right)$. Notera dock att kurvan som sådan och en av dess parametriseringar är två olika objekt.
 			\end{column}
-			\begin{column}{0.5\textwidth}
-				\includegraphics[scale=0.35]{Export/blowupex1_1.png}
+			\begin{column}{0.45\textwidth}
+				\begin{center}
+				\includegraphics[scale=0.3]{Export/blowupex1_1.png}
+				\end{center}
 			\end{column}
 		\end{columns}
   	\end{example}
@@ -462,6 +464,7 @@ Elapsed Time: 0.016 s.
 \begin{frame}
 	\frametitle{Semigrupper}
 	\begin{enumerate}
+		\setcounter{enumi}{1}
 		\item<1-> Semigrupper
 		\begin{enumerate}
 			\item<2-> Modulär aritmetik
@@ -872,23 +875,188 @@ p_1^3 - p_2^2 = t^{15} + 2 t^{14} + t^{13}\\
 
 
 
-\begin{frame}
-	\frametitle{}
-\end{frame}
-\begin{frame}
-	\frametitle{}
-\end{frame}
-\begin{frame}
-	\frametitle{}
-\end{frame}
-
-
-
 \section{Implicit notation}
+
+
+\begin{frame}
+	\frametitle{Implicit notation}
+	\begin{enumerate}
+		\setcounter{enumi}{2}
+		\item<1-> Implicit notation
+		\begin{enumerate}
+			\item<2-> Introduktion
+			\item<3-> Sökalgoritm
+		\end{enumerate}
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Implicit notation}
+	
+	\begin{definition}
+		En \textbf{implicit ekvation} for en plan kurva $C \subset \mathbb{C}^2$ är en ekvation av typen $F(x,y)=0$, för en funktion $F: \mathbb{C}^2 \mapsto \mathbb{C}$ sådan att funktionens nollställen precis motsvarar $C$.
+	\end{definition}
+		
+	\vspace{20pt}
+	\uncover<2->{
+	Givet en algebraisk plan kurva, och en parametrisering till $C$: $C(t)=(p_x(t),p_y(t))$ ska vi söka efter en funktion $F(x,y)\in\mathbb{C}[x,y]$ sådan att $F(p_x(t),p_y(t))=0,\forall t$.}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Sökalgoritm}
+	
+	Sökalgoritmen i \texttt{FindSemiGroupFromPolynomialRing} går redan systematiskt igenom alla polynom till en viss ordning. Men några enkla modifieringar hittar den den implicita ekvationen:
+	
+	\begin{enumerate}
+		\item<2->Bara två polynom som indata.
+		\item<3->Maximal grad istf. maximal ordning.
+		\item<4->Sökning efter kombinationer som blir noll.
+		\item<5->Den kombination av lägst grad ger den bästa implicita ekvationen.
+		\item<6->$F(x,y)=0$ innehåller hela $C(t)$, per konstruktion.
+		\item<7->$F(x,y)$ är av minimal grad, så $F(x,y)$ kan inte vara produkten av två polynom $G(x,y)\cdot H(x,y)$, där $C(t)$ är nollställe till den ena, men inte den andra.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{\texttt{FindImplicitNotation()}}
+	
+	\begin{semiverbatim}
+		FindImplicitNotation := proc(Xp, Yp, Variable,
+
+\qquad MaxDegree)
+	\end{semiverbatim}
+	
+	\begin{enumerate}
+		\item<1-> Algoritm som söker efter den implicita ekvationen till en parametriserad plan kurva.
+		
+		\item<2-> Maple-kod finns i
+		\texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/\\
+			\qquad implicit\_notation.mw}
+
+		\item<3-> Text-version finns i
+		\texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/Functions/\\
+			\qquad FindImplicitNotation.txt} 
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Elementärt första exempel}
+	\begin{example}
+		\begin{columns}[onlytextwidth]
+			\begin{column}{0.5\textwidth}
+Följande exempel beräknar den implicita funktionen till kurvan $C(t) =
+\left(t^2, t^3\right)$:
+
+\begin{semiverbatim}
+> FindImplicitNotation(t\^{}2,
+
+\qquad t\^{}3,t,30,true);
+
+Elapsed Time: 0.000 s.
+\end{semiverbatim}
+\[x^3 - y^2 = 0\]
+
+Kurvan $C(t)$ motsvaras alltså av $x^3 - y^2 = 0$.
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[scale=0.6]{Export/implicitplot1_2.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{example}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Rosett}
+	\begin{example}
+		\begin{columns}[onlytextwidth]
+			\begin{column}{0.5\textwidth}
+\begin{semiverbatim}
+> FindImplicitNotation(
+
+\qquad t\^{}3*(t-1)\^{}3*(t+1)\^{}3,
+
+\qquad t\^{}5*(t-1)\^{}2*(t+1)\^{}2, 
+
+\qquad t, 150, true);
+
+
+Elapsed Time: 1.266 s.
+\end{semiverbatim}
+\[
+\begin{array}{l}
+x^9-9x^8y+36x^7y^2-84x^6y^3+\\
++126x^5y^4-126x^4y^5+84x^3y^6-\\
+-36x^2y^7+9xy^8-y^9+x^4y^3 = 0
+\end{array}
+\]
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[scale=0.6]{Export/implicitplot6_2.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{example}
+\end{frame}
+
+
+
 
 \section{Multiplicitetsföljder}
 \subsection{Uppblåsningar}
-\subsection{Multiplicitetsföljder \& funktionsfamiljer}
+
+
+\begin{frame}
+	\frametitle{Multiplicitetsföljder}
+	\begin{enumerate}
+		\setcounter{enumi}{3}
+		\item<1-> Multiplicitetsföljder
+		\begin{enumerate}
+			\item<2-> Uppblåsningar
+			\item<3-> Multiplicitetsföljder
+			\item<4-> Funktionsfamiljer
+			\item<5-> Komplexitet
+		\end{enumerate}
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+
+
+
+\subsection{Multiplicitetsföljder}
+\subsection{Funktionsfamiljer}
 \subsection{Komplexitet}
 
 \end{document}
