@@ -11,6 +11,8 @@
 \languagepath{swedish}
 \deftranslation[to=swedish]{Theorem}{Sats}
 \deftranslation[to=swedish]{theorem}{sats}
+\deftranslation[to=swedish]{Corollary}{Följdsats}
+\deftranslation[to=swedish]{corollary}{följdsats}
 \deftranslation[to=swedish]{Example}{Exempel}
 \deftranslation[to=swedish]{example}{exempel}
 
@@ -45,8 +47,6 @@
 
 
 \section{Plana algebraiska kurvor}
-\subsection{Introduktion - kurvor}
-
 
 \begin{frame}
 	\frametitle{Plana algebraiska kurvor}
@@ -58,6 +58,8 @@
 		\end{enumerate}
 	\end{enumerate}
 \end{frame}
+
+\subsection{Introduktion - kurvor}
 
 \begin{frame}
 \frametitle{Vad är en plan kurva?}
@@ -164,7 +166,7 @@
 		\item<7-> Med början i $a_1$ (som har $n$ lösningar), löses koefficienterna $a_i$ ut ur $\phi(t)=\sum_{k=1}^{\infty}a_k t^k$ för att uppfylla ovanstående.
 		
 		\item<8-> Finns precis en lösning i det generella fallet som uppfyller ovanstående, samt satsens, krav.
-		
+		\qed
 	\end{enumerate}
 \end{frame}
 
@@ -458,8 +460,6 @@ Elapsed Time: 0.016 s.
 
 
 \section{Semigrupper}
-\subsection{Introduktion - semigrupper}
-
 
 \begin{frame}
 	\frametitle{Semigrupper}
@@ -477,6 +477,7 @@ Elapsed Time: 0.016 s.
 	\end{enumerate}
 \end{frame}
 
+\subsection{Introduktion - semigrupper}
 
 \begin{frame}
 	\frametitle{Modulär aritmetik}
@@ -526,7 +527,7 @@ Elapsed Time: 0.016 s.
 	\item<5-> Uppdelning av $\mathbb{N}$ i segment om $m$ tal vardera.
 	\item<6-> Stryk alla tal i $[0]_m$, därefter $[n]_m$, $[2n]_m$, \ldots, $\left[(m-1)n\right]_m$.
 	\item<7-> Alla tal större än eller lika med $(m-1)n$ ur $\mathbb{N}$
-	\item<8-> Det högsta ostrukna talet, är således $(m - 1)n - m$.
+	\item<8-> Det högsta ostrukna talet, är således $(m - 1)n - m$. \qed
 \end{enumerate}
 \end{frame}
 
@@ -571,6 +572,7 @@ Elapsed Time: 0.016 s.
 \begin{enumerate}
 	\item<3-> $\gcd(G)=\gcd(n_1,\ldots,n_k)=d$.
 	\item<4-> $d>1 \Longrightarrow \left\|\mathbb{N} \setminus G \right\| = \infty$
+	\qed
 \end{enumerate}
 \end{frame}
 
@@ -588,6 +590,7 @@ Elapsed Time: 0.016 s.
 	\item<6-> $k = \inf \widehat{M}'$ existerar.
 	\item<7-> $\exists M_- \in \widehat{M} : \left\|M_-\right\|=k$
 	\item<8-> $N_- \in \widehat{M} \wedge \left\|N_-\right\|=k \Longrightarrow N_- = M_-$
+	\qed
 \end{enumerate}\end{frame}
 
 \subsection{Beräkning av konduktören}
@@ -606,6 +609,7 @@ Elapsed Time: 0.016 s.
 	\item<5->$b_j = \sum_{i=2}^{k} b_{i,j} \cdot n_i \in G, [b_j]_{n_1} = [a_j]_{n_1}$
 	\item<6->$0 \leq b_j < n_1 \sum_{i=2}^{k} n_i \leq (k-1) n_1 n_k = B$
 	\item<7->$S_B = \{m\cdot n_1, \ldots, (m+1)\cdot n_1 - 1\} \subset G$, där $m\cdot n_1 \geq B$
+	\qed
 \end{enumerate}
 \end{frame}
 
@@ -753,6 +757,7 @@ Elapsed Time: 0.016 s.
 	
 	\uncover<1->{Översikt motsatsbevis: (2/4)}
 	\begin{enumerate}
+		\setcounter{enumi}{5}
 		\item<1->$\overline{I}_i=\left\{[d]_m:d\in I_i \right\} \subseteq \mathbb{Z}_m$, där $m=\deg(p_1)$
 		\item<2->$\overline{I}_1 \subseteq \ldots \subseteq \overline{I}_i \subseteq \ldots \subseteq \mathbb{Z}_m$
 		\item<3->$\exists N : \overline{I}_i = \overline{I}_N, \forall i \geq N$
@@ -769,6 +774,7 @@ Elapsed Time: 0.016 s.
 	
 	\uncover<1->{Översikt motsatsbevis: (3/4)}
 	\begin{enumerate}
+		\setcounter{enumi}{10}
 		\item<1->$\deg(Q_i) \subset \mathbb{N} \Longrightarrow \exists d_i=\min(\deg(Q_i))$
 		\item<2->$q_i \in Q_i: \deg(q_i)=d_i \wedge$ ledande koefficient 1.
 		\item<3->$n_i \in \mathbb{N} : \deg(q_i) = i + n_i \cdot m$
@@ -785,11 +791,13 @@ Elapsed Time: 0.016 s.
 	
 	\uncover<1->{Översikt motsatsbevis: (4/4)}
 	\begin{enumerate}
+		\setcounter{enumi}{15}
 		\item<1->$\exists k \in \mathbb{N} : k\geq n_j \wedge \deg(f) = j + k\cdot m = j + n_j\cdot m + m\cdot(k-n_j) =\deg(q_j)+\deg(p_1^{k-n_j}) = \deg(q_j\cdot p_1^{k-n_j})$
 		\item<2->$f_0 = a_0\cdot q_j\cdot p_1^{k-n_j} \in \mathbb{C}[p_1,\ldots,p_N] \subset S$
 		\item<3->$f-f_0 \in S \wedge \deg(f-f_0)<\deg(f)$
 		\item<4->$f_0,\ldots,f_l \in \mathbb{C}[p_1,\ldots,p_N]$
 		\item<5->$\deg(f)>\deg(f-f_0)>\ldots>\deg(f-\sum f_j)$
+		\qed
 	\end{enumerate}
 \end{frame}
 
@@ -876,7 +884,6 @@ p_1^3 - p_2^2 = t^{15} + 2 t^{14} + t^{13}\\
 
 
 \section{Implicit notation}
-
 
 \begin{frame}
 	\frametitle{Implicit notation}
@@ -1007,8 +1014,6 @@ x^9-9x^8y+36x^7y^2-84x^6y^3+\\
 
 
 \section{Multiplicitetsföljder}
-\subsection{Uppblåsningar}
-
 
 \begin{frame}
 	\frametitle{Multiplicitetsföljder}
@@ -1024,39 +1029,431 @@ x^9-9x^8y+36x^7y^2-84x^6y^3+\\
 	\end{enumerate}
 \end{frame}
 
+\subsection{Uppblåsningar}
+
 \begin{frame}
-	\frametitle{}
+	\frametitle{Plan kurva med singularitet i origo}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			Betrakta den plana algebraiska kurvan $C(t)=(t^2,t^3+t^7)$. Denna ges implicit av ekvationen
+			\[y^2-x^3-2x^5-x^7 = 0\]
+			Vi ser att den har en singularitet i origo.
+			
+			\vspace{20pt}
+			Hur kan vi göra den mjukare (eller enklare)?
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\includegraphics[scale=0.35]{Export/blowupex1_1.png}
+			\end{center}
+		\end{column}
+	\end{columns}	
 \end{frame}
 
 \begin{frame}
-	\frametitle{}
+	\frametitle{Projektion från en högre dimension}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.4\textwidth}
+			Enkelt att införa en tredje dimension med $z(t)=t$:
+			\[C^*(t)=(t^2,t^3+t^7,t)\]
+			
+			Finns även tre projektioner utritade: 
+			\[\left\{\begin{array}{l}
+			P_x(t)=(x_p,y(t),z(t))\\
+			P_y(t)=(x(t),y_p,z(t))\\
+			P_z(t)=(x(t),y(t),z_p)
+			\end{array}\right.\]
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\includegraphics[scale=0.5]{Export/blowupex1_2.png}
+			\end{center}
+		\end{column}
+	\end{columns}	
 \end{frame}
 
 \begin{frame}
-	\frametitle{}
+	\frametitle{Implicit ekvation}
+	Men hur gör vi med en algebraisk kurva som ges implicit av en polynomekvation $F(x,y)=0$?
+	
+	Istället kan vi införa en tredje dimension till kurvan genom att utanför singulariteten introducera $z=y/x, x \neq 0$.
+
+	\begin{center}
+		\includegraphics[scale=0.5]{Export/blowupex1_3.png}
+	\end{center}
 \end{frame}
 
 \begin{frame}
-	\frametitle{}
+	\frametitle{Agebraiska konsekvenser}
+Eftersom vår ursprungliga kurva uppfyller $F(x,y)=0$ och den nya kurvan även uppfyller $z=y/x$, och därför $y=z\cdot x$, måste den nya kurvan således även uppfylla
+\[F(x,z\cdot x)=0\]
+
+I vårt exempel ger detta således:
+
+\[
+\begin{array}{c}
+(z\cdot x)^2-x^3-2x^5-x^7 = x^2 \cdot \left(z^2-x-2x^3-x^5\right) = 0 \Longrightarrow\\[5pt]
+\Longrightarrow (x=0) \vee (z^2-x-2x^3-x^5=0)\\
+\end{array}
+\]
 \end{frame}
 
 \begin{frame}
-	\frametitle{}
+	\frametitle{Förenklad kurva}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			Vi får en ny kurva $C^*$, implicit givet av polynomekvationen \[F^*(x,z)=z^2-x-2x^3-x^5=0\] vilken är \emph{enklare} än den ursprungliga polynomekvationen $F(x,y)=0$.
+			
+			\vspace{20pt}
+			Denna nya kurva $C^*$ motsvarar precis projektionen $P_y$ av vår tredimensionella kurva på XZ-planet.
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\includegraphics[scale=0.45]{Export/blowupex1_4.png}
+			\end{center}
+		\end{column}
+	\end{columns}	
 \end{frame}
 
 \begin{frame}
-	\frametitle{}
+	\frametitle{Uppblåsning}
+\begin{Definition}
+	En \textbf{uppblåsning} av en algebraisk plan singulär kurva $C$ som går genom origo, givet implicit genom polynomekvationen $F(x,y)=0$, är den algebraiska plana kurva $C^*$ som ges implicit av $F^*(x,y) = F(x,x\cdot y)/x^m=0$, där $m$ är \textbf{multipliciteten} av nollstället $x=0$ i $F(x,x\cdot y)$, dvs. det största heltal $m$ sådant att $x^m$ delar alla termer i $F(x,x\cdot y)$.
+\end{Definition}
+\uncover<2->{\begin{Corollary}
+	För multipliciteten gäller att $m > 0$ om kurvan som ges av $F(x,y)=0$ går genom origo.
+\end{Corollary}}
 \end{frame}
-
-\begin{frame}
-	\frametitle{}
-\end{frame}
-
-
-
 
 \subsection{Multiplicitetsföljder}
+
+\begin{frame}
+	\frametitle{Serie av uppblåsningar}
+Låt oss kalla uppblåsningsoperatorn definierad ovan för $B$ (för ``Blow-Up''), där $F(x,y)$ blåses upp till $F^*(x,y)$ och $m$ är den implicit genererade multipliciteten i operationen:
+
+\[F \overset{B}{\underset{m}{\longrightarrow}} F^*\]
+
+Anta att vi har en serie uppblåsningar:
+
+\[
+F(x,y) \overset{B}{\underset{m_1}{\longrightarrow}} F_1(x,y) \overset{B}{\underset{m_2}{\longrightarrow}} \ldots \overset{B}{\underset{m_n}{\longrightarrow}} F_n(x,y) \overset{B}{\underset{m_{n+1}}{\longrightarrow}} \ldots
+\]
+
+Denna serie kan bara fortgå så länge $F_i(x,y)$ är singulär i origo. Hur länge är det? 
+\end{frame}
+
+\begin{frame}
+	\frametitle{Oändligt exempel}
+	\begin{example}
+		Låt oss betrakta $F(x,y)=y^2-xy$:
+		
+		\[
+		(y^2-xy) \overset{B}{\underset{2}{\longrightarrow}} (y^2-y) \overset{B}{\underset{1}{\longrightarrow}} (xy^2-y) \overset{B}{\underset{1}{\longrightarrow}} (x^2y^2-y) 		
+		\overset{B}{\underset{1}{\longrightarrow}}\]
+		\[\overset{B}{\underset{1}{\longrightarrow}} (x^3y^2-y) \overset{B}{\underset{1}{\longrightarrow}} \ldots\]
+		
+		Multiplicitetsföljden blir $2,1,1,1,1,\ldots$, i all oändlighet. Anledningen till detta är att alla termer innehåller $y$ som alltid genererar en faktor $x$ för varje uppblåsning.
+	\end{example}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Ändliga multiplicitetsföljder}
+	\begin{Theorem}
+		Om $F(x,y)\in \mathbb{C}[x,y]$ är singulär i origo och är summan av ett polynom $G(x,y)=y\cdot H(x,y)$, vilket har minst ett $y$ i varje term, och ett polynom $p(x) \neq 0$ som bara har termer bestående av potenser av $x$, så är multiplicitetsföljden av $F(x,y)$ en ändlig serie av icke strikt avtagande heltal.
+	\end{Theorem}
+
+	\uncover<2->{Översikt av bevis: (1/6)}
+	\begin{enumerate}
+		\item<3->$n=\mathbf{o}(p)$
+		\item<4->$F(x,y)=G(x,y)+x^nq(x)$, $q(0)\neq 0$
+		\item<5->$
+		G(x,y)+x^nq(x) \overset{B}{\underset{m_1}{\longrightarrow}} G_1(x,y)+x^{n-m_1}q(x) \overset{B}{\underset{m_2}{\longrightarrow}} \ldots \overset{B}{\underset{m_i}{\longrightarrow}}
+		G_i(x,y)+x^{n-\sum_{j=1}^{i}m_j}q(x) \overset{B}{\underset{m_{i+1}}{\longrightarrow}} \ldots$
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Ändliga multiplicitetsföljder}
+	\begin{Theorem}
+		Om $F(x,y)\in \mathbb{C}[x,y]$ är singulär i origo och är summan av ett polynom $G(x,y)=y\cdot H(x,y)$, vilket har minst ett $y$ i varje term, och ett polynom $p(x) \neq 0$ som bara har termer bestående av potenser av $x$, så är multiplicitetsföljden av $F(x,y)$ en ändlig serie av icke strikt avtagande heltal.
+	\end{Theorem}
+			
+	Översikt av bevis: (2/6)
+	\begin{enumerate}
+		\setcounter{enumi}{3}
+		\item För $G_i(x,y)$ gäller följande:
+		\begin{enumerate}
+			\item<2-> Samma antal termer.
+			\item<3-> $G_i(0,0)=0$
+		\end{enumerate}
+		\item<4-> $\sum_{j=1}^{i}m_j<n \Longrightarrow \left.G_i(x,y)+x^{n-\sum_{j=1}^{i}m_j}q(x) \middle|\raisebox{-0.5 em}{\scriptsize(0,0)}=0\right.$
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Ändliga multiplicitetsföljder}
+	\begin{Theorem}
+		Om $F(x,y)\in \mathbb{C}[x,y]$ är singulär i origo och är summan av ett polynom $G(x,y)=y\cdot H(x,y)$, vilket har minst ett $y$ i varje term, och ett polynom $p(x) \neq 0$ som bara har termer bestående av potenser av $x$, så är multiplicitetsföljden av $F(x,y)$ en ändlig serie av icke strikt avtagande heltal.
+	\end{Theorem}
+	
+	Översikt av bevis: (3/6)
+	\begin{enumerate}
+		\setcounter{enumi}{5}
+		\item $m_{i+1}>0$
+		\item<2-> Sekvensen måste få ett stopp efter $N$ steg: $\sum_{j=1}^{N}m_j=n$
+		\item<3-> Sista uppblåsningen blir $G_N(x,y)+q(x)$
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Ändliga multiplicitetsföljder}
+	\begin{Theorem}
+		Om $F(x,y)\in \mathbb{C}[x,y]$ är singulär i origo och är summan av ett polynom $G(x,y)=y\cdot H(x,y)$, vilket har minst ett $y$ i varje term, och ett polynom $p(x) \neq 0$ som bara har termer bestående av potenser av $x$, så är multiplicitetsföljden av $F(x,y)$ en ändlig serie av icke strikt avtagande heltal.
+	\end{Theorem}
+	
+	Översikt av bevis: (4/6)
+	\begin{enumerate}
+		\setcounter{enumi}{8}
+		\item $F(x,y) = \sum_{i\in I} p_i(x)y^i = \sum_{i\in I} x^{n_i}q_i(x)y^i$
+		\item<2-> $F(x,y) \overset{B}{\underset{m_1}{\longrightarrow}} \frac{F(x,x\cdot y)}{x^{m_1}}=\sum_{i\in I} x^{n_i+i-m_1}q_i(x)y^i$
+		\item<3-> $m_1=\min(\left\{n_i+i\right\}_{i\in I})$
+		\item<4-> $\exists i_1:n_{i_1}+i_1-m_1=0$
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Ändliga multiplicitetsföljder}
+	\begin{Theorem}
+		Om $F(x,y)\in \mathbb{C}[x,y]$ är singulär i origo och är summan av ett polynom $G(x,y)=y\cdot H(x,y)$, vilket har minst ett $y$ i varje term, och ett polynom $p(x) \neq 0$ som bara har termer bestående av potenser av $x$, så är multiplicitetsföljden av $F(x,y)$ en ändlig serie av icke strikt avtagande heltal.
+	\end{Theorem}
+	
+	Översikt av bevis: (5/6)
+	\begin{enumerate}
+		\setcounter{enumi}{12}
+		\item $\ldots \overset{B}{\underset{m_2}{\longrightarrow}} \sum_{i\in I} x^{n_i+(i-m_1)+(i-m_2)}q_i(x)y^i$
+		\item<2-> $m_2\leq i_1$
+		\item<3-> $i_1=m_1-n_{i_1}\leq m_1 \Longrightarrow m_2\leq m_1$
+		\item<4-> Antag $m_1\geq m_2 \geq \ldots \geq m_k, k \geq 2$
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Ändliga multiplicitetsföljder}
+	\begin{Theorem}
+		Om $F(x,y)\in \mathbb{C}[x,y]$ är singulär i origo och är summan av ett polynom $G(x,y)=y\cdot H(x,y)$, vilket har minst ett $y$ i varje term, och ett polynom $p(x) \neq 0$ som bara har termer bestående av potenser av $x$, så är multiplicitetsföljden av $F(x,y)$ en ändlig serie av icke strikt avtagande heltal.
+	\end{Theorem}
+	
+	Översikt av bevis: (6/6)
+	\begin{enumerate}
+		\setcounter{enumi}{16}
+		\item $\ldots \overset{B}{\underset{m_{k+1}}{\longrightarrow}} \sum_{i\in I} x^{n_i+\sum_{j=1}^{k} (i-m_j) + (i-m_{k+1})}q_i(x)y^i$
+		\item<2-> Om nu $m_{k+1}>m_k$ ser vi att vi hade kunnat subtrahera ytterligare från exponenten i tidigare skede (i exponentens $(i-m_k)$-term) genom att göra $m_k$ större.
+		\qed
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\begin{Corollary}
+	Givet $F(x,y)=y\cdot H(x,y)+p(x)$ och dess multiplicitetsföljd $\left\{m_i\right\}$, gäller att $\mathbf{o}(p)=\sum m_i$.
+\end{Corollary}
+
+\vspace{20pt}
+\uncover<2->{
+	\mbox{
+\scriptsize Not: Ovanstående håller även i fallet då $p(x)=0$, om man definierar $\mathbf{o}(0)=\infty$.}}
+
+\vspace{20pt}
+\uncover<3->{
+\begin{Corollary}
+	Om $F(x,y)\in \mathbb{C}[x,y]$ är ett irreducibelt polynom som är singulärt i origo, så är multiplicitetsföljden av $F(x,y)$ en ändlig serie av icke strikt avtagande heltal.
+\end{Corollary}
+}
+\end{frame}
+
+\begin{frame}
+	\frametitle{\texttt{MultiplicitySequenceXY()}}
+	
+	\begin{semiverbatim}
+		MultiplicitySequenceXY := proc(F, XVariable, YVariable)
+	\end{semiverbatim}
+	
+	\begin{enumerate}
+		\item<1-> Algoritm som beräknar multiplicitetsföljden av en algebraisk kurva givet på formen $F(x, y) = 0$, där $F \in \mathbb{C}\left[x, y\right]$.
+		
+		\item<2-> Maple-kod finns i \texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/\\
+			\qquad multiplicitetsfoljder.mw}
+		
+		\item<3-> Text-version finns i
+		\texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/Functions/\\
+			\qquad MultiplicitySequenceXY.txt} 
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Exempel 1/2}
+	\begin{example}
+I detta exempel beräknas multiplicitetsföljden för $y^2 - x^5 = 0$:
+
+\begin{semiverbatim}
+> MultiplicitySequenceXY(y\^{}2-x\^{}5,x,y)
+\end{semiverbatim}
+\[\left[2, 2, 1\right]\]
+	\end{example}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Exempel 2/2}
+	\begin{example}
+		Vill vi se de successiva uppblåsningarna gör vi som följer:
+		
+		\begin{semiverbatim}
+			> MultiplicitySequenceXY(y\^{}2-x\^{}5,x,y,true)
+		\end{semiverbatim}
+		\[[2,-x^3+y^2]\]
+		\[[2,y^2-x]\]
+		\[[1,xy^2-1]\]
+		\[[0,x^3y^2-1]\]
+		\[\left[2, 2, 1\right]\]
+	\end{example}
+\end{frame}
+
+
+
 \subsection{Funktionsfamiljer}
+
+\begin{frame}
+	\frametitle{Funktionsfamiljer}
+	Givet en multiplicitetsföljd $\left\{m_i\right\}$, hur ser funktionerna $F(x,y)$ ut som har motsvarande multiplicitetsföljd?
+	
+	\uncover<2->{
+	Algoritm för att beräkna familj av funktioner som har given multiplicitetsföljd:}
+	
+	\begin{enumerate}
+		\item<3-> $s=\sum_{i=1}^{n} m_i$
+		\item<4-> $F(x,y)=\left(\sum_{i=1}^{m_1}\left(\sum_{j=0}^{s-i} a_{i,j} x^j y^i\right)\right)-x^s$
+		\item<5-> Vi inte behöver ta med termer innehållande faktorer av $y$ med högre potens än $m_1$.
+		\item<6-> Utför serie uppblåsningar: Avgör vilka $a_{i,j}=0$.
+		\item<7-> Utför ny serie uppblåsningar: Avgör vilka $a_{i,j} \neq 0$.
+		\item<8-> Beräkna ``enklaste'' lösningen.
+		\item<9-> Om motsägelser uppstår, rapporteras fel.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Hittas alltid en lösning?}
+	
+	Finns alltid en lösning?
+	
+	\begin{enumerate}
+		\item<2-> Lösning ej garanterad.
+		
+		\item<3-> Inkonsistenta samband mellan koefficienter.
+		
+		\item<4-> Vissa val av kombinationer kan ge annorlunda multiplicitetsföljd.
+		
+		\item<5-> ``Enklaste'' lösningen inte nödvändigtvis \emph{irreducibel}.
+		
+		\item<6-> Inga fel eller avbrott rapporteras efter en genomgång av alla multiplicitetsföljder upp till multiplicitetssumma 30. Det finns 28628 sådana multiplicitetsföljder.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{\texttt{FindFunctionXYFromMultiplicitySequence()}}
+	
+	\begin{semiverbatim}
+		FindFunctionXYFromMultiplicitySequence := 
+
+\qquad proc(Sequence, CalcFamily)
+	\end{semiverbatim}
+	
+	\begin{enumerate}
+		\item<1-> Algoritm som beräknar fram en funktion $F(x,y)$, $F(x, y) \in \mathbb{C}\left[x, y\right]$ vars multiplicitetsföljd är given i anropet.
+		
+		\item<2-> Maple-kod finns i \texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/\\
+			\qquad multiplicitetsfoljder.mw}
+		
+		\item<3-> Text-version finns i
+		\texttt{https://github.com/PeterWaher/\\
+			\qquad Algebraiska\_kurvor/blob/master/Functions/\\
+			\qquad FindFunctionXYFromMultiplicitySequence.txt} 
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Exempel}
+	\begin{example}
+		I följande exempel beräknas en familj av polynom $F(x, y) \in \mathbb{C}[x, y]$ sådana att kurvorna $F(x, y) = 0$ har multiplicitetsföljden 2, 2, 1.
+		
+		\begin{semiverbatim}
+			> FindFunctionXYFromMultiplicitySequence(
+
+\qquad [2,2,1], true)
+		\end{semiverbatim}
+\[
+\begin{array}{l}
+\left[-x^5+y^2,\right.\\
+x^4ya_5+x^3y^2a_9-x^5+x^3ya_4+x^2y^2a_8+x^2ya_3+xy^2a_7+y^2a_6,\\
+\left.a_6 \neq 0\right]\\
+\end{array}
+\]
+	\end{example}
+\end{frame}
+
+
+
 \subsection{Komplexitet}
+
+\begin{frame}
+	\frametitle{Antal multiplicitetsföljder}
+När vi börjar undersöka hur väl beräkningen av funktionsfamiljer från multiplicitetsföljderna går, ser vi att en intressant talföljd $\left\{N_i\right\}$ uppstår, där $N_i$ är antalet multiplicitetsföljder som finns vars multipliciteter summerar till $i$.
+
+\begin{center}
+	\includegraphics[scale=0.5]{Export/Complexity1.png}
+\end{center}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Rekursiv definition}
+	Är talföljded asymptotisk och växer på ett förutbestämt sätt?
+	
+	\[
+	\begin{array}{rcl}
+	N_i & \equiv & N_{i,i} \\[5pt]
+	N_{i,j} & = & \left\{
+	\begin{array}{ll}
+	0 & , i < 0 \vee j \leq 0\\[5pt]
+	1 & ,i=0 \wedge j > 0\\[5pt]
+	\displaystyle\sum_{k=1}^{\min(i,j)}N_{i-k,k} & ,i>0 \wedge j>0\\
+	\end{array}
+	\right.\\
+	\end{array}
+	\]
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+\begin{frame}
+	\frametitle{}
+\end{frame}
+
+
 
 \end{document}
