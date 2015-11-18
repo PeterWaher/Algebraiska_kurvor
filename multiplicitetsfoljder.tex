@@ -242,7 +242,7 @@ Men för att kunna beräkna fler $N_i$ kan vi inte använda oss av metoden i bil
 \end{array}
 \]
 
-Som det ser ut verkar exponenten avta med stigande $i$. Vår exponentiella modell verkar inte helt korrekt, även om det kanske är en bra första ansats. Frågan är då, kommer den gå asymptotiskt mot en geometrisk serie $N_i \rightarrow c\cdot P^i$? Eller kommer $N_{i+1}/N_i \rightarrow 1$ då $i \rightarrow \infty$. dvs. begränsningarna i den rekursiva deklarationen kommer till slut göra så att $N_i$ långsamt slutar växa exponentiellt. Vi kan formulera om detta, genom att jämföra $N_i$ med en geometrisk talföljd: Om $Q_i=N_i/N_{i-1}$, kommer då $Q_i \rightarrow P$ för något $P$? Dvs. kommer $N_i \rightarrow c\cdot P^i$ då $i \rightarrow \infty$? Eller kommer den avta asymptotiskt mot 1? Om vi visualiserar $Q_i$ ser vi hur den avtar.
+Som det ser ut verkar exponenten avta med stigande $i$. Vår exponentiella modell verkar inte helt korrekt, även om det kanske är en bra första ansats. Frågan är då, kommer den gå asymptotiskt mot en geometrisk serie $N_i \rightarrow c\cdot P^i$? Eller kommer $N_{i+1}/N_i \rightarrow 1$ då $i \rightarrow \infty$? Dvs. kommer begränsningarna i den rekursiva deklarationen till slut göra så att $N_i$ långsamt slutar växa exponentiellt? Vi kan formulera om detta, genom att jämföra $N_i$ med en geometrisk talföljd: Om $Q_i=N_i/N_{i-1}$, kommer då $Q_i \rightarrow P$ för något $P>1$? Dvs. kommer $N_i \rightarrow c\cdot P^i$ då $i \rightarrow \infty$? Eller kommer den avta asymptotiskt mot 1? Om vi visualiserar $Q_i$ ser vi hur den avtar.
 
 \begin{center}
 \includegraphics[scale=0.5]{Export/Complexity11.png}
@@ -290,7 +290,7 @@ Från vår empiriska studie över antalet multiplicitetsföljder $N_i$, och dess
 
 \[\frac{1}{\left(Q_i-1\right)^2} \sim a+b\cdot i \text{, (då $i \rightarrow \infty$)}\]
 \[\Longleftrightarrow \]
-\[Q_i \sim 1+\frac{1}{\sqrt{a+b\cdot i}} \]
+\[Q_i \sim 1+\frac{1}{\sqrt{a+b\cdot i}}\text{, (då $i \rightarrow \infty$)} \]
 
 För att hitta koefficienterna skapar vi en modellfunktion $f_\mathbf{v}(i)$, med en parametervektor $\mathbf{v}$ som vi sedan med hjälp av \emph{Nelder-Mead's algoritm} \cite{NelderMead} optimerar så att felet mellan $f_\mathbf{v}(i)$ och $Q_i$ blir så litet som möjligt. Vi lägger på lite fler potenser för att se hur dessa påverkar. Vi definierar $f_\mathbf{v}(i)$ så här:
 \[f_\mathbf{v}(i)=v_0+\frac{v_1}{\sqrt{v_2+v_3\cdot i+v_4\cdot i^2+v_5\cdot i^3+v_6\cdot i^4+v_7\cdot i^5+v_8\cdot i^6+v_9\cdot i^7}}\]
